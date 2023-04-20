@@ -1,0 +1,30 @@
+.card {
+    display: flex;
+    flex-direction: column;
+
+    background-color: rgb(249, 249, 249);
+    width: 300px;
+    height: 80px;
+
+    color: black;
+
+    margin-block: 0.8rem;
+    padding: 10px;
+
+    border-radius: 0.5rem;
+    box-shadow: 2px 2px 3px rgba(0, 0, 0, 0.453);
+}
+
+.input {
+    font-size: 1.5rem;
+    border: transparent;
+    outline: transparent;
+    background-color: transparent;
+    -webkit-user-select: all;
+    -ms-user-select: all;
+    user-select: all;
+}
+
+.input:focus-visible {
+    outline: 1px solid black;
+}
