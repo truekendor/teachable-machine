@@ -10,8 +10,6 @@ export default class Store {
     MOBILE_NET_INPUT_HEIGHT = 224;
     MOBILE_NET_INPUT_WIDTH = 224;
 
-    labelsAmount = 3;
-
     trainingDataInputs: tf.Tensor1D[] = [];
     trainingDataOutputs: number[] = [];
 
@@ -22,6 +20,7 @@ export default class Store {
     isModelTrained = false;
 
     labelsArray = ["Class 1", "Class 2", "Class 3"];
+    prediction: string;
 
     constructor() {
         makeAutoObservable(this);
@@ -31,6 +30,8 @@ export default class Store {
 
     pushToLabels(label: string) {
         this.labelsArray.push(label);
+
+        this.setupModel();
     }
 
     changeLabelAtIndex(label: string, index: number) {
@@ -68,7 +69,7 @@ export default class Store {
         );
         this.model.add(
             tf.layers.dense({
-                units: this.labelsAmount,
+                units: this.labelsArray.length,
                 activation: "softmax",
             })
         );
@@ -76,7 +77,7 @@ export default class Store {
         this.model.compile({
             optimizer: "adam",
             loss:
-                this.labelsAmount === 2
+                this.labelsArray.length === 2
                     ? "binaryCrossentropy"
                     : "categoricalCrossentropy",
             metrics: ["accuracy"],
@@ -100,7 +101,7 @@ export default class Store {
                 ])
             );
             // @ts-ignore
-            console.log(answer.shape); // [batch_size -> default == 1, 1024]
+            // console.log(answer.shape); // [batch_size -> 1, 1024]
         });
     }
 
@@ -138,10 +139,12 @@ export default class Store {
     }
 
     async train() {
+        console.log("TRAIN");
+
         tf.util.shuffleCombo(this.trainingDataInputs, this.trainingDataOutputs);
 
         let outputsAsTensor = tf.tensor1d(this.trainingDataOutputs, "int32");
-        let oneHotOutputs = tf.oneHot(outputsAsTensor, this.labelsAmount);
+        let oneHotOutputs = tf.oneHot(outputsAsTensor, this.labelsArray.length);
         let inputsAsTensor = tf.stack(this.trainingDataInputs);
 
         await this.model.fit(inputsAsTensor, oneHotOutputs, {
@@ -160,5 +163,9 @@ export default class Store {
 
     logProgress(epoch: any, logs: any) {
         console.log("Data for epoch " + epoch, logs);
+    }
+
+    setPrediction(prediction: string) {
+        this.prediction = prediction;
     }
 }
