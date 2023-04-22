@@ -11,12 +11,10 @@ import NewCardBtn from "./components/UI/NewCardBtn/NewCardBtn";
 function App() {
     const { store } = useContext(Context);
     const predictionCamRef = useRef<HTMLVideoElement>();
-
-    useEffect(() => {
-        enableCamera();
-    });
+    const predictionRef = useRef("");
 
     async function enableCamera() {
+        console.log("enable prediction camera");
         const constraints = {
             video: true,
             width: 640,
@@ -45,9 +43,11 @@ function App() {
                     .squeeze();
                 let highestIndex = prediction.argMax().arraySync();
                 let predictionArray = prediction.arraySync();
-                console.log(
-                    store.labelsArray[highestIndex],
-                    `уверенность ${predictionArray[highestIndex] * 100}%`
+
+                store.setPrediction(
+                    `${store.labelsArray[highestIndex]}, уверенность ${
+                        predictionArray[highestIndex] * 100
+                    }`
                 );
             });
         } catch (e) {
@@ -60,14 +60,14 @@ function App() {
 
     return (
         <div className="App">
-            <header>
+            {/* <header>
                 <h2>TEACHABLE MACHINE CLONE WITH REACT TYPESCRIPT</h2>
                 {store.mobilenet === undefined ? (
                     <h3>waiting model to load</h3>
                 ) : (
                     <h3>model loaded</h3>
                 )}
-            </header>
+            </header> */}
 
             <main className={`main`}>
                 <div
@@ -91,6 +91,7 @@ function App() {
                     <button
                         onClick={async () => {
                             await store.train();
+                            enableCamera();
 
                             predictLoop();
                             console.log("READY");
@@ -107,13 +108,19 @@ function App() {
                     </button>
                 </div>
                 {store.isModelTrained && (
-                    <video
-                        ref={predictionCamRef}
-                        autoPlay
-                        onLoad={() => enableCamera()}
-                    ></video>
+                    <video ref={predictionCamRef} autoPlay></video>
                 )}
             </main>
+            <div
+                style={{
+                    backgroundColor: "orange",
+                    padding: "20px",
+                    color: "white",
+                    fontSize: "1.2rem",
+                }}
+            >
+                {store.prediction}
+            </div>
         </div>
     );
 }
