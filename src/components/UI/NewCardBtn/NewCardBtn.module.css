@@ -1,0 +1,47 @@
+.new-card-btn {
+    display: flex;
+    width: 100%;
+
+    justify-content: center;
+    align-items: center;
+    gap: 0.3rem;
+
+    font-size: 1.2rem;
+    color: gray;
+
+    outline: transparent;
+    border: transparent;
+    background-color: transparent;
+
+    /* background-color: orange; */
+
+    padding: 2rem;
+
+    border-radius: 0.8rem;
+    border: 2px dashed rgba(128, 128, 128, 0.512);
+
+    position: relative;
+
+    cursor: pointer;
+}
+
+.new-card-btn:hover {
+    --color: 56, 104, 235;
+    color: rgb(56, 104, 235);
+
+    transition: border 70ms ease-in-out, color 70ms ease-in-out;
+    color: rgb(var(--color));
+    border: 2px dashed rgba(var(--color), 0.712);
+}
+
+.icon {
+    transform: scale(var(--icon-scale));
+    color: currentColor;
+}
+
+.visually-hidden {
+    visibility: hidden;
+    width: 0;
+    height: 0;
+    display: inline;
+}

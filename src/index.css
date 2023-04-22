@@ -6,8 +6,14 @@
     padding: 0;
 }
 
+:root {
+    --card-padding: 0.5rem;
+    --font-color-card: hsl(228, 100%, 59%);
+    --icon-scale: 1.1;
+}
+
 body {
-    background-color: rgb(204, 204, 204);
+    background-color: rgb(227, 227, 227);
     font-family: Helvetica, Arial, sans-serif;
 
     width: 100vw;
@@ -19,4 +25,36 @@ body {
     flex-direction: column;
 
     padding: 1rem;
+}
+
+.card-container {
+    display: flex;
+
+    width: -moz-fit-content;
+    width: fit-content;
+
+    flex-direction: column;
+}
+
+.main {
+    display: flex;
+}
+
+.rightbar {
+    margin-inline-start: auto;
+}
+
+.rightbar button {
+    padding: 10px;
+    background-color: orangered;
+
+    outline: transparent;
+    border: transparent;
+    cursor: pointer;
+
+    margin: 5px;
+}
+
+.rightbar + video {
+    transform: rotateY(180deg);
 }

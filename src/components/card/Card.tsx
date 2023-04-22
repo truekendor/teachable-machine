@@ -1,37 +1,59 @@
-import React, { useRef, useState } from "react";
+import { useState, useContext } from "react";
 import st from "./Card.module.css";
+import CameraEnableBtn from "../UI/CameraEnableBtn/CameraEnableBtn";
+import CardForm from "../CardForm/CardForm";
+import VideoContainer from "../VideoContainer/VideoContainer";
+import { Context } from "../../index";
+
+import { observer } from "mobx-react-lite";
 
 interface Props {
     queue: number;
 }
 
-export default function Card({ queue }: Props) {
-    const inputRef = useRef<HTMLInputElement>();
+function Card({ queue }: Props) {
+    const { store } = useContext(Context);
+    const [isVideoWindowActive, setIsVideoWindowActive] = useState(false);
+
+    function onClickHandler() {
+        setIsVideoWindowActive(!isVideoWindowActive);
+        store.setCurrentCardWithCamera(queue);
+    }
+
+    function deleteCardHandler() {
+        //
+    }
 
     return (
         <div className={[st["card"]].join(" ")}>
-            <form
-                onSubmit={(e) => {
-                    e.preventDefault();
-                    return false;
-                }}
-            >
-                <input
-                    defaultValue={`Class ${queue + 1}`}
-                    className={[st["input"]].join(" ")}
-                    ref={inputRef}
-                    type="text"
-                    title="Название класса"
-                    onKeyUp={(e) => {
-                        if (e.code === "Enter") {
-                            inputRef.current.blur();
-                        }
+            <header className={[st["header"]].join(" ")}>
+                <CardForm queue={queue} />
+                {/* <button
+                    onClick={deleteCardHandler}
+                    className={`${st["delete-btn"]}`}
+                >
+                    <FontAwesomeIcon icon={faTrash} />
+                </button> */}
+            </header>
+            <div className={[st["card-body"]].join(" ")}>
+                {!isVideoWindowActive && !store.isModelTrained && (
+                    <CameraEnableBtn onClick={() => onClickHandler()} />
+                )}
+                <VideoContainer
+                    cancelVideo={() => {
+                        setIsVideoWindowActive(false);
                     }}
-                    onClick={() => inputRef.current.select()}
+                    queue={queue}
+                    isVideoWindowActive={isVideoWindowActive}
                 />
-            </form>
-
-            <button>Включить камеру</button>
+                {isVideoWindowActive && (
+                    <div
+                        className={[st["snapshots-container"]].join(" ")}
+                    ></div>
+                )}
+            </div>
         </div>
     );
 }
+
+export default observer(Card);

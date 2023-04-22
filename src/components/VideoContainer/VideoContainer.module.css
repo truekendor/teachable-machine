@@ -1,0 +1,34 @@
+.video-container {
+    display: flex;
+    align-items: center;
+
+    flex-direction: column;
+
+    overflow-x: hidden;
+
+    background-color: orange;
+    flex: 1;
+}
+
+.video {
+    display: block;
+    background-color: black;
+
+    max-width: 100%;
+    width: 400px;
+
+    transform: rotateY(180deg);
+    border-radius: 0.5rem;
+}
+
+.test {
+    margin-block: auto;
+    border-radius: 1rem;
+}
+
+.visually-hidden {
+    visibility: hidden;
+    width: 0;
+    height: 0;
+    display: inline;
+}

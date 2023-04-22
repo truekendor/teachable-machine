@@ -1,75 +1,121 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import * as tf from "@tensorflow/tfjs";
-import Webcam from "./components/webcam/Webcam";
-import Card from "./components/card/Card";
+import Webcam from "./components/Webcam/Webcam";
+import Card from "./components/Card/Card";
+import { Context } from "./index";
+import { observer } from "mobx-react-lite";
 
 import "./index.css";
+import NewCardBtn from "./components/UI/NewCardBtn/NewCardBtn";
 
 function App() {
-    const [status, setStatus] = useState("waiting for model to load...");
-    const MOBILE_NET_INPUT_WIDTH = 224;
-    const MOBILE_NET_INPUT_HEIGHT = 224;
-    const model = useRef<tf.Sequential>(tf.sequential());
-    const mobilenet = useRef<tf.GraphModel>();
-    const mock = [1, 2, 3];
+    const { store } = useContext(Context);
+    const predictionCamRef = useRef<HTMLVideoElement>();
 
     useEffect(() => {
-        loadMobileNetFeatureModel();
-
-        model.current.add(
-            tf.layers.dense({
-                inputShape: [1024],
-                units: 128,
-                activation: "relu",
-            })
-        );
-        model.current.add(
-            tf.layers.dense({
-                inputShape: [2],
-                units: 128,
-                activation: "softmax",
-            })
-        );
-        model.current.summary();
-
-        // model.compile({
-        // 	optimizer: "adam",
-        // 	loss: CLASS_NAMES === 2 ? "binaryCrossentropy" : "categoricalCrossentropy",
-        // 	metrics: ["accuracy"],
-        // });
+        enableCamera();
     });
 
-    async function loadMobileNetFeatureModel() {
-        const URL =
-            "https://tfhub.dev/google/tfjs-model/imagenet/mobilenet_v3_small_100_224/feature_vector/5/default/1";
-        let result = await tf.loadGraphModel(URL, { fromTFHub: true });
-        mobilenet.current = result;
+    async function enableCamera() {
+        const constraints = {
+            video: true,
+            width: 640,
+            height: 480,
+        };
+        const result = await navigator.mediaDevices.getUserMedia(constraints);
 
-        setStatus("MobileNet v3 loaded successfully");
-        tf.tidy(() => {
-            let answer = mobilenet.current.predict(
-                // !         batch_size, y, x, 3
-                tf.zeros([
-                    1,
-                    MOBILE_NET_INPUT_HEIGHT,
-                    MOBILE_NET_INPUT_WIDTH,
-                    3,
-                ])
-            );
-            // @ts-ignore
-            // console.log(answer.shape); // [batch_size -> default == 1, 1024]
+        predictionCamRef.current.srcObject = result;
+
+        predictionCamRef.current.addEventListener("loadeddata", () => {
+            predictLoop();
         });
+    }
+
+    function predictLoop() {
+        if (!store.isModelTrained) return;
+        try {
+            tf.tidy(function () {
+                let imageFeatures = store.calculateFeaturesOnCurrentFrame(
+                    predictionCamRef.current
+                );
+                let prediction = store.model
+                    // @ts-ignore
+                    .predict(imageFeatures.expandDims())
+                    // @ts-ignore
+                    .squeeze();
+                let highestIndex = prediction.argMax().arraySync();
+                let predictionArray = prediction.arraySync();
+                console.log(
+                    store.labelsArray[highestIndex],
+                    `уверенность ${predictionArray[highestIndex] * 100}%`
+                );
+            });
+        } catch (e) {
+            // @ts-ignore
+            console.log(e.message);
+        }
+
+        window.requestAnimationFrame(predictLoop);
     }
 
     return (
         <div className="App">
-            <header>TEACHABLE MACHINE CLONE WITH REACT TYPESCRIPT</header>
-            <div>{status}</div>
-            {mock.map((el, index) => {
-                return <Card key={index} queue={index} />;
-            })}
+            <header>
+                <h2>TEACHABLE MACHINE CLONE WITH REACT TYPESCRIPT</h2>
+                {store.mobilenet === undefined ? (
+                    <h3>waiting model to load</h3>
+                ) : (
+                    <h3>model loaded</h3>
+                )}
+            </header>
+
+            <main className={`main`}>
+                <div
+                    // TODO сделать настоящий класс для контейнера
+                    className="MOCK_CLASS_NAME card-container"
+                >
+                    {store.labelsArray.map((el, index) => {
+                        return <Card key={index} queue={index} />;
+                    })}
+
+                    <NewCardBtn
+                        hidden={store.isModelTrained}
+                        onClick={() =>
+                            store.pushToLabels(
+                                `Class ${store.labelsArray.length}`
+                            )
+                        }
+                    />
+                </div>
+                <div className={`rightbar`}>
+                    <button
+                        onClick={async () => {
+                            await store.train();
+
+                            predictLoop();
+                            console.log("READY");
+                        }}
+                    >
+                        train
+                    </button>
+                    <button
+                        onClick={() => {
+                            predictLoop();
+                        }}
+                    >
+                        predict
+                    </button>
+                </div>
+                {store.isModelTrained && (
+                    <video
+                        ref={predictionCamRef}
+                        autoPlay
+                        onLoad={() => enableCamera()}
+                    ></video>
+                )}
+            </main>
         </div>
     );
 }
 
-export default App;
+export default observer(App);

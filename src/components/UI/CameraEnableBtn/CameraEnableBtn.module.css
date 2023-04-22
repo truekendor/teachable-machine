@@ -1,0 +1,33 @@
+.cam-enable-btn {
+    display: flex;
+    flex-direction: column;
+
+    justify-content: center;
+    align-items: center;
+
+    gap: 0.4rem;
+
+    padding: 0.8rem;
+
+    outline: transparent;
+    border: transparent;
+
+    border-radius: 0.5rem;
+
+    background-color: hsl(228, 100%, 93%);
+    color: hsl(228, 100%, 59%);
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: background-color 70ms ease-in-out;
+}
+
+.cam-enable-btn:hover {
+    background-color: hsl(228, 100%, 88%);
+    color: hsl(228, 100%, 54%);
+}
+
+.icon {
+    transform: scale(1.35);
+}
