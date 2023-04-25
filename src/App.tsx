@@ -1,17 +1,21 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import * as tf from "@tensorflow/tfjs";
-import Webcam from "./components/Webcam/Webcam";
 import Card from "./components/Card/Card";
 import { Context } from "./index";
 import { observer } from "mobx-react-lite";
 
 import "./index.css";
 import NewCardBtn from "./components/UI/NewCardBtn/NewCardBtn";
+import PredictionBoard from "./components/PredictionBoard/PredictionBoard";
 
 function App() {
     const { store } = useContext(Context);
     const predictionCamRef = useRef<HTMLVideoElement>();
-    const predictionRef = useRef("");
+
+    // ! debug
+    // setInterval(() => {
+    //     console.log(tf.memory().numTensors);
+    // }, 1500);
 
     async function enableCamera() {
         console.log("enable prediction camera");
@@ -31,29 +35,27 @@ function App() {
 
     function predictLoop() {
         if (!store.isModelTrained) return;
-        try {
-            tf.tidy(function () {
-                let imageFeatures = store.calculateFeaturesOnCurrentFrame(
-                    predictionCamRef.current
-                );
-                let prediction = store.model
-                    // @ts-ignore
-                    .predict(imageFeatures.expandDims())
-                    // @ts-ignore
-                    .squeeze();
-                let highestIndex = prediction.argMax().arraySync();
-                let predictionArray = prediction.arraySync();
 
-                store.setPrediction(
-                    `${store.labelsArray[highestIndex]}, уверенность ${
-                        predictionArray[highestIndex] * 100
-                    }`
-                );
-            });
-        } catch (e) {
-            // @ts-ignore
-            console.log(e.message);
-        }
+        tf.tidy(function () {
+            let imageFeatures = store.calculateFeaturesOnCurrentFrame(
+                predictionCamRef.current
+            );
+            let prediction = store.model
+                // @ts-ignore
+                .predict(imageFeatures.expandDims())
+                // @ts-ignore
+                .squeeze();
+            let highestIndex = prediction.argMax().arraySync();
+            let predictionArray = prediction.arraySync();
+
+            store.setPrediction(
+                `${store.labelsArray[highestIndex]}, уверенность ${
+                    predictionArray[highestIndex] * 100
+                }`
+            );
+
+            store.setPredictionList(predictionArray);
+        });
 
         window.requestAnimationFrame(predictLoop);
     }
@@ -69,6 +71,11 @@ function App() {
                 )}
             </header> */}
 
+            {store.isTraining && (
+                <div className="warn">
+                    Не переключайте вкладки пока сеть обучается
+                </div>
+            )}
             <main className={`main`}>
                 <div
                     // TODO сделать настоящий класс для контейнера
@@ -88,39 +95,36 @@ function App() {
                     />
                 </div>
                 <div className={`rightbar`}>
-                    <button
-                        onClick={async () => {
-                            await store.train();
-                            enableCamera();
+                    {!store.isModelTrained && (
+                        <button
+                            onClick={async () => {
+                                store.setCurrentCard(-1);
 
-                            predictLoop();
-                            console.log("READY");
-                        }}
-                    >
-                        train
-                    </button>
-                    <button
-                        onClick={() => {
-                            predictLoop();
-                        }}
-                    >
-                        predict
-                    </button>
+                                await store.train();
+                                await enableCamera();
+
+                                // predictLoop();
+                                console.log("READY");
+                            }}
+                        >
+                            train
+                        </button>
+                    )}
+                    {!store.isModelTrained && (
+                        <button
+                            onClick={() => {
+                                predictLoop();
+                            }}
+                        >
+                            predict
+                        </button>
+                    )}
                 </div>
                 {store.isModelTrained && (
                     <video ref={predictionCamRef} autoPlay></video>
                 )}
             </main>
-            <div
-                style={{
-                    backgroundColor: "orange",
-                    padding: "20px",
-                    color: "white",
-                    fontSize: "1.2rem",
-                }}
-            >
-                {store.prediction}
-            </div>
+            <PredictionBoard />
         </div>
     );
 }

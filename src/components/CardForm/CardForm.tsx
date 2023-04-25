@@ -5,12 +5,13 @@ import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { Context } from "../../index";
 
 import st from "./CardForm.module.css";
+import { observer } from "mobx-react-lite";
 
 interface Props {
     queue: number;
 }
 
-export default function CardForm({ queue }: Props) {
+function CardForm({ queue }: Props) {
     const { store } = useContext(Context);
     const inputRef = useRef<HTMLInputElement>();
 
@@ -48,3 +49,5 @@ export default function CardForm({ queue }: Props) {
         </form>
     );
 }
+
+export default observer(CardForm);

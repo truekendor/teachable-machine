@@ -1,0 +1,28 @@
+.bar {
+    padding: 5px;
+    color: black;
+    background-color: orange;
+
+    position: relative;
+
+    isolation: isolate;
+
+    border-radius: 0.4rem;
+    overflow: hidden;
+}
+
+.bar::before {
+    content: "";
+
+    position: absolute;
+    z-index: -1;
+
+    top: 0;
+    bottom: 0;
+    left: 0;
+
+    width: var(--percent);
+
+    background-color: rgb(0, 128, 0);
+    border-radius: 0.4rem;
+}

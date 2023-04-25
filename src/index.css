@@ -25,6 +25,8 @@ body {
     flex-direction: column;
 
     padding: 1rem;
+
+    position: relative;
 }
 
 .card-container {
@@ -57,4 +59,14 @@ body {
 
 .rightbar + video {
     transform: rotateY(180deg);
+}
+
+.warn {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    background-color: red;
+    color: white;
 }

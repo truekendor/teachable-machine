@@ -13,14 +13,17 @@ export default class Store {
     trainingDataInputs: tf.Tensor1D[] = [];
     trainingDataOutputs: number[] = [];
 
-    isVideoPlaying = false;
-    isRecording = false;
+    isGatheringData = false;
 
-    currentCardWithCamera: number;
     isModelTrained = false;
+    isTraining = false;
 
     labelsArray = ["Class 1", "Class 2", "Class 3"];
     prediction: string;
+    predictionList: number[] = [];
+    amountArray: number[] = [];
+
+    currentCard = -1;
 
     constructor() {
         makeAutoObservable(this);
@@ -42,19 +45,9 @@ export default class Store {
         this.mobilenet ??= mobilenet;
     }
 
-    // is video playing (not for data recording)
-    setIsVideoPlaying(bool: boolean) {
-        this.isVideoPlaying = bool;
-    }
-
     // record data on mouseBtnHold
-    setIsRecording(bool: boolean) {
-        this.isRecording = bool;
-    }
-
-    setCurrentCardWithCamera(index: number) {
-        this.currentCardWithCamera = index;
-        console.log("store", index);
+    setIsGatheringData(bool: boolean) {
+        this.isGatheringData = bool;
     }
 
     setupModel() {
@@ -108,6 +101,7 @@ export default class Store {
     pushToTrainingData(input: tf.Tensor1D, output: number) {
         this.trainingDataInputs.push(input);
         this.trainingDataOutputs.push(output);
+        this.amountArray[output] = this.amountArray[output] + 1 || 1;
     }
 
     calculateFeaturesOnCurrentFrame(ref: HTMLVideoElement) {
@@ -139,7 +133,7 @@ export default class Store {
     }
 
     async train() {
-        console.log("TRAIN");
+        this.setIsTraining(true);
 
         tf.util.shuffleCombo(this.trainingDataInputs, this.trainingDataOutputs);
 
@@ -158,14 +152,32 @@ export default class Store {
         oneHotOutputs.dispose();
         inputsAsTensor.dispose();
 
-        this.isModelTrained = true;
+        this.setIsModelTrained(true);
+        this.setIsTraining(false);
     }
 
     logProgress(epoch: any, logs: any) {
         console.log("Data for epoch " + epoch, logs);
     }
 
+    setIsModelTrained(bool: boolean) {
+        this.isModelTrained = bool;
+    }
+
     setPrediction(prediction: string) {
         this.prediction = prediction;
+    }
+
+    setPredictionList(array: number[]) {
+        this.predictionList = [...array];
+    }
+
+    setIsTraining(bool: boolean) {
+        this.isTraining = bool;
+    }
+
+    setCurrentCard(index: number) {
+        console.log("ACTIVE AT ", index);
+        this.currentCard = index;
     }
 }

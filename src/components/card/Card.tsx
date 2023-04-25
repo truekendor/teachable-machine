@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import st from "./Card.module.css";
 import CameraEnableBtn from "../UI/CameraEnableBtn/CameraEnableBtn";
 import CardForm from "../CardForm/CardForm";
@@ -13,12 +13,7 @@ interface Props {
 
 function Card({ queue }: Props) {
     const { store } = useContext(Context);
-    const [isVideoWindowActive, setIsVideoWindowActive] = useState(false);
-
-    function onClickHandler() {
-        setIsVideoWindowActive(!isVideoWindowActive);
-        store.setCurrentCardWithCamera(queue);
-    }
+    const isCurrent = store.currentCard === queue;
 
     function deleteCardHandler() {
         //
@@ -36,17 +31,20 @@ function Card({ queue }: Props) {
                 </button> */}
             </header>
             <div className={[st["card-body"]].join(" ")}>
-                {!isVideoWindowActive && !store.isModelTrained && (
-                    <CameraEnableBtn onClick={() => onClickHandler()} />
+                {!isCurrent && !store.isModelTrained && (
+                    <CameraEnableBtn
+                        onClick={() => {
+                            store.setCurrentCard(queue);
+                        }}
+                    />
                 )}
-                <VideoContainer
-                    cancelVideo={() => {
-                        setIsVideoWindowActive(false);
-                    }}
-                    queue={queue}
-                    isVideoWindowActive={isVideoWindowActive}
-                />
-                {isVideoWindowActive && (
+                <VideoContainer queue={queue} />
+                {
+                    <p style={{ width: "100px" }}>
+                        количество: {store.amountArray[queue] || 0}
+                    </p>
+                }
+                {isCurrent && (
                     <div
                         className={[st["snapshots-container"]].join(" ")}
                     ></div>

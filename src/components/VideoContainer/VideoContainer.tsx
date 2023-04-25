@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, useContext } from "react";
+import { useRef, useContext, useEffect } from "react";
 import * as tf from "@tensorflow/tfjs";
 import { Context } from "../../index";
 import { observer } from "mobx-react-lite";
@@ -6,15 +6,14 @@ import { observer } from "mobx-react-lite";
 import st from "./VideoContainer.module.css";
 
 interface Props {
-    isVideoWindowActive: boolean;
     queue: number;
-    cancelVideo: () => void;
 }
 
-function VideoContainer({ isVideoWindowActive, queue, cancelVideo }: Props) {
+function VideoContainer({ queue }: Props) {
     const { store } = useContext(Context);
-    const stream = useRef<MediaStream>();
+    const isCurrent = store.currentCard === queue;
 
+    const stream = useRef<MediaStream>();
     const camRef = useRef<HTMLVideoElement>();
 
     function userHasCamera() {
@@ -26,6 +25,7 @@ function VideoContainer({ isVideoWindowActive, queue, cancelVideo }: Props) {
             console.warn("Камера не поддерживается вашим браузером");
             return;
         }
+
         const constraints = {
             video: true,
             width: 640,
@@ -36,58 +36,52 @@ function VideoContainer({ isVideoWindowActive, queue, cancelVideo }: Props) {
         camRef.current.srcObject = result;
 
         camRef.current.addEventListener("loadeddata", () => {
-            store.setIsVideoPlaying(true);
+            // prediction loop on data load
+            console.log("TRUE");
         });
     }
 
-    useEffect(() => {
-        if (!isVideoWindowActive) return;
-        console.log("RERENDER");
-
-        enableCamera();
-
-        return () => {
+    const iffe = (async function () {
+        // console.log("IFFE");
+        if (!isCurrent) {
+            // console.log("DISABLE");
             disableCamera();
-        };
-    });
-
-    useEffect(() => {
-        if (store.currentCardWithCamera !== queue || store.isModelTrained) {
-            disableCamera();
-        }
-    }, [store.currentCardWithCamera, store.isModelTrained]);
-
-    function gatherDataForLabel() {
-        // setIsRecording(true);
-
-        dataGatherLoop();
-    }
-
-    function dataGatherLoop() {
-        if (!store.isVideoPlaying || !store.isRecording) {
             return;
         }
+        // console.log("ENABLE");
+
+        await enableCamera();
+    })();
+
+    // TODO переделать на setInterval для большей кастомизации
+    // TODO времени между кадрами
+    function dataGatherLoop() {
+        if (!store.isGatheringData) {
+            return;
+        }
+        console.log("LOOP");
 
         let imageFeatures: tf.Tensor1D = store.calculateFeaturesOnCurrentFrame(
             camRef.current
         );
 
         store.pushToTrainingData(imageFeatures, queue);
+        // imageFeatures.dispose();
+
         window.requestAnimationFrame(dataGatherLoop);
     }
 
     function disableCamera() {
         stream?.current?.getTracks?.().forEach((track) => track.stop());
-        cancelVideo();
     }
 
     return (
         <div className={[st["video-container"]].join(" ")}>
-            {isVideoWindowActive && (
+            {isCurrent && (
                 <button
                     onClick={() => {
                         disableCamera();
-                        store.setCurrentCardWithCamera(-1);
+                        store.setCurrentCard(-1);
                     }}
                 >
                     закончить съемку
@@ -95,25 +89,27 @@ function VideoContainer({ isVideoWindowActive, queue, cancelVideo }: Props) {
             )}
             <div className={`${st["test"]}`}>
                 <video
-                    autoPlay={isVideoWindowActive}
+                    autoPlay={isCurrent}
                     className={[
                         st["video"],
-                        !isVideoWindowActive && st["visually-hidden"],
+                        !isCurrent && st["visually-hidden"],
                     ].join(" ")}
                     ref={camRef}
                 ></video>
             </div>
-            {isVideoWindowActive && (
+            {isCurrent && (
                 <button
+                    className={`${st["record-btn"]}`}
                     onMouseDown={() => {
-                        store.setIsRecording(true);
-                        gatherDataForLabel();
+                        store.setIsGatheringData(true);
+
+                        dataGatherLoop();
                     }}
                     onMouseUp={() => {
-                        store.setIsRecording(false);
+                        store.setIsGatheringData(false);
                     }}
                     onMouseLeave={() => {
-                        store.setIsRecording(false);
+                        store.setIsGatheringData(false);
                     }}
                 >
                     Удерживайте для записи
