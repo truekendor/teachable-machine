@@ -14,7 +14,7 @@ function TrainingArea({ onClick }: Props) {
     return (
         <div className={[st["container"]].join(" ")}>
             <div className={[st["main-area"]].join(" ")}>
-                Обучение
+                <h3>Обучение</h3>
                 {!store.isModelTrained && (
                     <button
                         className={[st["train-btn"]].join(" ")}

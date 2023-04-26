@@ -9,6 +9,8 @@ import NewCardBtn from "./components/UI/NewCardBtn/NewCardBtn";
 import PredictionBoard from "./components/PredictionBoard/PredictionBoard";
 import TrainingArea from "./components/TrainingArea/TrainingArea";
 import CanvasForCurves from "./components/CanvasForCurves/CanvasForCurves";
+import Rightbar from "./components/Rightbar/Rightbar";
+import CardContainer from "./components/Cards/CardContainer";
 
 function App() {
     const { store } = useContext(Context);
@@ -74,6 +76,19 @@ function App() {
         console.log("READY");
     }
 
+    function setPredictionCamera(ref: HTMLVideoElement) {
+        predictionCamRef.current = ref;
+    }
+
+    if (!store.mobilenet) {
+        return (
+            <>
+                <div>Fallback</div>
+                <h1>Загрузка модели</h1>
+            </>
+        );
+    }
+
     return (
         <div className="App">
             <header>
@@ -87,37 +102,18 @@ function App() {
             )}
 
             <main className={`main`}>
-                <div className="card-container">
-                    {store.labelsArray.map((el, index) => {
-                        return <Card key={index} queue={index} />;
-                    })}
+                <CardContainer />
 
-                    <NewCardBtn
-                        hidden={store.isModelTrained}
-                        onClick={() =>
-                            store.pushToLabels(
-                                `Class ${store.labelsArray.length}`
-                            )
-                        }
-                    />
-                </div>
-
-                <CanvasForCurves list={[...store.cardBoundingBoxes]} />
+                <CanvasForCurves
+                    width={60}
+                    list={[...store.cardBoundingBoxes]}
+                />
 
                 <TrainingArea onClick={onClickHandler} />
-                <div className={`rightbar`}>
-                    <h3>Посмотреть модель</h3>
-
-                    <video
-                        className={[
-                            !store.isModelTrained && "visually-hidden",
-                        ].join(" ")}
-                        ref={predictionCamRef}
-                        autoPlay={store.isModelTrained}
-                    ></video>
-                </div>
+                <Rightbar setCamera={setPredictionCamera} />
             </main>
-            <PredictionBoard />
+
+            {/* <PredictionBoard /> */}
         </div>
     );
 }
