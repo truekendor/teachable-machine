@@ -1,5 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import * as tf from "@tensorflow/tfjs";
+import { BoundingBoxPart } from "../types/types";
 
 export default class Store {
     URL = `https://tfhub.dev/google/tfjs-model/imagenet/mobilenet_v3_small_100_224/feature_vector/5/default/1`;
@@ -22,6 +23,8 @@ export default class Store {
     prediction: string;
     predictionList: number[] = [];
     amountArray: number[] = [];
+
+    cardBoundingBoxes: BoundingBoxPart[] = [];
 
     currentCard = -1;
 
@@ -133,27 +136,42 @@ export default class Store {
     }
 
     async train() {
-        this.setIsTraining(true);
+        try {
+            this.setIsTraining(true);
 
-        tf.util.shuffleCombo(this.trainingDataInputs, this.trainingDataOutputs);
+            tf.util.shuffleCombo(
+                this.trainingDataInputs,
+                this.trainingDataOutputs
+            );
 
-        let outputsAsTensor = tf.tensor1d(this.trainingDataOutputs, "int32");
-        let oneHotOutputs = tf.oneHot(outputsAsTensor, this.labelsArray.length);
-        let inputsAsTensor = tf.stack(this.trainingDataInputs);
+            let outputsAsTensor = tf.tensor1d(
+                this.trainingDataOutputs,
+                "int32"
+            );
+            let oneHotOutputs = tf.oneHot(
+                outputsAsTensor,
+                this.labelsArray.length
+            );
+            let inputsAsTensor = tf.stack(this.trainingDataInputs);
 
-        await this.model.fit(inputsAsTensor, oneHotOutputs, {
-            shuffle: true,
-            batchSize: 5,
-            epochs: 10,
-            callbacks: { onEpochEnd: this.logProgress },
-        });
+            await this.model.fit(inputsAsTensor, oneHotOutputs, {
+                shuffle: true,
+                batchSize: 5,
+                epochs: 10,
+                callbacks: { onEpochEnd: this.logProgress },
+            });
 
-        outputsAsTensor.dispose();
-        oneHotOutputs.dispose();
-        inputsAsTensor.dispose();
+            outputsAsTensor.dispose();
+            oneHotOutputs.dispose();
+            inputsAsTensor.dispose();
 
-        this.setIsModelTrained(true);
-        this.setIsTraining(false);
+            this.setIsModelTrained(true);
+            this.setIsTraining(false);
+        } catch (e: any) {
+            this.setIsModelTrained(false);
+            this.setIsTraining(false);
+            console.log(e.message);
+        }
     }
 
     logProgress(epoch: any, logs: any) {
@@ -179,5 +197,9 @@ export default class Store {
     setCurrentCard(index: number) {
         console.log("ACTIVE AT ", index);
         this.currentCard = index;
+    }
+
+    setCardBoundingBoxByIndex(index: number, bBox: BoundingBoxPart) {
+        this.cardBoundingBoxes[index] = bBox;
     }
 }

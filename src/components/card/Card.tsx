@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useRef, useContext, useEffect } from "react";
 import st from "./Card.module.css";
 import CameraEnableBtn from "../UI/CameraEnableBtn/CameraEnableBtn";
 import CardForm from "../CardForm/CardForm";
@@ -6,6 +6,7 @@ import VideoContainer from "../VideoContainer/VideoContainer";
 import { Context } from "../../index";
 
 import { observer } from "mobx-react-lite";
+import { BoundingBoxPart } from "../../types/types";
 
 interface Props {
     queue: number;
@@ -14,14 +15,31 @@ interface Props {
 function Card({ queue }: Props) {
     const { store } = useContext(Context);
     const isCurrent = store.currentCard === queue;
+    const containerRef = useRef<HTMLDivElement>();
+
+    useEffect(() => {
+        const { height } = containerRef.current.getBoundingClientRect();
+
+        // TODO переделать с передачей не всей ноды, а только offsetTop
+        // TODO почему-то не работает, но сейчас 6 утра
+        const bBox: BoundingBoxPart = {
+            height,
+            node: containerRef.current,
+        };
+
+        store.setCardBoundingBoxByIndex(queue, bBox);
+    });
 
     function deleteCardHandler() {
         //
     }
 
     return (
-        <div className={[st["card"]].join(" ")}>
-            <header className={[st["header"]].join(" ")}>
+        <div ref={containerRef} className={[st["card"]].join(" ")}>
+            <header
+                className={[st["header"]].join(" ")}
+                // TODO сделать переключение инпутов карточек по нажатию TAB
+            >
                 <CardForm queue={queue} />
                 {/* <button
                     onClick={deleteCardHandler}

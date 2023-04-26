@@ -7,6 +7,8 @@ import { observer } from "mobx-react-lite";
 import "./index.css";
 import NewCardBtn from "./components/UI/NewCardBtn/NewCardBtn";
 import PredictionBoard from "./components/PredictionBoard/PredictionBoard";
+import TrainingArea from "./components/TrainingArea/TrainingArea";
+import CanvasForCurves from "./components/CanvasForCurves/CanvasForCurves";
 
 function App() {
     const { store } = useContext(Context);
@@ -41,7 +43,6 @@ function App() {
                 predictionCamRef.current
             );
             let prediction = store.model
-                // @ts-ignore
                 .predict(imageFeatures.expandDims())
                 // @ts-ignore
                 .squeeze();
@@ -60,27 +61,33 @@ function App() {
         window.requestAnimationFrame(predictLoop);
     }
 
+    async function onClickHandler() {
+        store.setCurrentCard(-1);
+
+        await store.train();
+
+        // in case of an error
+        if (!store.isModelTrained) return;
+
+        await enableCamera();
+
+        console.log("READY");
+    }
+
     return (
         <div className="App">
-            {/* <header>
+            <header>
                 <h2>TEACHABLE MACHINE CLONE WITH REACT TYPESCRIPT</h2>
-                {store.mobilenet === undefined ? (
-                    <h3>waiting model to load</h3>
-                ) : (
-                    <h3>model loaded</h3>
-                )}
-            </header> */}
+            </header>
 
             {store.isTraining && (
                 <div className="warn">
                     Не переключайте вкладки пока сеть обучается
                 </div>
             )}
+
             <main className={`main`}>
-                <div
-                    // TODO сделать настоящий класс для контейнера
-                    className="MOCK_CLASS_NAME card-container"
-                >
+                <div className="card-container">
                     {store.labelsArray.map((el, index) => {
                         return <Card key={index} queue={index} />;
                     })}
@@ -94,35 +101,21 @@ function App() {
                         }
                     />
                 </div>
+
+                <CanvasForCurves list={[...store.cardBoundingBoxes]} />
+
+                <TrainingArea onClick={onClickHandler} />
                 <div className={`rightbar`}>
-                    {!store.isModelTrained && (
-                        <button
-                            onClick={async () => {
-                                store.setCurrentCard(-1);
+                    <h3>Посмотреть модель</h3>
 
-                                await store.train();
-                                await enableCamera();
-
-                                // predictLoop();
-                                console.log("READY");
-                            }}
-                        >
-                            train
-                        </button>
-                    )}
-                    {!store.isModelTrained && (
-                        <button
-                            onClick={() => {
-                                predictLoop();
-                            }}
-                        >
-                            predict
-                        </button>
-                    )}
+                    <video
+                        className={[
+                            !store.isModelTrained && "visually-hidden",
+                        ].join(" ")}
+                        ref={predictionCamRef}
+                        autoPlay={store.isModelTrained}
+                    ></video>
                 </div>
-                {store.isModelTrained && (
-                    <video ref={predictionCamRef} autoPlay></video>
-                )}
             </main>
             <PredictionBoard />
         </div>
