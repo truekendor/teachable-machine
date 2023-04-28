@@ -4,6 +4,9 @@
     /* align-items: center; */
     justify-content: center;
 
+    height: fit-content;
+    min-height: 90vh;
+
     width: -moz-fit-content;
     width: fit-content;
 

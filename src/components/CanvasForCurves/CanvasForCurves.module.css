@@ -1,0 +1,10 @@
+.container {
+    /* position: relative; */
+}
+
+.canvas {
+    /* top: 0; */
+
+    /* position: -webkit-sticky; */
+    /* position: sticky; */
+}

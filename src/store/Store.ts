@@ -20,13 +20,15 @@ export default class Store {
     isTraining = false;
 
     labelsArray = ["Class 1", "Class 2", "Class 3"];
+
     prediction: string;
     predictionList: number[] = [];
-    amountArray: number[] = [];
-
-    cardBoundingBoxes: BoundingBoxPart[] = [];
+    samplesAmountArray: number[] = [];
 
     currentCard = -1;
+
+    cardBoundingBoxes: BoundingBoxPart[] = [];
+    wasDoubleClick = false;
 
     constructor() {
         makeAutoObservable(this);
@@ -79,7 +81,7 @@ export default class Store {
             metrics: ["accuracy"],
         });
 
-        this.model.summary();
+        // this.model.summary();
     }
 
     async loadMobilenetModel() {
@@ -104,7 +106,8 @@ export default class Store {
     pushToTrainingData(input: tf.Tensor1D, output: number) {
         this.trainingDataInputs.push(input);
         this.trainingDataOutputs.push(output);
-        this.amountArray[output] = this.amountArray[output] + 1 || 1;
+        this.samplesAmountArray[output] =
+            this.samplesAmountArray[output] + 1 || 1;
     }
 
     calculateFeaturesOnCurrentFrame(ref: HTMLVideoElement) {
@@ -166,11 +169,11 @@ export default class Store {
             inputsAsTensor.dispose();
 
             this.setIsModelTrained(true);
-            this.setIsTraining(false);
         } catch (e: any) {
             this.setIsModelTrained(false);
-            this.setIsTraining(false);
             console.log(e.message);
+        } finally {
+            this.setIsTraining(false);
         }
     }
 
@@ -195,11 +198,45 @@ export default class Store {
     }
 
     setCurrentCard(index: number) {
-        console.log("ACTIVE AT ", index);
         this.currentCard = index;
     }
 
     setCardBoundingBoxByIndex(index: number, bBox: BoundingBoxPart) {
         this.cardBoundingBoxes[index] = bBox;
+    }
+
+    setWasDoubleClick(bool: boolean) {
+        this.wasDoubleClick = bool;
+    }
+
+    removeLabelByIndex(index: number) {
+        this.labelsArray.splice(index, 1);
+        this.cardBoundingBoxes.splice(index, 1);
+
+        this.setupModel();
+
+        let newIn: tf.Tensor1D[] = [];
+        let newOut: number[] = [];
+
+        for (let i = 0; i < this.trainingDataInputs.length; i++) {
+            const input = this.trainingDataInputs[i];
+            const output = this.trainingDataOutputs[i];
+
+            // аутпуту присваивалось значение индекса
+            if (output === index) {
+                // очищаем память от ненужных тензоров
+                input?.dispose?.();
+            } else {
+                newIn.push(input);
+                // так как мы удаляем элемент, то нужно
+                // подвинуть аутпуты соответственно.
+                // Если аутпут больше чем индекс, то его нужно
+                // сместить на единицу так как удалился один элемент
+                newOut.push(index < output ? output - 1 : output);
+            }
+        }
+
+        this.trainingDataInputs = [...newIn];
+        this.trainingDataOutputs = [...newOut];
     }
 }

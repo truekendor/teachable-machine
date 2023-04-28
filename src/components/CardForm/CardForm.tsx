@@ -1,4 +1,4 @@
-import { useRef, useContext } from "react";
+import { useRef, useContext, useId, useEffect } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
@@ -14,6 +14,11 @@ interface Props {
 function CardForm({ queue }: Props) {
     const { store } = useContext(Context);
     const inputRef = useRef<HTMLInputElement>();
+    const id = useId();
+
+    useEffect(() => {
+        //
+    }, [store.labelsArray.length]);
 
     return (
         <form
@@ -24,12 +29,12 @@ function CardForm({ queue }: Props) {
             className={[st["form"]].join(" ")}
         >
             <input
-                id={`${queue}-input`}
+                id={id}
                 defaultValue={`Class ${queue + 1}`}
                 className={[st["input"]].join(" ")}
                 ref={inputRef}
                 onKeyUp={(e) => {
-                    if (e.code === "Enter") {
+                    if (e.code === "Enter" || e.code === "Escape") {
                         inputRef.current.blur();
                     }
                 }}
@@ -40,7 +45,7 @@ function CardForm({ queue }: Props) {
                 type="text"
                 title="Название класса"
             />
-            <label htmlFor={`${queue}-input`}>
+            <label htmlFor={id}>
                 <FontAwesomeIcon
                     className={`${st["icon"]}`}
                     icon={faPenToSquare}

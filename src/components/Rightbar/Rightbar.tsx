@@ -4,6 +4,7 @@ import { Context } from "../../index";
 
 import st from "./Rightbar.module.css";
 import "../../index.css";
+import PredictionBoard from "../PredictionBoard/PredictionBoard";
 
 type Props = {
     setCamera: (ref: HTMLVideoElement) => void;
@@ -29,6 +30,7 @@ function Rightbar({ setCamera }: Props) {
                     ref={predictionCamRef}
                     autoPlay={store.isModelTrained}
                 ></video>
+                {store.isModelTrained && <PredictionBoard />}
             </div>
         </div>
     );

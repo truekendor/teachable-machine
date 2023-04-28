@@ -3,12 +3,13 @@ import { Context } from "../../index";
 import { observer } from "mobx-react-lite";
 import { BoundingBoxPart } from "../../types/types";
 
+import st from "./CanvasForCurves.module.css";
+
 type Props = {
-    list: BoundingBoxPart[];
     width: number;
 };
 
-function CanvasForCurves({ list, width }: Props) {
+function CanvasForCurves({ width }: Props) {
     const { store } = useContext(Context);
 
     const canvasRef = useRef<HTMLCanvasElement>();
@@ -16,17 +17,13 @@ function CanvasForCurves({ list, width }: Props) {
 
     useEffect(() => {
         c.current = canvasRef.current.getContext("2d");
+        const list = [...store.cardBoundingBoxes];
 
         function drawCurves() {
             const { height: canvasHeight, top } =
                 canvasRef.current.getBoundingClientRect();
 
             canvasRef.current.width = width;
-            // canvasRef.current.height = Math.min(
-            //     canvasHeight,
-            //     window.innerHeight
-            // );
-
             canvasRef.current.height = canvasHeight;
 
             for (let i = 0; i < list.length; i++) {
@@ -72,9 +69,13 @@ function CanvasForCurves({ list, width }: Props) {
             window.removeEventListener("scroll", drawCurves);
             // window.removeEventListener("resize", drawCurves);
         };
-    });
+    }, [store.labelsArray.length]);
 
-    return <canvas ref={canvasRef}></canvas>;
+    return (
+        // <div className={[st["container"]].join(" ")}>
+        <canvas className={[st["canvas"]].join(" ")} ref={canvasRef}></canvas>
+        // </div>
+    );
 }
 
 export default observer(CanvasForCurves);

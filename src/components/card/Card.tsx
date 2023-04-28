@@ -1,4 +1,4 @@
-import { useRef, useContext, useEffect } from "react";
+import { useRef, useContext, useEffect, useState } from "react";
 import st from "./Card.module.css";
 import CameraEnableBtn from "../UI/CameraEnableBtn/CameraEnableBtn";
 import CardForm from "../CardForm/CardForm";
@@ -7,6 +7,9 @@ import { Context } from "../../index";
 
 import { observer } from "mobx-react-lite";
 import { BoundingBoxPart } from "../../types/types";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import useDebounce from "../../hooks/useDebounce";
 
 interface Props {
     queue: number;
@@ -14,8 +17,35 @@ interface Props {
 
 function Card({ queue }: Props) {
     const { store } = useContext(Context);
+
     const isCurrent = store.currentCard === queue;
     const containerRef = useRef<HTMLDivElement>();
+
+    const debounce = useDebounce(singleClickHandler, 500, () => {
+        console.log("PASSING DELETE STATE", store.wasDoubleClick);
+
+        return !store.wasDoubleClick;
+    });
+
+    function singleClickHandler() {
+        if (store.wasDoubleClick) return;
+        window.confirm("Кликните дважды чтобы удалить элемент");
+    }
+
+    function doubleClickHandler() {
+        store.setWasDoubleClick(true);
+
+        const agreed = window.confirm("doubleClick");
+
+        if (agreed) {
+            console.log(queue);
+            store.removeLabelByIndex(queue);
+        }
+
+        setTimeout(() => {
+            store.setWasDoubleClick(false);
+        }, 5);
+    }
 
     useEffect(() => {
         const { height } = containerRef.current.getBoundingClientRect();
@@ -28,11 +58,7 @@ function Card({ queue }: Props) {
         };
 
         store.setCardBoundingBoxByIndex(queue, bBox);
-    });
-
-    function deleteCardHandler() {
-        //
-    }
+    }, [store.labelsArray.length]);
 
     return (
         <div ref={containerRef} className={[st["card"]].join(" ")}>
@@ -41,12 +67,13 @@ function Card({ queue }: Props) {
                 // TODO сделать переключение инпутов карточек по нажатию TAB
             >
                 <CardForm queue={queue} />
-                {/* <button
-                    onClick={deleteCardHandler}
+                <button
+                    onDoubleClick={doubleClickHandler}
+                    onClick={debounce}
                     className={`${st["delete-btn"]}`}
                 >
                     <FontAwesomeIcon icon={faTrash} />
-                </button> */}
+                </button>
             </header>
             <div className={[st["card-body"]].join(" ")}>
                 {!isCurrent && !store.isModelTrained && (
@@ -59,7 +86,7 @@ function Card({ queue }: Props) {
                 <VideoContainer queue={queue} />
                 {
                     <p style={{ width: "100px" }}>
-                        количество: {store.amountArray[queue] || 0}
+                        количество: {store.samplesAmountArray[queue] || 0}
                     </p>
                 }
                 {isCurrent && (

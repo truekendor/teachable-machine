@@ -1,7 +1,7 @@
-import { useRef, useContext, useEffect } from "react";
+import { useRef, useContext, useEffect, useState } from "react";
 import * as tf from "@tensorflow/tfjs";
 import { Context } from "../../index";
-import { observer } from "mobx-react-lite";
+import { observer, useStaticRendering } from "mobx-react-lite";
 
 import st from "./VideoContainer.module.css";
 
@@ -11,7 +11,11 @@ interface Props {
 
 function VideoContainer({ queue }: Props) {
     const { store } = useContext(Context);
+
     const isCurrent = store.currentCard === queue;
+
+    const [ready, setReady] = useState(false);
+    const readyRef = useRef(false);
 
     const stream = useRef<MediaStream>();
     const camRef = useRef<HTMLVideoElement>();
@@ -37,18 +41,29 @@ function VideoContainer({ queue }: Props) {
 
         camRef.current.addEventListener("loadeddata", () => {
             // prediction loop on data load
-            console.log("TRUE");
+
+            // TODO оно ререндерит все что движется
+
+            setReady(true);
+
+            // readyRef.current = true;
+
+            // dataGatherLoop();
+
+            console.log("READY");
         });
     }
 
+    function disableCamera() {
+        readyRef.current = false;
+        stream?.current?.getTracks?.().forEach((track) => track.stop());
+    }
+
     const iffe = (async function () {
-        // console.log("IFFE");
         if (!isCurrent) {
-            // console.log("DISABLE");
             disableCamera();
             return;
         }
-        // console.log("ENABLE");
 
         await enableCamera();
     })();
@@ -56,7 +71,8 @@ function VideoContainer({ queue }: Props) {
     // TODO переделать на setInterval для большей кастомизации
     // TODO времени между кадрами
     function dataGatherLoop() {
-        if (!store.isGatheringData) {
+        if (!store.isGatheringData || !ready) {
+            console.log("return");
             return;
         }
         console.log("LOOP");
@@ -69,10 +85,6 @@ function VideoContainer({ queue }: Props) {
         // imageFeatures.dispose();
 
         window.requestAnimationFrame(dataGatherLoop);
-    }
-
-    function disableCamera() {
-        stream?.current?.getTracks?.().forEach((track) => track.stop());
     }
 
     return (
@@ -89,16 +101,18 @@ function VideoContainer({ queue }: Props) {
             )}
             <div className={`${st["test"]}`}>
                 <video
-                    autoPlay={isCurrent}
+                    autoPlay={isCurrent && ready}
                     className={[
                         st["video"],
-                        !isCurrent && st["visually-hidden"],
+                        (!isCurrent || !ready) && st["visually-hidden"],
                     ].join(" ")}
                     ref={camRef}
                 ></video>
             </div>
             {isCurrent && (
                 <button
+                    // disabled={!readyRef.current}
+                    disabled={!ready}
                     className={`${st["record-btn"]}`}
                     onMouseDown={() => {
                         store.setIsGatheringData(true);

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef } from "react";
 import * as tf from "@tensorflow/tfjs";
 import { Context } from "./index";
 import { observer } from "mobx-react-lite";
@@ -33,12 +33,6 @@ function App() {
         }
 
         adjustParentHeight();
-
-        // window.addEventListener("resize", adjustParentHeight);
-
-        return () => {
-            // window.removeEventListener("resize", adjustParentHeight);
-        };
     }, [store.labelsArray.length]);
 
     async function enableCamera() {
@@ -92,8 +86,6 @@ function App() {
         if (!store.isModelTrained) return;
 
         await enableCamera();
-
-        console.log("READY");
     }
 
     function setPredictionCamera(ref: HTMLVideoElement) {
@@ -125,16 +117,11 @@ function App() {
             <main className={`main`}>
                 <CardContainer />
 
-                <CanvasForCurves
-                    width={60}
-                    list={[...store.cardBoundingBoxes]}
-                />
+                <CanvasForCurves width={60} />
 
                 <TrainingArea onClick={onClickHandler} />
                 <Rightbar setCamera={setPredictionCamera} />
             </main>
-
-            {/* <PredictionBoard /> */}
         </div>
     );
 }
