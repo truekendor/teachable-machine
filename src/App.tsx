@@ -1,12 +1,9 @@
 import { useContext, useEffect, useRef, useState } from "react";
 import * as tf from "@tensorflow/tfjs";
-import Card from "./components/Card/Card";
 import { Context } from "./index";
 import { observer } from "mobx-react-lite";
 
 import "./index.css";
-import NewCardBtn from "./components/UI/NewCardBtn/NewCardBtn";
-import PredictionBoard from "./components/PredictionBoard/PredictionBoard";
 import TrainingArea from "./components/TrainingArea/TrainingArea";
 import CanvasForCurves from "./components/CanvasForCurves/CanvasForCurves";
 import Rightbar from "./components/Rightbar/Rightbar";
@@ -14,12 +11,35 @@ import CardContainer from "./components/Cards/CardContainer";
 
 function App() {
     const { store } = useContext(Context);
+    const appRef = useRef<HTMLDivElement>();
     const predictionCamRef = useRef<HTMLVideoElement>();
 
     // ! debug
     // setInterval(() => {
     //     console.log(tf.memory().numTensors);
     // }, 1500);
+
+    useEffect(() => {
+        function adjustParentHeight() {
+            let size =
+                ((appRef?.current?.clientHeight || window.innerHeight) /
+                    window.innerHeight) *
+                100;
+
+            document.documentElement.style.setProperty(
+                "--inner-height",
+                `${size}vh`
+            );
+        }
+
+        adjustParentHeight();
+
+        // window.addEventListener("resize", adjustParentHeight);
+
+        return () => {
+            // window.removeEventListener("resize", adjustParentHeight);
+        };
+    }, [store.labelsArray.length]);
 
     async function enableCamera() {
         console.log("enable prediction camera");
@@ -89,8 +109,9 @@ function App() {
         );
     }
 
+    // TODO <TrainingArea /> && <Rightbar /> попробовать сделать логику их размеров через CSS я манал всю ночь кодил
     return (
-        <div className="App">
+        <div ref={appRef} className="App">
             <header>
                 <h2>TEACHABLE MACHINE CLONE WITH REACT TYPESCRIPT</h2>
             </header>

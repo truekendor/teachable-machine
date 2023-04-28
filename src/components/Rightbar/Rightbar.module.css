@@ -1,15 +1,24 @@
 .container {
     position: relative;
 
-    height: 100vh;
-    width: 30rem;
+    display: flex;
+
+    height: var(--inner-height, 100vh);
+    min-height: 100vh;
+
+    width: 25rem;
 
     isolation: isolate;
 }
 
 .main {
-    position: fixed;
+    position: -webkit-sticky;
+    position: sticky;
+
     background-color: red;
+
+    height: 25rem;
+    width: 100%;
 
     top: 50%;
     transform: translateY(-50%);

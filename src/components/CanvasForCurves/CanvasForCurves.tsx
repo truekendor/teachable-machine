@@ -70,7 +70,7 @@ function CanvasForCurves({ list, width }: Props) {
 
         return () => {
             window.removeEventListener("scroll", drawCurves);
-            window.removeEventListener("resize", drawCurves);
+            // window.removeEventListener("resize", drawCurves);
         };
     });
 
