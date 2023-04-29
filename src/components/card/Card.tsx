@@ -62,10 +62,7 @@ function Card({ queue }: Props) {
 
     return (
         <div ref={containerRef} className={[st["card"]].join(" ")}>
-            <header
-                className={[st["header"]].join(" ")}
-                // TODO сделать переключение инпутов карточек по нажатию TAB
-            >
+            <header className={[st["header"]].join(" ")}>
                 <CardForm queue={queue} />
                 <button
                     onDoubleClick={doubleClickHandler}
@@ -84,11 +81,11 @@ function Card({ queue }: Props) {
                     />
                 )}
                 <VideoContainer queue={queue} />
-                {
+                {isCurrent && (
                     <p style={{ width: "100px" }}>
                         количество: {store.samplesAmountArray[queue] || 0}
                     </p>
-                }
+                )}
                 {isCurrent && (
                     <div
                         className={[st["snapshots-container"]].join(" ")}

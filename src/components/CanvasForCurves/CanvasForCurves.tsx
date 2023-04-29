@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from "react";
+import { useCallback, useContext, useEffect, useRef } from "react";
 import { Context } from "../../index";
 import { observer } from "mobx-react-lite";
 import { BoundingBoxPart } from "../../types/types";
@@ -15,11 +15,11 @@ function CanvasForCurves({ width }: Props) {
     const canvasRef = useRef<HTMLCanvasElement>();
     const c = useRef<CanvasRenderingContext2D>();
 
-    useEffect(() => {
-        c.current = canvasRef.current.getContext("2d");
-        const list = [...store.cardBoundingBoxes];
+    const drawCurves = useCallback(() => {
+        queueMicrotask(() => {
+            c.current = canvasRef.current.getContext("2d");
+            const list = [...store.cardBoundingBoxes];
 
-        function drawCurves() {
             const { height: canvasHeight, top } =
                 canvasRef.current.getBoundingClientRect();
 
@@ -58,18 +58,20 @@ function CanvasForCurves({ width }: Props) {
                 c.current.stroke();
                 c.current.closePath();
             }
-        }
+        });
+    }, [width, store.cardBoundingBoxes]);
 
-        drawCurves();
-
+    useEffect(() => {
         window.addEventListener("scroll", drawCurves);
-        // window.addEventListener("resize", drawCurves);
 
         return () => {
             window.removeEventListener("scroll", drawCurves);
-            // window.removeEventListener("resize", drawCurves);
         };
-    }, [store.labelsArray.length]);
+    });
+
+    useEffect(() => {
+        drawCurves();
+    }, [store.labelsArray.length, drawCurves]);
 
     return (
         // <div className={[st["container"]].join(" ")}>
