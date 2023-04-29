@@ -14,6 +14,12 @@ interface Props {
     queue: number;
 }
 
+const constraints = {
+    video: true,
+    width: 640,
+    height: 480,
+};
+
 function VideoContainer({ queue }: Props) {
     const { store } = useContext(Context);
 
@@ -21,6 +27,8 @@ function VideoContainer({ queue }: Props) {
 
     const stream = useRef<MediaStream>();
     const camRef = useRef<HTMLVideoElement>();
+
+    const testRef = useRef<HTMLCanvasElement>();
 
     // Автовыключение камеры если не было собрано данных за последние N секунд
     // const debouncedDisableCamera = useDebounce(disableViaMicrotask, 20 * 1000);
@@ -56,6 +64,28 @@ function VideoContainer({ queue }: Props) {
         return !!navigator?.mediaDevices?.getUserMedia;
     }
 
+    function createImageFromVideo() {
+        const c = testRef.current.getContext("2d");
+
+        testRef.current.width = 100;
+        testRef.current.height = (constraints.height / constraints.width) * 100;
+
+        c.translate(testRef.current.width, 0);
+        c.scale(-1, 1);
+
+        c.drawImage(
+            camRef.current,
+            0,
+            0,
+            testRef.current.width,
+            testRef.current.height
+        );
+
+        const dataUrl = testRef.current.toDataURL();
+
+        return dataUrl;
+    }
+
     async function enableCamera() {
         if (!userHasCamera()) {
             console.warn("Камера не поддерживается вашим браузером");
@@ -64,11 +94,6 @@ function VideoContainer({ queue }: Props) {
 
         // debouncedDisableCamera();
 
-        const constraints = {
-            video: true,
-            width: 640,
-            height: 480,
-        };
         const result = await navigator.mediaDevices.getUserMedia(constraints);
         stream.current = result;
         camRef.current.srcObject = result;
@@ -102,6 +127,11 @@ function VideoContainer({ queue }: Props) {
             camRef.current
         );
 
+        const data = createImageFromVideo();
+        if (data) {
+            store.pushToBase64(data, queue);
+        }
+
         store.pushToTrainingData(imageFeatures, queue);
 
         window.requestAnimationFrame(dataGatherLoop);
@@ -123,6 +153,10 @@ function VideoContainer({ queue }: Props) {
             )}
             <Webcam isCurrent={isCurrent} ref={camRef} />
             {isCurrent && <DataCollectorBtn onMouseDown={dataGatherLoop} />}
+            <canvas
+                className={[st["canvas"], st["visually-hidden"]].join(" ")}
+                ref={testRef}
+            ></canvas>
         </div>
     );
 }
