@@ -16,10 +16,6 @@ function CardForm({ queue }: Props) {
     const inputRef = useRef<HTMLInputElement>();
     const id = useId();
 
-    useEffect(() => {
-        // ! ДОБАВИТЬ ЛОГИКУ
-    }, [store.labelsArray.length]);
-
     function isValidKeyCode(code: string) {
         return code === "Enter" || code === "Escape" || code === "Tab";
     }
@@ -41,7 +37,7 @@ function CardForm({ queue }: Props) {
         } else if (queue === store.labelsArray.length - 1) {
             store.setSwitchFrom(-1);
         }
-    }, [store.switchFrom]);
+    }, [store.switchFrom, queue, store]);
 
     return (
         <form
@@ -53,7 +49,7 @@ function CardForm({ queue }: Props) {
         >
             <input
                 id={id}
-                defaultValue={`Class ${queue + 1}`}
+                defaultValue={store.labelsArray[queue]}
                 className={[st["input"]].join(" ")}
                 ref={inputRef}
                 onKeyDown={(e) => {

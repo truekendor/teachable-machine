@@ -21,7 +21,7 @@ function Rightbar({ setCamera }: Props) {
     return (
         <div className={[st["container"]].join(" ")}>
             <div className={[st["main"]].join(" ")}>
-                <h3>Посмотреть модель</h3>
+                <h3>Посмотреть</h3>
                 <video
                     className={[
                         st["video"],
@@ -30,7 +30,15 @@ function Rightbar({ setCamera }: Props) {
                     ref={predictionCamRef}
                     autoPlay={store.isModelTrained}
                 ></video>
-                {store.isModelTrained && <PredictionBoard />}
+                <div className={[st["info"]].join(" ")}>
+                    {store.isModelTrained && <PredictionBoard />}
+                    {!store.isModelTrained && (
+                        <p>
+                            Перед началом предварительного просмотра обучите
+                            модель
+                        </p>
+                    )}
+                </div>
             </div>
         </div>
     );

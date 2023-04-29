@@ -62,7 +62,12 @@ function CanvasForCurves({ width }: Props) {
         }
 
         queueMicrotask(draw);
-    }, [width, store.cardBoundingBoxes, store.isModelTrained]);
+    }, [
+        width,
+        store.cardBoundingBoxes,
+        store.isModelTrained,
+        store.labelsArray.length,
+    ]);
 
     useEffect(() => {
         window.addEventListener("scroll", drawCurves);

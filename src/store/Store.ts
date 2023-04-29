@@ -37,6 +37,8 @@ export default class Store {
 
     base64Array: string[][] = [];
 
+    allDataGathered = false;
+
     constructor() {
         makeAutoObservable(this);
         this.setupModel();
@@ -45,12 +47,19 @@ export default class Store {
 
     pushToLabels(label: string) {
         this.labelsArray.push(label);
+        this.allDataGathered = false;
 
         this.setupModel();
     }
 
     changeLabelAtIndex(label: string, index: number) {
         this.labelsArray[index] = label;
+
+        this.labelsArray = [
+            ...this.labelsArray.slice(0, index),
+            label,
+            ...this.labelsArray.slice(index + 1, this.labelsArray.length),
+        ];
     }
 
     setMobilenet(mobilenet: tf.GraphModel) {
@@ -115,6 +124,8 @@ export default class Store {
         this.trainingDataOutputs.push(output);
         this.samplesAmountArray[output] =
             this.samplesAmountArray[output] + 1 || 1;
+
+        this.checkAllDataGathered();
     }
 
     calculateFeaturesOnCurrentFrame(ref: HTMLVideoElement) {
@@ -217,8 +228,34 @@ export default class Store {
     }
 
     removeLabelByIndex(index: number) {
-        this.labelsArray.splice(index, 1);
-        this.cardBoundingBoxes.splice(index, 1);
+        // this.labelsArray.splice(index, 1);
+        // this.cardBoundingBoxes.splice(index, 1);
+
+        this.labelsArray = this.labelsArray = [
+            ...this.labelsArray.slice(0, index),
+            ...this.labelsArray.slice(index + 1, this.labelsArray.length),
+        ];
+
+        this.cardBoundingBoxes = [
+            ...this.cardBoundingBoxes.slice(0, index),
+            ...this.cardBoundingBoxes.slice(
+                index + 1,
+                this.cardBoundingBoxes.length
+            ),
+        ];
+
+        this.base64Array = [
+            ...this.base64Array.slice(0, index),
+            ...this.base64Array.slice(index + 1, this.base64Array.length),
+        ];
+
+        this.samplesAmountArray = [
+            ...this.samplesAmountArray.slice(0, index),
+            ...this.samplesAmountArray.slice(
+                index + 1,
+                this.samplesAmountArray.length
+            ),
+        ];
 
         this.setupModel();
 
@@ -259,6 +296,11 @@ export default class Store {
         this.isCameraReady = state;
     }
 
+    setLabels(array: string[]) {
+        console.log("SETTING LABELS");
+        this.labelsArray = [...array];
+    }
+
     pushToBase64(string: string, index: number) {
         if (!this.base64Array[index]) {
             for (let i = 0; i < this.labelsArray.length; i++) {
@@ -267,5 +309,28 @@ export default class Store {
         }
 
         this.base64Array[index].push(string);
+    }
+
+    removeBoundingBoxByIndex(index: number) {
+        this.cardBoundingBoxes = [
+            ...this.cardBoundingBoxes.slice(0, index),
+            ...this.cardBoundingBoxes.slice(
+                index + 1,
+                this.cardBoundingBoxes.length
+            ),
+        ];
+    }
+
+    checkAllDataGathered() {
+        for (let i = 0; i < this.labelsArray.length; i++) {
+            const index = this.trainingDataOutputs.indexOf(i);
+
+            if (index === -1) {
+                this.allDataGathered = false;
+                return;
+            }
+        }
+
+        this.allDataGathered = true;
     }
 }

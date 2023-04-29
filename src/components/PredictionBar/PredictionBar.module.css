@@ -1,7 +1,9 @@
 .bar {
     padding: 5px;
-    color: black;
-    background-color: orange;
+
+    color: rgb(255, 255, 255);
+
+    background-color: rgb(234, 234, 234);
 
     position: relative;
 
@@ -9,6 +11,17 @@
 
     border-radius: 0.4rem;
     overflow: hidden;
+
+    /* mix-blend-mode: exclusion; */
+}
+
+.bar > p {
+    mix-blend-mode: difference;
+    font-weight: 500;
+    font-size: 1.1rem;
+
+    letter-spacing: 0.07rem;
+    /* filter: contrast(1000%); */
 }
 
 .bar::before {
@@ -23,6 +36,6 @@
 
     width: var(--percent);
 
-    background-color: rgb(0, 128, 0);
+    background-color: rgb(36, 30, 225);
     border-radius: 0.4rem;
 }

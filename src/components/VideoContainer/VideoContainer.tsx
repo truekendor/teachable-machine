@@ -99,8 +99,6 @@ function VideoContainer({ queue }: Props) {
         camRef.current.srcObject = result;
 
         camRef.current.addEventListener("loadeddata", () => {
-            console.log("CAMERA READY");
-
             store.setIsCameraReady(true);
         });
     }
@@ -115,13 +113,8 @@ function VideoContainer({ queue }: Props) {
     // TODO времени между кадрами
     function dataGatherLoop() {
         if (!store.isGatheringData || !store.isCameraReady) {
-            console.log("return from dataGather");
             return;
         }
-
-        // debouncedDisableCamera();
-
-        console.log("LOOP");
 
         let imageFeatures: tf.Tensor1D = store.calculateFeaturesOnCurrentFrame(
             camRef.current

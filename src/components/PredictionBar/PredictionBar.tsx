@@ -18,7 +18,7 @@ function PredictionBar({ value, name }: Props) {
             }
             className={`${st["bar"]}`}
         >
-            {name}
+            <p>{name}</p>
         </div>
     );
 }

@@ -1,8 +1,10 @@
-import { useContext, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { Context } from "../../index";
 import Card from "../Card/Card";
 import NewCardBtn from "../UI/NewCardBtn/NewCardBtn";
+
+import { v4 } from "uuid";
 
 import st from "./CardContainer.module.css";
 
@@ -14,14 +16,14 @@ function CardContainer({}: Props) {
     return (
         <div className={[st["container"]].join(" ")}>
             {store.labelsArray.map((el, index) => {
-                return <Card key={index} queue={index} />;
+                return <Card key={v4()} queue={index} />;
             })}
 
             <NewCardBtn
                 hidden={store.isModelTrained}
-                onClick={() =>
-                    store.pushToLabels(`Class ${store.labelsArray.length}`)
-                }
+                onClick={() => {
+                    store.pushToLabels(`Class ${store.labelsArray.length + 1}`);
+                }}
             />
         </div>
     );

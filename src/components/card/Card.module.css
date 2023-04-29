@@ -53,4 +53,18 @@
 
     width: 10rem;
     flex: 1;
+
+    gap: 0.2rem;
+}
+
+.image-container {
+    display: flex;
+    gap: 0.2rem;
+
+    flex-wrap: wrap;
+}
+
+.training-input-img {
+    border-radius: 4px;
+    width: 30%;
 }

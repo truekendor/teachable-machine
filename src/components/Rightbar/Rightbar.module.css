@@ -14,12 +14,15 @@
 }
 
 .main {
+    display: flex;
+    flex-direction: column;
+
     position: -webkit-sticky;
     position: sticky;
 
     background-color: var(--card-bg-color);
 
-    height: 15rem;
+    height: fit-content;
     width: 100%;
 
     top: 50%;
@@ -28,10 +31,30 @@
     box-shadow: var(--card-shadow);
     border-radius: var(--card-border-radius);
 
+    margin-block-end: 1rem;
+}
+
+.main > h3 {
     padding: 10px;
+    border-bottom: 1px solid rgb(189, 189, 189);
 }
 
 .video {
+    margin: 10px;
+
     max-width: 100%;
     transform: rotateY(180deg);
+
+    border-radius: 10px;
+}
+
+.info {
+    padding: 10px;
+    margin-block-start: 1rem;
+}
+
+.info > p {
+    color: gray;
+    font-weight: 600;
+    margin-top: 10px;
 }

@@ -4,6 +4,7 @@ import CameraEnableBtn from "../UI/CameraEnableBtn/CameraEnableBtn";
 import CardForm from "../CardForm/CardForm";
 import VideoContainer from "../VideoContainer/VideoContainer";
 import { Context } from "../../index";
+import { v4 } from "uuid";
 
 import { observer } from "mobx-react-lite";
 import { BoundingBoxPart } from "../../types/types";
@@ -35,10 +36,11 @@ function Card({ queue }: Props) {
     function doubleClickHandler() {
         store.setWasDoubleClick(true);
 
-        const agreed = window.confirm("doubleClick");
+        const agreed = window.confirm(
+            `Удалить карточку ${store.labelsArray[queue]}?`
+        );
 
         if (agreed) {
-            console.log(queue);
             store.removeLabelByIndex(queue);
         }
 
@@ -56,6 +58,9 @@ function Card({ queue }: Props) {
 
         store.setCardBoundingBoxByIndex(queue, bBox);
     }, [store.labelsArray.length, queue, store]);
+
+    // TODO выключить видео при создании новой карты
+    // TODO и включить его на последней
 
     return (
         <div ref={containerRef} className={[st["card"]].join(" ")}>
@@ -84,15 +89,27 @@ function Card({ queue }: Props) {
 
                 {isCurrent && (
                     <div className={[st["snapshots-container"]].join(" ")}>
-                        количество: {store.samplesAmountArray[queue] || 0}
-                        {store.base64Array[queue]
-                            ?.slice()
-                            ?.reverse()
-                            .map((base64, i) => {
-                                return (
-                                    <img key={`${i}`} src={base64} alt="data" />
-                                );
-                            })}
+                        <div>
+                            количество: {store.samplesAmountArray[queue] || 0}
+                        </div>
+                        <div className={[st["image-container"]].join(" ")}>
+                            {store.base64Array[queue] &&
+                                store.base64Array[queue]
+                                    ?.slice()
+                                    ?.reverse()
+                                    .map((base64, i) => {
+                                        return (
+                                            <img
+                                                className={[
+                                                    st["training-input-img"],
+                                                ].join(" ")}
+                                                key={v4()}
+                                                src={base64}
+                                                alt="data"
+                                            />
+                                        );
+                                    })}
+                        </div>
                     </div>
                 )}
             </div>

@@ -5,6 +5,8 @@ import { observer } from "mobx-react-lite";
 
 import st from "./PredictionBoard.module.css";
 
+import { v4 } from "uuid";
+
 type Props = {};
 
 function PredictionBoard({}: Props) {
@@ -15,7 +17,7 @@ function PredictionBoard({}: Props) {
             {store.predictionList.map((el, index) => {
                 return (
                     <PredictionBar
-                        key={index}
+                        key={v4()}
                         name={store.labelsArray[index]}
                         value={store.predictionList[index]}
                     />

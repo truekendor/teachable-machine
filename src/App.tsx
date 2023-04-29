@@ -82,6 +82,8 @@ function App() {
     }
 
     async function onClickHandler() {
+        if (!store.allDataGathered) return;
+
         store.setCurrentCard(-1);
 
         await store.train();
