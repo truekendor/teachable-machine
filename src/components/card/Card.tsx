@@ -48,17 +48,14 @@ function Card({ queue }: Props) {
     }
 
     useEffect(() => {
-        const { height } = containerRef.current.getBoundingClientRect();
-
         // TODO переделать с передачей не всей ноды, а только offsetTop
         // TODO почему-то не работает, но сейчас 6 утра
         const bBox: BoundingBoxPart = {
-            height,
             node: containerRef.current,
         };
 
         store.setCardBoundingBoxByIndex(queue, bBox);
-    }, [store.labelsArray.length]);
+    }, [store.labelsArray.length, queue, store]);
 
     return (
         <div ref={containerRef} className={[st["card"]].join(" ")}>
@@ -81,15 +78,11 @@ function Card({ queue }: Props) {
                     />
                 )}
                 <VideoContainer queue={queue} />
+
                 {isCurrent && (
-                    <p style={{ width: "100px" }}>
+                    <div className={[st["snapshots-container"]].join(" ")}>
                         количество: {store.samplesAmountArray[queue] || 0}
-                    </p>
-                )}
-                {isCurrent && (
-                    <div
-                        className={[st["snapshots-container"]].join(" ")}
-                    ></div>
+                    </div>
                 )}
             </div>
         </div>

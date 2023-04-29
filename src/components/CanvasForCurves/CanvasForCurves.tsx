@@ -1,7 +1,6 @@
 import { useCallback, useContext, useEffect, useRef } from "react";
 import { Context } from "../../index";
 import { observer } from "mobx-react-lite";
-import { BoundingBoxPart } from "../../types/types";
 
 import st from "./CanvasForCurves.module.css";
 
@@ -16,7 +15,7 @@ function CanvasForCurves({ width }: Props) {
     const c = useRef<CanvasRenderingContext2D>();
 
     const drawCurves = useCallback(() => {
-        queueMicrotask(() => {
+        function draw() {
             c.current = canvasRef.current.getContext("2d");
             const list = [...store.cardBoundingBoxes];
 
@@ -27,12 +26,12 @@ function CanvasForCurves({ width }: Props) {
             canvasRef.current.height = canvasHeight;
 
             for (let i = 0; i < list.length; i++) {
-                let card = list[i];
+                let { node } = list[i];
                 c.current.strokeStyle = "gray";
 
                 let halfCard =
-                    card.node.offsetTop +
-                    card.height / 2 -
+                    node.offsetTop +
+                    node.clientHeight / 2 -
                     canvasRef.current.offsetTop;
 
                 let halfCanvas = window.innerHeight / 2 - top;
@@ -58,7 +57,9 @@ function CanvasForCurves({ width }: Props) {
                 c.current.stroke();
                 c.current.closePath();
             }
-        });
+        }
+
+        queueMicrotask(draw);
     }, [width, store.cardBoundingBoxes]);
 
     useEffect(() => {
@@ -71,7 +72,7 @@ function CanvasForCurves({ width }: Props) {
 
     useEffect(() => {
         drawCurves();
-    }, [store.labelsArray.length, drawCurves]);
+    }, [store.labelsArray.length, drawCurves, store.currentCard]);
 
     return (
         // <div className={[st["container"]].join(" ")}>

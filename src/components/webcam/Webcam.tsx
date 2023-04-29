@@ -1,6 +1,32 @@
-import React from "react";
-import st from "./Webcam.module.css";
+import { useContext, useRef, forwardRef } from "react";
 
-export default function Webcam() {
-    return <video autoPlay className={[st["video"]].join(" ")}></video>;
+import st from "./Webcam.module.css";
+import { Context } from "../../index";
+import { observer } from "mobx-react-lite";
+
+interface Props {
+    isCurrent: boolean;
 }
+
+const Webcam = forwardRef(function (
+    { isCurrent }: Props,
+    ref: React.LegacyRef<HTMLVideoElement>
+) {
+    const { store } = useContext(Context);
+
+    return (
+        <div className={[st["container"]].join(" ")}>
+            <video
+                ref={ref}
+                autoPlay={isCurrent}
+                className={[
+                    st["video"],
+                    (!isCurrent || !store.isCameraReady) &&
+                        st["visually-hidden"],
+                ].join(" ")}
+            ></video>
+        </div>
+    );
+});
+
+export default observer(Webcam);

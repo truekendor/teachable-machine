@@ -1,3 +1,11 @@
+.container {
+    display: flex;
+    height: 100%;
+    align-items: center;
+
+    overflow: hidden;
+}
+
 .video {
     display: block;
 
@@ -6,6 +14,16 @@
     transform: rotateY(180deg);
 
     background-color: black;
-    width: 600px;
-    aspect-ratio: 1/1;
+
+    max-width: 100%;
+    width: 400px;
+
+    border-radius: 0.5rem;
+}
+
+.visually-hidden {
+    visibility: hidden;
+    width: 0;
+    height: 0;
+    display: inline;
 }

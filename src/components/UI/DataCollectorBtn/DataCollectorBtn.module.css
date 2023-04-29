@@ -1,0 +1,25 @@
+.record-btn {
+    outline: transparent;
+    border: transparent;
+    background-color: transparent;
+
+    background-color: rgb(58, 58, 204);
+    color: white;
+
+    padding: 0.4rem 1rem;
+
+    cursor: pointer;
+
+    border-radius: 0.2rem;
+
+    margin-block-end: 0.6rem;
+}
+
+.record-btn:disabled {
+    background-color: gray;
+    cursor: wait;
+}
+
+.record-btn:hover:not(:disabled) {
+    background-color: rgb(70, 70, 211);
+}

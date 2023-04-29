@@ -4,6 +4,9 @@ import { Context } from "../../index";
 import { observer } from "mobx-react-lite";
 
 import st from "./VideoContainer.module.css";
+import DataCollectorBtn from "../UI/DataCollectorBtn/DataCollectorBtn";
+import Webcam from "../Webcam/Webcam";
+import useDebounce from "../../hooks/useDebounce";
 
 interface Props {
     queue: number;
@@ -14,11 +17,38 @@ function VideoContainer({ queue }: Props) {
 
     const isCurrent = store.currentCard === queue;
 
-    const [ready, setReady] = useState(false);
-    const readyRef = useRef(false);
-
     const stream = useRef<MediaStream>();
     const camRef = useRef<HTMLVideoElement>();
+
+    // Автовыключение камеры если не было собрано данных за последние N секунд
+    const debouncedDisableCamera = useDebounce(() => {
+        queueMicrotask(() => {
+            disableCamera();
+        });
+        store.setCurrentCard(-1);
+    }, 20 * 1000);
+
+    useEffect(() => {
+        async function handleCamera() {
+            if (!isCurrent || store.currentCard === -1) {
+                disableCamera();
+                return;
+            }
+
+            // На всякий
+            if (!store.isCameraReady) {
+                await enableCamera();
+            }
+        }
+
+        handleCamera();
+
+        return () => {
+            if (!isCurrent) {
+                disableCamera();
+            }
+        };
+    });
 
     function userHasCamera() {
         return !!navigator?.mediaDevices?.getUserMedia;
@@ -30,6 +60,8 @@ function VideoContainer({ queue }: Props) {
             return;
         }
 
+        debouncedDisableCamera();
+
         const constraints = {
             video: true,
             width: 640,
@@ -40,41 +72,28 @@ function VideoContainer({ queue }: Props) {
         camRef.current.srcObject = result;
 
         camRef.current.addEventListener("loadeddata", () => {
-            // prediction loop on data load
+            console.log("CAMERA READY");
 
-            // TODO оно ререндерит все что движется
-
-            setReady(true);
-
-            // readyRef.current = true;
-
-            // dataGatherLoop();
-
-            console.log("READY");
+            store.setIsCameraReady(true);
         });
     }
 
     function disableCamera() {
-        readyRef.current = false;
+        store.setIsCameraReady(false);
+
         stream?.current?.getTracks?.().forEach((track) => track.stop());
     }
-
-    const iffe = (async function () {
-        if (!isCurrent) {
-            disableCamera();
-            return;
-        }
-
-        await enableCamera();
-    })();
 
     // TODO переделать на setInterval для большей кастомизации
     // TODO времени между кадрами
     function dataGatherLoop() {
-        if (!store.isGatheringData || !ready) {
-            console.log("return");
+        if (!store.isGatheringData || !store.isCameraReady) {
+            console.log("return from dataGather");
             return;
         }
+
+        debouncedDisableCamera();
+
         console.log("LOOP");
 
         let imageFeatures: tf.Tensor1D = store.calculateFeaturesOnCurrentFrame(
@@ -82,7 +101,6 @@ function VideoContainer({ queue }: Props) {
         );
 
         store.pushToTrainingData(imageFeatures, queue);
-        // imageFeatures.dispose();
 
         window.requestAnimationFrame(dataGatherLoop);
     }
@@ -92,43 +110,17 @@ function VideoContainer({ queue }: Props) {
             {isCurrent && (
                 <button
                     onClick={() => {
-                        disableCamera();
+                        queueMicrotask(() => {
+                            disableCamera();
+                        });
                         store.setCurrentCard(-1);
                     }}
                 >
                     закончить съемку
                 </button>
             )}
-            <div className={`${st["test"]}`}>
-                <video
-                    autoPlay={isCurrent && ready}
-                    className={[
-                        st["video"],
-                        (!isCurrent || !ready) && st["visually-hidden"],
-                    ].join(" ")}
-                    ref={camRef}
-                ></video>
-            </div>
-            {isCurrent && (
-                <button
-                    // disabled={!readyRef.current}
-                    disabled={!ready}
-                    className={`${st["record-btn"]}`}
-                    onMouseDown={() => {
-                        store.setIsGatheringData(true);
-
-                        dataGatherLoop();
-                    }}
-                    onMouseUp={() => {
-                        store.setIsGatheringData(false);
-                    }}
-                    onMouseLeave={() => {
-                        store.setIsGatheringData(false);
-                    }}
-                >
-                    Удерживайте для записи
-                </button>
-            )}
+            <Webcam isCurrent={isCurrent} ref={camRef} />
+            {isCurrent && <DataCollectorBtn onMouseDown={dataGatherLoop} />}
         </div>
     );
 }

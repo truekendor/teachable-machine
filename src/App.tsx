@@ -7,7 +7,7 @@ import "./index.css";
 import TrainingArea from "./components/TrainingArea/TrainingArea";
 import CanvasForCurves from "./components/CanvasForCurves/CanvasForCurves";
 import Rightbar from "./components/Rightbar/Rightbar";
-import CardContainer from "./components/Cards/CardContainer";
+import CardContainer from "./components/CardsContainer/CardContainer";
 
 function App() {
     const { store } = useContext(Context);

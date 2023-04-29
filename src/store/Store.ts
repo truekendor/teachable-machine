@@ -33,6 +33,8 @@ export default class Store {
     switchFrom = -1;
     formSwitched = true;
 
+    isCameraReady = false;
+
     constructor() {
         makeAutoObservable(this);
         this.setupModel();
@@ -249,5 +251,9 @@ export default class Store {
 
     setFormSwitched(bool: boolean) {
         this.formSwitched = bool;
+    }
+
+    setIsCameraReady(state: boolean) {
+        this.isCameraReady = state;
     }
 }
