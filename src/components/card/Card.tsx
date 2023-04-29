@@ -87,6 +87,11 @@ function Card({ queue }: Props) {
                 )}
                 <VideoContainer queue={queue} />
 
+                {/*
+    // ! WTF
+
+
+*/}
                 {isCurrent && (
                     <div className={[st["snapshots-container"]].join(" ")}>
                         <div className={[st["amount-counter"]].join(" ")}>
