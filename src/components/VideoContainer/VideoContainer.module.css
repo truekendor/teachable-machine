@@ -4,9 +4,7 @@
 
     flex-direction: column;
 
-    overflow-x: hidden;
-
-    /* background-color: orange; */
+    width: 7rem;
 
     position: relative;
     flex: 1;
@@ -45,4 +43,9 @@
 
 .cancel-video-btn:hover {
     color: rgb(74, 90, 255);
+}
+
+.canvas {
+    position: absolute;
+    visibility: hidden;
 }

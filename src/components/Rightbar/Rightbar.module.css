@@ -17,7 +17,7 @@
     position: -webkit-sticky;
     position: sticky;
 
-    background-color: rgb(243, 104, 104);
+    background-color: var(--card-bg-color);
 
     height: 15rem;
     width: 100%;

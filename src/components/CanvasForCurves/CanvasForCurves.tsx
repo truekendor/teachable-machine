@@ -25,6 +25,7 @@ function CanvasForCurves({ width }: Props) {
             canvasRef.current.width = width;
             canvasRef.current.height = canvasHeight;
 
+            // TODO мб сделать стиль линий dashed и тогда их можно будет анимировать
             for (let i = 0; i < list.length; i++) {
                 let { node } = list[i];
                 c.current.strokeStyle = "rgb(165, 165, 165)";

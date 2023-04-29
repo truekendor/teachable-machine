@@ -85,6 +85,14 @@ function Card({ queue }: Props) {
                 {isCurrent && (
                     <div className={[st["snapshots-container"]].join(" ")}>
                         количество: {store.samplesAmountArray[queue] || 0}
+                        {store.base64Array[queue]
+                            ?.slice()
+                            ?.reverse()
+                            .map((base64, i) => {
+                                return (
+                                    <img key={`${i}`} src={base64} alt="data" />
+                                );
+                            })}
                     </div>
                 )}
             </div>

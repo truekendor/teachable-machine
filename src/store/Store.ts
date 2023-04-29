@@ -35,6 +35,8 @@ export default class Store {
 
     isCameraReady = false;
 
+    base64Array: string[][] = [];
+
     constructor() {
         makeAutoObservable(this);
         this.setupModel();
@@ -255,5 +257,15 @@ export default class Store {
 
     setIsCameraReady(state: boolean) {
         this.isCameraReady = state;
+    }
+
+    pushToBase64(string: string, index: number) {
+        if (!this.base64Array[index]) {
+            for (let i = 0; i < this.labelsArray.length; i++) {
+                this.base64Array[i] = [];
+            }
+        }
+
+        this.base64Array[index].push(string);
     }
 }
