@@ -18,9 +18,13 @@ function TrainingArea({ onClick }: Props) {
 
     const debounce = useDebounce(
         () => {
+            if (store.allDataGathered) {
+                setWarn(false);
+                return;
+            }
             setWarn(true);
         },
-        1000,
+        500,
         () => {
             setWarn(false);
             return !inside;

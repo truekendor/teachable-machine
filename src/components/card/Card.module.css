@@ -47,6 +47,10 @@
 
 .snapshots-container {
     /* background-color: palegreen; */
+
+    margin: 0.5rem;
+    /* padding: 10px; */
+
     height: 300px;
 
     overflow-y: auto;
@@ -67,4 +71,11 @@
 .training-input-img {
     border-radius: 4px;
     width: 30%;
+}
+
+.amount-counter {
+    font-size: 0.9rem;
+    font-weight: 600;
+
+    color: rgb(80, 80, 80);
 }

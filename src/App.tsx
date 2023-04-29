@@ -111,12 +111,12 @@ function App() {
     return (
         <div ref={appRef} className="App">
             <header>
-                <h2>TEACHABLE MACHINE CLONE WITH REACT TYPESCRIPT</h2>
+                <h2 className="header">TEACHABLE MACHINE</h2>
             </header>
 
             {store.isTraining && (
                 <div className="warn">
-                    Не переключайте вкладки пока сеть обучается
+                    Не переключайте вкладки пока модель обучается
                 </div>
             )}
 

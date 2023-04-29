@@ -89,8 +89,9 @@ function Card({ queue }: Props) {
 
                 {isCurrent && (
                     <div className={[st["snapshots-container"]].join(" ")}>
-                        <div>
-                            количество: {store.samplesAmountArray[queue] || 0}
+                        <div className={[st["amount-counter"]].join(" ")}>
+                            Количество образцов:{" "}
+                            {store.samplesAmountArray[queue] || 0}
                         </div>
                         <div className={[st["image-container"]].join(" ")}>
                             {store.base64Array[queue] &&

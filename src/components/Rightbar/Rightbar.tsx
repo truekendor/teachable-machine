@@ -21,7 +21,7 @@ function Rightbar({ setCamera }: Props) {
     return (
         <div className={[st["container"]].join(" ")}>
             <div className={[st["main"]].join(" ")}>
-                <h3>Посмотреть</h3>
+                <h3>Просмотр</h3>
                 <video
                     className={[
                         st["video"],

@@ -23,7 +23,7 @@ body {
     /* justify-content: center; */
 
     font-family: Helvetica, Arial, sans-serif;
-    background-color: rgb(227, 227, 227);
+    background-color: rgb(238, 238, 238);
 
     min-height: 100vh;
 }
@@ -57,12 +57,12 @@ body {
 
 .warn {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 5%;
+    left: 10%;
+    right: 10%;
 
-    background-color: rgb(215, 95, 95);
-    color: white;
+    background-color: rgb(246, 56, 56);
+    color: rgb(255, 233, 233);
 
     border-radius: 5px;
 
@@ -98,4 +98,8 @@ body {
     transform: translateY(-50%);
 
     background-color: rgb(180, 180, 180);
+}
+
+.header {
+    color: rgb(66, 97, 209);
 }
