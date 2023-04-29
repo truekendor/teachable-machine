@@ -2,7 +2,9 @@
     position: relative;
     display: flex;
 
-    width: 20rem;
+    min-width: 9rem;
+    width: 13.5rem;
+    max-width: 15rem;
 
     height: var(--inner-height, 100vh);
     min-height: 100vh;
@@ -12,17 +14,19 @@
     position: -webkit-sticky;
     position: sticky;
 
+    border-radius: var(--card-border-radius);
+
     top: 50%;
     transform: translateY(-50%);
 
-    height: 25rem;
+    height: 14rem;
     width: 100%;
 
     padding: 10px;
 
     box-shadow: var(--card-shadow);
 
-    background-color: hsl(49, 79%, 72%);
+    background-color: var(--card-bg-color);
 }
 
 .train-btn {

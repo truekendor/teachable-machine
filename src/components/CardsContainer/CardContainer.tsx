@@ -4,7 +4,7 @@ import { Context } from "../../index";
 import Card from "../Card/Card";
 import NewCardBtn from "../UI/NewCardBtn/NewCardBtn";
 
-import st from "./Cards.module.css";
+import st from "./CardContainer.module.css";
 
 type Props = {};
 

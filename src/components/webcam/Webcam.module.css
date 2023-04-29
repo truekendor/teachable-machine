@@ -1,9 +1,59 @@
-.container {
+/* .container:not(.waiting) {
     display: flex;
-    height: 100%;
+
+    flex: 1;
+
+    height: 300px;
+    width: 300px;
+
+    aspect-ratio: 1/1;
+
     align-items: center;
 
+    position: relative;
+
     overflow: hidden;
+    isolation: isolate;
+
+    border-radius: var(--card-border-radius);
+} */
+
+/* .video {
+    display: block;
+
+    -webkit-transform: rotateY(180deg);
+    -moz-transform: rotateY(180deg);
+    transform: rotateY(180deg);
+
+    background-color: black;
+
+    margin-left: -15%;
+    max-height: 100%;
+
+    object-fit: cover;
+
+    border-radius: 0.5rem;
+
+    position: relative;
+} */
+
+.container {
+    display: flex;
+
+    flex: 1;
+
+    /* height: 300px; */
+    /* width: 300px; */
+    width: 100%;
+
+    align-items: center;
+
+    position: relative;
+
+    overflow: hidden;
+    isolation: isolate;
+
+    border-radius: var(--card-border-radius);
 }
 
 .video {
@@ -15,15 +65,31 @@
 
     background-color: black;
 
-    max-width: 100%;
-    width: 400px;
-
     border-radius: 0.5rem;
+
+    position: relative;
+
+    max-width: 100%;
+}
+
+.container:not(.waiting)::before {
+    content: "";
+    position: absolute;
+
+    top: 20%;
+    left: 20%;
+    right: 20%;
+    bottom: 20%;
+
+    background-color: black;
+
+    border-radius: 10px;
+
+    z-index: -1;
 }
 
 .visually-hidden {
     visibility: hidden;
     width: 0;
     height: 0;
-    display: inline;
 }

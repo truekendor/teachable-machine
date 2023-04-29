@@ -6,6 +6,43 @@
 
     overflow-x: hidden;
 
-    background-color: orange;
+    /* background-color: orange; */
+
+    position: relative;
     flex: 1;
+
+    padding: 10px;
+
+    border-radius: var(--card-border-radius);
+
+    margin: 0.5rem;
+}
+
+.video-container.current {
+    outline: 2px solid rgb(134, 134, 255);
+
+    background-color: rgb(240, 240, 255);
+}
+
+.cancel-video-btn {
+    width: 2rem;
+    height: 2rem;
+
+    font-size: 1.5rem;
+
+    border: transparent;
+    outline: transparent;
+    cursor: pointer;
+
+    background-color: transparent;
+
+    margin-inline-start: auto;
+
+    color: rgb(58, 72, 231);
+
+    transition: color 70ms ease-in-out;
+}
+
+.cancel-video-btn:hover {
+    color: rgb(74, 90, 255);
 }

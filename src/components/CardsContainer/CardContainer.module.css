@@ -6,8 +6,9 @@
     height: 100%;
     min-height: 90vh;
 
-    width: -moz-fit-content;
-    width: fit-content;
+    min-width: 20rem;
+    width: 32rem;
+    max-width: 45rem;
 
     flex-direction: column;
 }

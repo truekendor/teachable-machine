@@ -7,6 +7,8 @@ import st from "./VideoContainer.module.css";
 import DataCollectorBtn from "../UI/DataCollectorBtn/DataCollectorBtn";
 import Webcam from "../Webcam/Webcam";
 import useDebounce from "../../hooks/useDebounce";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
     queue: number;
@@ -21,12 +23,12 @@ function VideoContainer({ queue }: Props) {
     const camRef = useRef<HTMLVideoElement>();
 
     // Автовыключение камеры если не было собрано данных за последние N секунд
-    const debouncedDisableCamera = useDebounce(() => {
-        queueMicrotask(() => {
-            disableCamera();
-        });
+    // const debouncedDisableCamera = useDebounce(disableViaMicrotask, 20 * 1000);
+
+    function disableViaMicrotask() {
+        queueMicrotask(disableCamera);
         store.setCurrentCard(-1);
-    }, 20 * 1000);
+    }
 
     useEffect(() => {
         async function handleCamera() {
@@ -60,7 +62,7 @@ function VideoContainer({ queue }: Props) {
             return;
         }
 
-        debouncedDisableCamera();
+        // debouncedDisableCamera();
 
         const constraints = {
             video: true,
@@ -92,7 +94,7 @@ function VideoContainer({ queue }: Props) {
             return;
         }
 
-        debouncedDisableCamera();
+        // debouncedDisableCamera();
 
         console.log("LOOP");
 
@@ -106,17 +108,17 @@ function VideoContainer({ queue }: Props) {
     }
 
     return (
-        <div className={[st["video-container"]].join(" ")}>
+        <div
+            className={[st["video-container"], isCurrent && st["current"]].join(
+                " "
+            )}
+        >
             {isCurrent && (
                 <button
-                    onClick={() => {
-                        queueMicrotask(() => {
-                            disableCamera();
-                        });
-                        store.setCurrentCard(-1);
-                    }}
+                    className={[st["cancel-video-btn"]].join(" ")}
+                    onClick={disableViaMicrotask}
                 >
-                    закончить съемку
+                    <FontAwesomeIcon icon={faXmark} />
                 </button>
             )}
             <Webcam isCurrent={isCurrent} ref={camRef} />

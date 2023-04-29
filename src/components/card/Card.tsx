@@ -61,13 +61,16 @@ function Card({ queue }: Props) {
         <div ref={containerRef} className={[st["card"]].join(" ")}>
             <header className={[st["header"]].join(" ")}>
                 <CardForm queue={queue} />
-                <button
-                    onDoubleClick={doubleClickHandler}
-                    onClick={debounce}
-                    className={`${st["delete-btn"]}`}
-                >
-                    <FontAwesomeIcon icon={faTrash} />
-                </button>
+                {!store.isModelTrained && (
+                    <button
+                        onDoubleClick={doubleClickHandler}
+                        onClick={debounce}
+                        className={`${st["delete-btn"]}`}
+                        title="delete"
+                    >
+                        <FontAwesomeIcon icon={faTrash} />
+                    </button>
+                )}
             </header>
             <div className={[st["card-body"]].join(" ")}>
                 {!isCurrent && !store.isModelTrained && (

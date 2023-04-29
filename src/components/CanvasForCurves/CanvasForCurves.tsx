@@ -27,7 +27,8 @@ function CanvasForCurves({ width }: Props) {
 
             for (let i = 0; i < list.length; i++) {
                 let { node } = list[i];
-                c.current.strokeStyle = "gray";
+                c.current.strokeStyle = "rgb(165, 165, 165)";
+                c.current.lineWidth = 1;
 
                 let halfCard =
                     node.offsetTop +
@@ -60,7 +61,7 @@ function CanvasForCurves({ width }: Props) {
         }
 
         queueMicrotask(draw);
-    }, [width, store.cardBoundingBoxes]);
+    }, [width, store.cardBoundingBoxes, store.isModelTrained]);
 
     useEffect(() => {
         window.addEventListener("scroll", drawCurves);

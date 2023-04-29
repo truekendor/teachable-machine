@@ -24,7 +24,8 @@ function App() {
             let size =
                 ((appRef?.current?.clientHeight || window.innerHeight) /
                     window.innerHeight) *
-                100;
+                    100 -
+                10;
 
             document.documentElement.style.setProperty(
                 "--inner-height",
@@ -33,7 +34,10 @@ function App() {
         }
 
         adjustParentHeight();
-    }, [store.labelsArray.length]);
+
+        // currentCard меняется при клике на кнопку включения камеры, а она
+        // меняет размеры карточки
+    }, [store.labelsArray.length, store.currentCard]);
 
     async function enableCamera() {
         console.log("enable prediction camera");
@@ -120,6 +124,10 @@ function App() {
                 <CanvasForCurves width={60} />
 
                 <TrainingArea onClick={onClickHandler} />
+                <div className="line-div">
+                    <div className="line-sticky"></div>
+                </div>
+
                 <Rightbar setCamera={setPredictionCamera} />
             </main>
         </div>

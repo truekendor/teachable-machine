@@ -15,10 +15,12 @@ const Webcam = forwardRef(function (
     const { store } = useContext(Context);
 
     return (
-        <div className={[st["container"]].join(" ")}>
+        <div
+            className={[st["container"], !isCurrent && st["waiting"]].join(" ")}
+        >
             <video
                 ref={ref}
-                autoPlay={isCurrent}
+                autoPlay={true}
                 className={[
                     st["video"],
                     (!isCurrent || !store.isCameraReady) &&
