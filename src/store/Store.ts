@@ -30,6 +30,9 @@ export default class Store {
     cardBoundingBoxes: BoundingBoxPart[] = [];
     wasDoubleClick = false;
 
+    switchFrom = -1;
+    formSwitched = true;
+
     constructor() {
         makeAutoObservable(this);
         this.setupModel();
@@ -238,5 +241,13 @@ export default class Store {
 
         this.trainingDataInputs = [...newIn];
         this.trainingDataOutputs = [...newOut];
+    }
+
+    setSwitchFrom(index: number) {
+        this.switchFrom = index;
+    }
+
+    setFormSwitched(bool: boolean) {
+        this.formSwitched = bool;
     }
 }

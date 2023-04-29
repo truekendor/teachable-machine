@@ -1,7 +1,7 @@
 import { useRef, useContext, useEffect, useState } from "react";
 import * as tf from "@tensorflow/tfjs";
 import { Context } from "../../index";
-import { observer, useStaticRendering } from "mobx-react-lite";
+import { observer } from "mobx-react-lite";
 
 import st from "./VideoContainer.module.css";
 

@@ -1,4 +1,4 @@
-import { useRef, useContext, useId, useEffect } from "react";
+import React, { useRef, useContext, useId, useEffect } from "react";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
@@ -17,8 +17,31 @@ function CardForm({ queue }: Props) {
     const id = useId();
 
     useEffect(() => {
-        //
+        // ! ДОБАВИТЬ ЛОГИКУ
     }, [store.labelsArray.length]);
+
+    function isValidKeyCode(code: string) {
+        return code === "Enter" || code === "Escape" || code === "Tab";
+    }
+
+    function isSwitchToOtherForm(e: React.KeyboardEvent<HTMLInputElement>) {
+        const switchCodes =
+            (e.code === "Enter" && e.shiftKey) || e.code === "Tab";
+
+        return switchCodes;
+    }
+
+    useEffect(() => {
+        if (queue === store.switchFrom + 1 && !store.formSwitched) {
+            store.setFormSwitched(true);
+
+            setTimeout(() => {
+                inputRef.current.select();
+            }, 5);
+        } else if (queue === store.labelsArray.length - 1) {
+            store.setSwitchFrom(-1);
+        }
+    }, [store.switchFrom]);
 
     return (
         <form
@@ -33,15 +56,23 @@ function CardForm({ queue }: Props) {
                 defaultValue={`Class ${queue + 1}`}
                 className={[st["input"]].join(" ")}
                 ref={inputRef}
-                onKeyUp={(e) => {
-                    if (e.code === "Enter" || e.code === "Escape") {
-                        inputRef.current.blur();
+                onKeyDown={(e) => {
+                    if (!isValidKeyCode(e.code)) return;
+
+                    if (isSwitchToOtherForm(e)) {
+                        store.setSwitchFrom(queue);
+                        store.setFormSwitched(false);
                     }
+
+                    inputRef.current.blur();
                 }}
                 onBlur={() => {
                     store.changeLabelAtIndex(inputRef.current.value, queue);
                 }}
-                onClick={() => inputRef.current.select()}
+                onClick={() => {
+                    store.setSwitchFrom(queue);
+                    inputRef.current.select();
+                }}
                 type="text"
                 title="Название класса"
             />
