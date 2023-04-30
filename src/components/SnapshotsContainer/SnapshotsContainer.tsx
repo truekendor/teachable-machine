@@ -23,9 +23,10 @@ function SnapshotsContainer({ queue }: Props) {
                         .map((base64) => {
                             return (
                                 <img
-                                    className={[st["training-input-img"]].join(
-                                        " "
-                                    )}
+                                    className={[
+                                        st["training-input-img"],
+                                        store.mirrorWebcam && st["swap"],
+                                    ].join(" ")}
                                     key={v4()}
                                     src={base64}
                                     alt="data"

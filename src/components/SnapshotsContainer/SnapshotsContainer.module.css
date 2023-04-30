@@ -53,3 +53,9 @@
     width: 31%;
     max-width: 33%;
 }
+
+.swap {
+    -webkit-transform: rotateY(180deg);
+    -moz-transform: rotateY(180deg);
+    transform: rotateY(180deg);
+}

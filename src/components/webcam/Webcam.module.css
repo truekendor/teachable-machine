@@ -70,6 +70,12 @@
     max-width: 100%;
 }
 
+.video.swap {
+    -webkit-transform: rotateY(0);
+    -moz-transform: rotateY(0);
+    transform: rotateY(0);
+}
+
 .container.waiting::before {
     content: "";
     position: absolute;

@@ -2,6 +2,12 @@ import { makeAutoObservable } from "mobx";
 import * as tf from "@tensorflow/tfjs";
 import { BoundingBoxPart } from "../types/types";
 
+interface trainingOpt {
+    shuffle: boolean;
+    batchSize: number;
+    epochs: number;
+}
+
 export default class Store {
     URL = `https://tfhub.dev/google/tfjs-model/imagenet/mobilenet_v3_small_100_224/feature_vector/5/default/1`;
 
@@ -32,12 +38,15 @@ export default class Store {
 
     switchFrom = -1;
     formSwitched = true;
+    mirrorWebcam = false;
 
     isCameraReady = false;
 
     base64Array: string[][] = [];
 
     allDataGathered = false;
+
+    trainingOptions: trainingOpt;
 
     constructor() {
         makeAutoObservable(this);
@@ -47,6 +56,8 @@ export default class Store {
 
     pushToLabels(label: string) {
         this.labelsArray.push(label);
+        this.base64Array.push([]);
+
         this.allDataGathered = false;
 
         this.setupModel();
@@ -81,6 +92,8 @@ export default class Store {
                 activation: "relu",
             })
         );
+
+        // output layer
         this.model.add(
             tf.layers.dense({
                 units: this.labelsArray.length,
@@ -179,6 +192,7 @@ export default class Store {
                 shuffle: true,
                 batchSize: 5,
                 epochs: 10,
+
                 callbacks: { onEpochEnd: this.logProgress },
             });
 
@@ -228,9 +242,6 @@ export default class Store {
     }
 
     removeLabelByIndex(index: number) {
-        // this.labelsArray.splice(index, 1);
-        // this.cardBoundingBoxes.splice(index, 1);
-
         this.labelsArray = this.labelsArray = [
             ...this.labelsArray.slice(0, index),
             ...this.labelsArray.slice(index + 1, this.labelsArray.length),
@@ -299,7 +310,6 @@ export default class Store {
     }
 
     setLabels(array: string[]) {
-        console.log("SETTING LABELS");
         this.labelsArray = [...array];
     }
 
@@ -323,6 +333,10 @@ export default class Store {
         ];
     }
 
+    setTrainingOptions(options: trainingOpt) {
+        this.trainingOptions = { ...options };
+    }
+
     checkAllDataGathered() {
         for (let i = 0; i < this.labelsArray.length; i++) {
             const index = this.trainingDataOutputs.indexOf(i);
@@ -334,5 +348,9 @@ export default class Store {
         }
 
         this.allDataGathered = true;
+    }
+
+    toggleMirrorWebcam() {
+        this.mirrorWebcam = !this.mirrorWebcam;
     }
 }

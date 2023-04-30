@@ -81,7 +81,7 @@ function Card({ queue }: Props) {
                         }}
                     />
                 )}
-                <VideoContainer queue={queue} />
+                {!store.isModelTrained && <VideoContainer queue={queue} />}
 
                 {isCurrent && <SnapshotsContainer queue={queue} />}
             </div>

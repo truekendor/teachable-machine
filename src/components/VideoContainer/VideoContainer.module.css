@@ -22,24 +22,34 @@
     background-color: rgb(240, 240, 255);
 }
 
-.cancel-video-btn {
+.top-panel {
+    display: flex;
+}
+
+.top-panel:first-child {
+    margin-inline-start: auto;
+}
+
+.top-panel > button {
+    color: rgb(58, 72, 231);
+    font-size: 1.5rem;
+
     width: 2rem;
     height: 2rem;
-
-    font-size: 1.5rem;
 
     border: transparent;
     outline: transparent;
     cursor: pointer;
 
     background-color: transparent;
-
-    margin-inline-start: auto;
-
-    color: rgb(58, 72, 231);
-
     transition: color 70ms ease-in-out;
+}
 
+.top-panel > button:hover {
+    color: rgb(74, 90, 255);
+}
+
+.cancel-video-btn {
     position: relative;
 }
 
@@ -77,10 +87,6 @@
     transition-delay: 700ms;
 
     opacity: 1;
-}
-
-.cancel-video-btn:hover {
-    color: rgb(74, 90, 255);
 }
 
 .canvas {

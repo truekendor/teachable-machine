@@ -37,7 +37,7 @@ function App() {
 
         // currentCard меняется при клике на кнопку включения камеры, а она
         // меняет размеры карточки
-    }, [store.labelsArray.length, store.currentCard]);
+    }, [store.labelsArray.length, store.currentCard, store.isModelTrained]);
 
     async function enableCamera() {
         console.log("enable prediction camera");

@@ -1,4 +1,8 @@
 .container {
+    --options-height-min: 5rem;
+    --options-height: 9rem;
+    --options-height-max: 12rem;
+
     position: relative;
     display: flex;
 
@@ -24,7 +28,13 @@
     top: 50%;
     transform: translateY(-50%);
 
-    height: 14rem;
+    /* height: 15rem; */
+    min-height: 10rem;
+
+    gap: 1.1rem;
+
+    height: min-content;
+
     width: 100%;
 
     padding: 10px;
@@ -34,8 +44,9 @@
     background-color: var(--card-bg-color);
 }
 
-h3 {
+.main-area > h3 {
     width: 100%;
+    cursor: default;
 }
 
 .main-area::before {
@@ -100,4 +111,43 @@ h3 {
     outline: 2px solid tomato;
 
     transform: translateY(50%);
+}
+
+.options {
+    display: flex;
+    flex-direction: column;
+
+    padding-block: 1rem;
+
+    min-height: var(--options-height-min);
+    height: var(--options-height);
+    max-height: var(--options-height-max);
+
+    width: 100%;
+
+    background-color: rgb(246, 185, 185);
+}
+
+.options-form {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+}
+
+.options-btn {
+    margin-block: auto;
+
+    padding: 10px;
+    background-color: rgb(31, 31, 137);
+    color: white;
+
+    border-radius: 5px;
+}
+
+.options-btn:disabled {
+    background-color: gray;
+    color: white;
+
+    cursor: auto;
 }

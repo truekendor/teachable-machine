@@ -8,7 +8,11 @@ import DataCollectorBtn from "../UI/DataCollectorBtn/DataCollectorBtn";
 import Webcam from "../Webcam/Webcam";
 import useDebounce from "../../hooks/useDebounce";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
+import {
+    faLeftRight,
+    faRightLeft,
+    faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
     queue: number;
@@ -137,12 +141,18 @@ function VideoContainer({ queue }: Props) {
             )}
         >
             {isCurrent && (
-                <button
-                    className={[st["cancel-video-btn"]].join(" ")}
-                    onClick={disableViaMicrotask}
-                >
-                    <FontAwesomeIcon icon={faXmark} />
-                </button>
+                <div className={[st["top-panel"]].join(" ")}>
+                    <button
+                        onClick={() => {
+                            store.toggleMirrorWebcam();
+                        }}
+                    >
+                        <FontAwesomeIcon icon={faLeftRight} />
+                    </button>
+                    <button onClick={disableViaMicrotask}>
+                        <FontAwesomeIcon icon={faXmark} />
+                    </button>
+                </div>
             )}
             <Webcam isCurrent={isCurrent} ref={camRef} />
             {isCurrent && <DataCollectorBtn onMouseDown={dataGatherLoop} />}

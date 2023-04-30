@@ -20,12 +20,18 @@
 
 body {
     width: 100%;
-    /* justify-content: center; */
 
     font-family: Helvetica, Arial, sans-serif;
     background-color: rgb(238, 238, 238);
 
     min-height: 100vh;
+}
+
+button {
+    outline: transparent;
+    border: transparent;
+
+    cursor: pointer;
 }
 
 #root {
