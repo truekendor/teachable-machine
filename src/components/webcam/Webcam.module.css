@@ -42,8 +42,6 @@
 
     flex: 1;
 
-    /* height: 300px; */
-    /* width: 300px; */
     width: 100%;
 
     align-items: center;
@@ -72,7 +70,7 @@
     max-width: 100%;
 }
 
-.container:not(.waiting)::before {
+.container.waiting::before {
     content: "";
     position: absolute;
 

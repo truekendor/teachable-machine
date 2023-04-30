@@ -1,16 +1,16 @@
-import { useRef, useContext, useEffect, useState } from "react";
+import { useRef, useContext, useEffect } from "react";
 import st from "./Card.module.css";
 import CameraEnableBtn from "../UI/CameraEnableBtn/CameraEnableBtn";
 import CardForm from "../CardForm/CardForm";
 import VideoContainer from "../VideoContainer/VideoContainer";
 import { Context } from "../../index";
-import { v4 } from "uuid";
 
 import { observer } from "mobx-react-lite";
 import { BoundingBoxPart } from "../../types/types";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import useDebounce from "../../hooks/useDebounce";
+import SnapshotsContainer from "../SnapshotsContainer/SnapshotsContainer";
 
 interface Props {
     queue: number;
@@ -23,8 +23,6 @@ function Card({ queue }: Props) {
     const containerRef = useRef<HTMLDivElement>();
 
     const debounce = useDebounce(singleClickHandler, 500, () => {
-        console.log("PASSING DELETE STATE", store.wasDoubleClick);
-
         return !store.wasDoubleClick;
     });
 
@@ -50,8 +48,6 @@ function Card({ queue }: Props) {
     }
 
     useEffect(() => {
-        // TODO переделать с передачей не всей ноды, а только offsetTop
-        // TODO почему-то не работает, но сейчас 6 утра
         const bBox: BoundingBoxPart = {
             node: containerRef.current,
         };
@@ -87,37 +83,7 @@ function Card({ queue }: Props) {
                 )}
                 <VideoContainer queue={queue} />
 
-                {/*
-    // ! WTF
-
-
-*/}
-                {isCurrent && (
-                    <div className={[st["snapshots-container"]].join(" ")}>
-                        <div className={[st["amount-counter"]].join(" ")}>
-                            Количество образцов:{" "}
-                            {store.samplesAmountArray[queue] || 0}
-                        </div>
-                        <div className={[st["image-container"]].join(" ")}>
-                            {store.base64Array[queue] &&
-                                store.base64Array[queue]
-                                    ?.slice()
-                                    ?.reverse()
-                                    .map((base64, i) => {
-                                        return (
-                                            <img
-                                                className={[
-                                                    st["training-input-img"],
-                                                ].join(" ")}
-                                                key={v4()}
-                                                src={base64}
-                                                alt="data"
-                                            />
-                                        );
-                                    })}
-                        </div>
-                    </div>
-                )}
+                {isCurrent && <SnapshotsContainer queue={queue} />}
             </div>
         </div>
     );

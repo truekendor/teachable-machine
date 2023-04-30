@@ -257,6 +257,8 @@ export default class Store {
             ),
         ];
 
+        this.checkAllDataGathered();
+
         this.setupModel();
 
         let newIn: tf.Tensor1D[] = [];

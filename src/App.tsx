@@ -100,10 +100,9 @@ function App() {
 
     if (!store.mobilenet) {
         return (
-            <>
-                <div>Fallback</div>
+            <div>
                 <h1>Загрузка модели</h1>
-            </>
+            </div>
         );
     }
 

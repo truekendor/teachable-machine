@@ -1,0 +1,55 @@
+.snapshots-container {
+    margin: 0.5rem;
+
+    height: 300px;
+
+    overflow-y: scroll;
+
+    flex: 4;
+
+    gap: 0.2rem;
+}
+
+::-webkit-scrollbar {
+    visibility: hidden;
+    width: 10px;
+}
+
+.snapshots-container:hover::-webkit-scrollbar {
+    visibility: visible;
+}
+
+.snapshots-container:hover::-webkit-scrollbar-thumb {
+    background-color: rgb(77, 77, 206);
+    border-radius: 20px;
+}
+
+.snapshots-container:hover::-webkit-scrollbar-track {
+    border-radius: 20px;
+    background: rgb(213, 219, 255);
+}
+
+.image-container {
+    display: flex;
+
+    gap: 0.2rem;
+
+    flex-wrap: wrap;
+}
+
+.amount-counter {
+    font-size: 0.9rem;
+    font-weight: 600;
+
+    color: rgb(80, 80, 80);
+
+    max-width: 100%;
+}
+
+.training-input-img {
+    border-radius: 4px;
+
+    flex: 1;
+    width: 31%;
+    max-width: 33%;
+}
