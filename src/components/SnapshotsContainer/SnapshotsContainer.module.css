@@ -10,7 +10,7 @@
     gap: 0.2rem;
 }
 
-::-webkit-scrollbar {
+.snapshots-container::-webkit-scrollbar {
     visibility: hidden;
     width: 10px;
 }

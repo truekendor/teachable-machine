@@ -66,14 +66,18 @@ function CardForm({ queue }: Props) {
                         store.setSwitchFrom(queue);
                         store.setFormSwitched(false);
                     }
-
-                    inputRef.current.blur();
                 }}
                 onBlur={() => {
-                    store.changeLabelAtIndex(inputRef.current.value, queue);
+                    const inputValueChanged =
+                        inputRef.current.value !== store.labelsArray[queue];
+
+                    if (inputValueChanged) {
+                        store.changeLabelAtIndex(inputRef.current.value, queue);
+                    }
                 }}
                 onClick={() => {
                     store.setSwitchFrom(queue);
+
                     inputRef.current.select();
                 }}
                 type="text"
