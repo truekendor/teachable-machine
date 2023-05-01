@@ -103,7 +103,7 @@ function App() {
     return (
         <div ref={appRef} className="App">
             <header>
-                <h2 className="header">TEACHABLE MACHINE</h2>
+                <h2 className="header">Teachable machine</h2>
             </header>
 
             {store.isTraining && (
