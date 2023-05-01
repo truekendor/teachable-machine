@@ -68,12 +68,6 @@ export default class Store {
 
     changeLabelAtIndex(label: string, index: number) {
         this.labelsArray[index] = label;
-
-        this.labelsArray = [
-            ...this.labelsArray.slice(0, index),
-            label,
-            ...this.labelsArray.slice(index + 1, this.labelsArray.length),
-        ];
     }
 
     setMobilenet(mobilenet: tf.GraphModel) {
@@ -122,7 +116,7 @@ export default class Store {
 
         tf.tidy(() => {
             let answer = this.mobilenet.predict(
-                // !         batch_size, y, x, 3
+                // !         batch_size=1, y, x, 3
                 tf.zeros([
                     1,
                     this.MOBILE_NET_INPUT_HEIGHT,
@@ -139,7 +133,12 @@ export default class Store {
         this.trainingDataInputs.push(input);
         this.trainingDataOutputs.push(output);
 
-        this.checkAllDataGathered();
+        // можно проверять только один раз
+        // так как false его делает только удаление
+        // обучающих данных, а не его добавление
+        if (!this.allDataGathered) {
+            this.checkAllDataGathered();
+        }
     }
 
     calculateFeaturesOnCurrentFrame(ref: HTMLVideoElement) {
@@ -218,10 +217,6 @@ export default class Store {
         this.isModelTrained = bool;
     }
 
-    setPrediction(prediction: string) {
-        this.prediction = prediction;
-    }
-
     setPredictionList(array: number[]) {
         this.predictionList = [...array];
     }
@@ -261,14 +256,14 @@ export default class Store {
             const input = this.trainingDataInputs[i];
             const output = this.trainingDataOutputs[i];
 
-            // аутпуту присваивалось значение индекса
+            // аутпуту присваивалось значение индекса карточки
             if (output === index) {
                 // очищаем память от ненужных тензоров
                 input?.dispose?.();
             } else {
                 newIn.push(input);
                 // так как мы удаляем элемент, то нужно
-                // подвинуть аутпуты соответственно.
+                // подвинуть аутпуты дальше по индексу влево.
                 // Если аутпут больше чем индекс, то его нужно
                 // сместить на единицу так как удалился один элемент
                 newOut.push(index < output ? output - 1 : output);
@@ -292,7 +287,11 @@ export default class Store {
     }
 
     pushToBase64(string: string, index: number) {
+        // если нет массива по этому индексу
+        // ! по идее deprecated так как pushToLabels создает
+        // ! этот массив
         if (!this.base64Array[index]) {
+            console.log("HMMM");
             for (let i = 0; i < this.labelsArray.length; i++) {
                 this.base64Array[i] = [];
             }
@@ -302,16 +301,14 @@ export default class Store {
     }
 
     removeBoundingBoxByIndex(index: number) {
-        this.cardBoundingBoxes = [
-            ...this.cardBoundingBoxes.slice(0, index),
-            ...this.cardBoundingBoxes.slice(
-                index + 1,
-                this.cardBoundingBoxes.length
-            ),
-        ];
+        this.cardBoundingBoxes = removeItemAtIndex(
+            this.cardBoundingBoxes,
+            index
+        );
     }
 
     setTrainingOptions(options: trainingOpt) {
+        // ! пока неактивно
         this.trainingOptions = { ...options };
     }
 
@@ -349,8 +346,6 @@ export default class Store {
             nonReversedIndex
             // массив который приходит в этот метод перевернут
         );
-
-        // ! метод не удаляет данные из trainingData inputs & outputs
 
         const indexArray: number[] = [];
 

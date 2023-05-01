@@ -38,7 +38,6 @@ function App() {
     }, [store.labelsArray.length, store.currentCard, store.isModelTrained]);
 
     async function enableCamera() {
-        console.log("enable prediction camera");
         const constraints = {
             video: true,
             width: 640,
@@ -64,14 +63,7 @@ function App() {
                 .predict(imageFeatures.expandDims())
                 // @ts-ignore
                 .squeeze();
-            let highestIndex = prediction.argMax().arraySync();
             let predictionArray = prediction.arraySync();
-
-            store.setPrediction(
-                `${store.labelsArray[highestIndex]}, уверенность ${
-                    predictionArray[highestIndex] * 100
-                }`
-            );
 
             store.setPredictionList(predictionArray);
         });
