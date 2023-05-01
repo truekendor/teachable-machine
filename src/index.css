@@ -25,13 +25,15 @@
 
     --inner-line-clr: rgb(189, 189, 189);
     --training-area-pd: 10px;
+
+    --app-bg-color: rgb(238, 238, 238);
 }
 
 body {
     width: 100%;
 
     font-family: Helvetica, Arial, sans-serif;
-    background-color: rgb(238, 238, 238);
+    background-color: var(--app-bg-color);
 
     min-height: 100vh;
 }
@@ -53,6 +55,7 @@ button {
 
     width: 100%;
     padding: 0.5rem 1.4rem;
+    padding-top: 0;
 
     position: relative;
 }
@@ -103,7 +106,33 @@ button {
     background-color: rgb(180, 180, 180);
 }
 
+.App > header {
+    font-family: "Poppins", sans-serif;
+    --header-height: 3.5rem;
+
+    height: var(--header-height);
+}
+
 .header {
-    font-size: 2rem;
+    display: flex;
+    align-items: center;
+
+    z-index: 900;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    padding: 0.4rem 1rem;
+    height: var(--header-height);
+
+    background-color: rgb(249, 254, 255);
+
+    border-radius: 0.5rem;
+    border-top-left-radius: 0;
+
+    box-shadow: var(--card-shadow);
+
+    font-size: 1.3rem;
     color: rgb(66, 97, 209);
 }
