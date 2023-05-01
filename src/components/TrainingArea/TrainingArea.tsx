@@ -7,6 +7,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 
 import st from "./TrainingArea.module.css";
+import TrainBtn from "./UI/TrainBtn/TrainBtn";
+import OptionsBtn from "./UI/OptionsBtn/OptionsBtn";
+import Column from "../Column/Column";
+import TrainingOptions from "../TrainingOptions/TrainingOptions";
 
 type Props = {
     onClick: () => void;
@@ -34,28 +38,26 @@ function TrainingArea({ onClick }: Props) {
         }
     );
 
+    function mouseEnterHandler() {
+        setInside(true);
+        debounce();
+    }
+
+    function mouseLeaveHandler() {
+        setInside(false);
+        debounce();
+    }
+
     return (
-        <div className={[st["container"]].join(" ")}>
+        <Column min={9} width={13.5} max={15}>
             <div className={[st["main-area"]].join(" ")}>
                 <h3>Обучение</h3>
                 {!store.isModelTrained && (
-                    <button
-                        className={[
-                            st["train-btn"],
-                            store.allDataGathered && st["all-gathered"],
-                        ].join(" ")}
+                    <TrainBtn
                         onClick={onClick}
-                        onMouseEnter={() => {
-                            setInside(true);
-                            debounce();
-                        }}
-                        onMouseLeave={() => {
-                            setInside(false);
-                            debounce();
-                        }}
-                    >
-                        Обучить модель
-                    </button>
+                        onMouseEnter={mouseEnterHandler}
+                        onMouseLeave={mouseLeaveHandler}
+                    />
                 )}
                 {warn && (
                     <p className={[st["warn"]].join(" ")}>
@@ -64,40 +66,16 @@ function TrainingArea({ onClick }: Props) {
                     </p>
                 )}
 
-                <button
-                    disabled={store.isModelTrained}
-                    className={[st["options-btn"]].join(" ")}
+                <OptionsBtn
+                    expandOpt={expandOpt}
                     onClick={() => {
                         setExpandOpt((prev) => !prev);
                     }}
-                >
-                    дополнительно
-                </button>
+                />
 
-                {expandOpt && !store.isModelTrained && (
-                    <div className={[st["options"]].join(" ")}>
-                        <form className={[st["options-form"]].join(" ")}>
-                            <label htmlFor="batch-size">
-                                Batch Size
-                                <input type="number" id="batch-size" />
-                            </label>
-                            <label htmlFor="epochs">
-                                Количество Эпох
-                                <input type="number" id="epochs" />
-                            </label>
-                            <label htmlFor="shuffle">
-                                Перемешивать?
-                                <input
-                                    defaultChecked
-                                    type="checkbox"
-                                    id="shuffle"
-                                />
-                            </label>
-                        </form>
-                    </div>
-                )}
+                {expandOpt && !store.isModelTrained && <TrainingOptions />}
             </div>
-        </div>
+        </Column>
     );
 }
 

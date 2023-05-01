@@ -1,6 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import * as tf from "@tensorflow/tfjs";
 import { BoundingBoxPart } from "../types/types";
+import { removeItemAtIndex } from "../utils/utils";
 
 interface trainingOpt {
     shuffle: boolean;
@@ -39,6 +40,7 @@ export default class Store {
     switchFrom = -1;
     formSwitched = true;
     mirrorWebcam = false;
+    newCardAdded = false;
 
     isCameraReady = false;
 
@@ -242,31 +244,16 @@ export default class Store {
     }
 
     removeLabelByIndex(index: number) {
-        this.labelsArray = this.labelsArray = [
-            ...this.labelsArray.slice(0, index),
-            ...this.labelsArray.slice(index + 1, this.labelsArray.length),
-        ];
-
-        this.cardBoundingBoxes = [
-            ...this.cardBoundingBoxes.slice(0, index),
-            ...this.cardBoundingBoxes.slice(
-                index + 1,
-                this.cardBoundingBoxes.length
-            ),
-        ];
-
-        this.base64Array = [
-            ...this.base64Array.slice(0, index),
-            ...this.base64Array.slice(index + 1, this.base64Array.length),
-        ];
-
-        this.samplesAmountArray = [
-            ...this.samplesAmountArray.slice(0, index),
-            ...this.samplesAmountArray.slice(
-                index + 1,
-                this.samplesAmountArray.length
-            ),
-        ];
+        this.labelsArray = removeItemAtIndex(this.labelsArray, index);
+        this.cardBoundingBoxes = removeItemAtIndex(
+            this.cardBoundingBoxes,
+            index
+        );
+        this.base64Array = removeItemAtIndex(this.base64Array, index);
+        this.samplesAmountArray = removeItemAtIndex(
+            this.samplesAmountArray,
+            index
+        );
 
         this.checkAllDataGathered();
 
@@ -309,10 +296,6 @@ export default class Store {
         this.isCameraReady = state;
     }
 
-    setLabels(array: string[]) {
-        this.labelsArray = [...array];
-    }
-
     pushToBase64(string: string, index: number) {
         if (!this.base64Array[index]) {
             for (let i = 0; i < this.labelsArray.length; i++) {
@@ -352,5 +335,9 @@ export default class Store {
 
     toggleMirrorWebcam() {
         this.mirrorWebcam = !this.mirrorWebcam;
+    }
+
+    setNewCardAdded(bool: boolean) {
+        this.newCardAdded = bool;
     }
 }

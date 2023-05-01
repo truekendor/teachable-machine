@@ -1,0 +1,41 @@
+.options-btn {
+    width: 100%;
+
+    margin-block: auto;
+    padding: var(--training-area-pd);
+
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--font-clr-gray);
+
+    background-color: transparent;
+
+    border-top: 1px solid var(--inner-line-clr);
+
+    border-radius: 0;
+    border-bottom-left-radius: var(--card-border-radius);
+    border-bottom-right-radius: var(--card-border-radius);
+
+    transition: color 80ms ease-in-out, background-color 80ms ease-in-out;
+}
+
+.options-btn.expanded {
+    border-radius: 0px;
+}
+
+.options-btn:hover,
+.options-btn:focus-visible {
+    color: var(--bg-color-deep-blue);
+    background-color: var(--bg-color-light-blue);
+}
+
+.options-btn:focus-visible {
+    outline: 1px solid var(--bg-color-deep-blue);
+}
+
+.options-btn:disabled {
+    background-color: var(--font-clr-gray);
+    color: rgb(200, 200, 200);
+
+    cursor: auto;
+}

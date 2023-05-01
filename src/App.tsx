@@ -8,6 +8,7 @@ import TrainingArea from "./components/TrainingArea/TrainingArea";
 import CanvasForCurves from "./components/CanvasForCurves/CanvasForCurves";
 import Rightbar from "./components/Rightbar/Rightbar";
 import CardContainer from "./components/CardsContainer/CardContainer";
+import Column from "./components/Column/Column";
 
 function App() {
     const { store } = useContext(Context);
@@ -98,15 +99,7 @@ function App() {
         predictionCamRef.current = ref;
     }
 
-    if (!store.mobilenet) {
-        return (
-            <div>
-                <h1>Загрузка модели</h1>
-            </div>
-        );
-    }
-
-    // TODO <TrainingArea /> && <Rightbar /> попробовать сделать логику их размеров через CSS я манал всю ночь кодил
+    // TODO <TrainingArea /> && <Rightbar />сделать логику их размеров через CSS
     return (
         <div ref={appRef} className="App">
             <header>
@@ -125,9 +118,10 @@ function App() {
                 <CanvasForCurves width={60} />
 
                 <TrainingArea onClick={onClickHandler} />
-                <div className="line-div">
+
+                <Column min={0.7} width={3.2} max={4.4}>
                     <div className="line-sticky"></div>
-                </div>
+                </Column>
 
                 <Rightbar setCamera={setPredictionCamera} />
             </main>

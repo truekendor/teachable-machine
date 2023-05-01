@@ -1,18 +1,3 @@
-.container {
-    position: relative;
-
-    display: flex;
-
-    height: var(--inner-height, 100vh);
-    min-height: 100vh;
-
-    min-width: 15rem;
-    width: 20rem;
-    max-width: 35rem;
-
-    isolation: isolate;
-}
-
 .main {
     display: flex;
     flex-direction: column;

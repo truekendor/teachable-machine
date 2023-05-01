@@ -21,7 +21,13 @@ const Webcam = forwardRef(function (
     }
 
     return (
-        <div className={[st["container"], setClasses(), ,].join(" ")}>
+        <div
+            className={[
+                st["container"],
+                setClasses(),
+                store.mirrorWebcam && st["swap"],
+            ].join(" ")}
+        >
             <video
                 ref={ref}
                 autoPlay={true}
@@ -29,8 +35,6 @@ const Webcam = forwardRef(function (
                     st["video"],
                     (!isCurrent || !store.isCameraReady) &&
                         st["visually-hidden"],
-
-                    store.mirrorWebcam && st["swap"],
                 ].join(" ")}
             ></video>
         </div>

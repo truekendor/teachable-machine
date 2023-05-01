@@ -1,0 +1,26 @@
+.train-btn {
+    cursor: not-allowed;
+
+    padding: 10px 15px;
+
+    margin-block: auto;
+    margin-inline: var(--training-area-pd);
+
+    border-radius: 5px;
+
+    font-size: 0.9rem;
+
+    max-width: 100%;
+
+    font-weight: 600;
+
+    background-color: rgb(227, 227, 227);
+    color: var(--font-clr-gray);
+}
+
+.train-btn.all-gathered {
+    color: rgb(45, 100, 250);
+
+    cursor: pointer;
+    background-color: rgb(213, 220, 255);
+}

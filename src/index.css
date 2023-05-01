@@ -16,6 +16,15 @@
     --card-padding: 0.5rem;
     --card-shadow: 0px 2px 3px rgba(0, 0, 0, 0.453);
     --card-border-radius: 0.6rem;
+
+    --font-clr-gray: rgb(101, 101, 101);
+    --bg-color-light-blue: rgb(240, 240, 255);
+
+    --bg-color-deep-blue: rgb(58, 58, 204);
+    --bg-color-deep-blue-hover: rgb(74, 90, 255);
+
+    --inner-line-clr: rgb(189, 189, 189);
+    --training-area-pd: 10px;
 }
 
 body {
@@ -57,8 +66,6 @@ button {
 
     height: 100%;
     width: 100%;
-    /* justify-content: space-around; */
-    /* align-items: center; */
 }
 
 .warn {
@@ -80,16 +87,6 @@ button {
     width: 0;
     height: 0;
     display: inline;
-}
-
-.line-div {
-    min-width: 10px;
-    width: 50px;
-    max-width: 70px;
-
-    height: var(--inner-height);
-
-    position: relative;
 }
 
 .line-sticky {

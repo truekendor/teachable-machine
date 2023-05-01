@@ -28,6 +28,13 @@ function CardForm({ queue }: Props) {
     }
 
     useEffect(() => {
+        const isThisCardLastAtQueue = store.labelsArray.length - 1 === queue;
+
+        if (isThisCardLastAtQueue && store.newCardAdded) {
+            inputRef.current.select();
+            store.setNewCardAdded(false);
+        }
+
         if (queue === store.switchFrom + 1 && !store.formSwitched) {
             store.setFormSwitched(true);
 

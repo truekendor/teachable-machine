@@ -53,6 +53,9 @@ function Card({ queue }: Props) {
         };
 
         store.setCardBoundingBoxByIndex(queue, bBox);
+
+        // выключаем камеру потому что мне кажется что так лучше
+        // store.setCurrentCard(-1);
     }, [store.labelsArray.length, queue, store]);
 
     // TODO выключить видео при создании новой карты
@@ -83,7 +86,9 @@ function Card({ queue }: Props) {
                 )}
                 {!store.isModelTrained && <VideoContainer queue={queue} />}
 
-                {isCurrent && <SnapshotsContainer queue={queue} />}
+                {isCurrent && !store.isModelTrained && (
+                    <SnapshotsContainer queue={queue} />
+                )}
             </div>
         </div>
     );

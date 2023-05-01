@@ -1,0 +1,39 @@
+.options {
+    display: flex;
+    flex-direction: column;
+
+    padding-block: 1rem;
+    padding-inline: var(--training-area-pd);
+
+    min-height: 5rem;
+    height: 9rem;
+    max-height: 12rem;
+
+    width: 100%;
+
+    background-color: rgb(246, 185, 185);
+}
+
+.options-form {
+    display: flex;
+    flex-direction: column;
+
+    width: 100%;
+}
+
+.label {
+    display: flex;
+    flex-direction: column;
+
+    max-width: 100%;
+}
+
+.label > h4 {
+    font-weight: 400;
+    margin-block-end: 0.4rem;
+}
+
+.label > input {
+    max-width: 100%;
+    width: 30%;
+}

@@ -5,6 +5,7 @@ import { Context } from "../../index";
 import st from "./Rightbar.module.css";
 import "../../index.css";
 import PredictionBoard from "../PredictionBoard/PredictionBoard";
+import Column from "../Column/Column";
 
 type Props = {
     setCamera: (ref: HTMLVideoElement) => void;
@@ -12,6 +13,7 @@ type Props = {
 
 function Rightbar({ setCamera }: Props) {
     const predictionCamRef = useRef();
+
     const { store } = useContext(Context);
 
     useEffect(() => {
@@ -19,7 +21,7 @@ function Rightbar({ setCamera }: Props) {
     });
 
     return (
-        <div className={[st["container"]].join(" ")}>
+        <Column min={15} width={20} max={25}>
             <div className={[st["main"]].join(" ")}>
                 <h3>Просмотр</h3>
                 <video
@@ -40,7 +42,7 @@ function Rightbar({ setCamera }: Props) {
                     )}
                 </div>
             </div>
-        </div>
+        </Column>
     );
 }
 

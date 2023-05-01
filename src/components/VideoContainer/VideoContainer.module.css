@@ -19,7 +19,7 @@
 .video-container.current {
     outline: 2px solid rgb(134, 134, 255);
 
-    background-color: rgb(240, 240, 255);
+    background-color: var(--bg-color-light-blue);
 }
 
 .top-panel {
@@ -31,7 +31,7 @@
 }
 
 .top-panel > button {
-    color: rgb(58, 72, 231);
+    color: var(--bg-color-deep-blue);
     font-size: 1.5rem;
 
     width: 2rem;
@@ -46,7 +46,7 @@
 }
 
 .top-panel > button:hover {
-    color: rgb(74, 90, 255);
+    color: var(--bg-color-deep-blue-hover);
 }
 
 .cancel-video-btn {

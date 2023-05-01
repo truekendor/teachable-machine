@@ -23,6 +23,7 @@ function CardContainer({}: Props) {
                 hidden={store.isModelTrained}
                 onClick={() => {
                     store.pushToLabels(`Class ${store.labelsArray.length + 1}`);
+                    store.setNewCardAdded(true);
                 }}
             />
         </div>
