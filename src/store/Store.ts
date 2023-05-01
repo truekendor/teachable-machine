@@ -42,6 +42,8 @@ export default class Store {
     mirrorWebcam = false;
     newCardAdded = false;
 
+    innerHeight = `${100}vh`;
+
     isCameraReady = false;
 
     base64Array: string[][] = [];
@@ -339,5 +341,9 @@ export default class Store {
 
     setNewCardAdded(bool: boolean) {
         this.newCardAdded = bool;
+    }
+
+    setInnerHeight(value: number) {
+        this.innerHeight = `${value}vh`;
     }
 }

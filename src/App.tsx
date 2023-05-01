@@ -28,10 +28,7 @@ function App() {
                     100 -
                 10;
 
-            document.documentElement.style.setProperty(
-                "--inner-height",
-                `${size}vh`
-            );
+            store.setInnerHeight(size);
         }
 
         adjustParentHeight();
@@ -112,7 +109,14 @@ function App() {
                 </div>
             )}
 
-            <main className={`main`}>
+            <main
+                style={
+                    {
+                        "--inner-height": store.innerHeight,
+                    } as React.CSSProperties
+                }
+                className={`main`}
+            >
                 <CardContainer />
 
                 <CanvasForCurves width={60} />
