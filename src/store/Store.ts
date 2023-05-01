@@ -1,4 +1,4 @@
-import { makeAutoObservable } from "mobx";
+import { makeAutoObservable, remove } from "mobx";
 import * as tf from "@tensorflow/tfjs";
 import { BoundingBoxPart } from "../types/types";
 import { removeItemAtIndex } from "../utils/utils";
@@ -30,7 +30,6 @@ export default class Store {
 
     prediction: string;
     predictionList: number[] = [];
-    samplesAmountArray: number[] = [];
 
     currentCard = -1;
 
@@ -139,8 +138,6 @@ export default class Store {
     pushToTrainingData(input: tf.Tensor1D, output: number) {
         this.trainingDataInputs.push(input);
         this.trainingDataOutputs.push(output);
-        this.samplesAmountArray[output] =
-            this.samplesAmountArray[output] + 1 || 1;
 
         this.checkAllDataGathered();
     }
@@ -252,10 +249,6 @@ export default class Store {
             index
         );
         this.base64Array = removeItemAtIndex(this.base64Array, index);
-        this.samplesAmountArray = removeItemAtIndex(
-            this.samplesAmountArray,
-            index
-        );
 
         this.checkAllDataGathered();
 
@@ -345,5 +338,17 @@ export default class Store {
 
     setInnerHeight(value: number) {
         this.innerHeight = `${value}vh`;
+    }
+
+    removeImageByIndex(cardIndex: number, imageIndex: number) {
+        this.base64Array[cardIndex] = removeItemAtIndex(
+            this.base64Array[cardIndex],
+            // массив который приходит в этот метод перевернут
+            this.base64Array[cardIndex].length - 1 - imageIndex
+        );
+
+        if (this.base64Array[cardIndex].length === 0) {
+            console.log("ZERO");
+        }
     }
 }

@@ -25,8 +25,8 @@
 }
 
 .snapshots-container:hover::-webkit-scrollbar-track {
-    border-radius: 20px;
     background: rgb(213, 219, 255);
+    border-radius: 20px;
 }
 
 .image-container {
@@ -46,16 +46,45 @@
     max-width: 100%;
 }
 
-.training-input-img {
-    border-radius: 4px;
-
-    flex: 1;
-    width: 31%;
-    max-width: 33%;
-}
-
 .swap {
     -webkit-transform: rotateY(180deg);
     -moz-transform: rotateY(180deg);
     transform: rotateY(180deg);
+}
+
+.helper-div {
+    width: 31%;
+    max-width: 33%;
+
+    position: relative;
+
+    overflow: hidden;
+    border-radius: 4px;
+}
+
+.img {
+    display: block;
+
+    object-fit: cover;
+    max-width: 100%;
+}
+
+.helper-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    position: absolute;
+    inset: 0;
+
+    font-size: 1rem;
+    color: transparent;
+    background-color: transparent;
+
+    transition: background-color 50ms ease-in-out;
+}
+
+.helper-btn:hover {
+    color: white;
+    background-color: rgba(0, 0, 0, 0.435);
 }
