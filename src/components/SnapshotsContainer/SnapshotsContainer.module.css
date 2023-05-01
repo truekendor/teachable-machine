@@ -35,6 +35,8 @@
     gap: 0.2rem;
 
     flex-wrap: wrap;
+
+    width: 100%;
 }
 
 .amount-counter {
@@ -53,8 +55,11 @@
 }
 
 .helper-div {
+    min-width: 1.5rem;
     width: 31%;
-    max-width: 33%;
+    max-width: 45%;
+
+    /* flex: 1; */
 
     position: relative;
 

@@ -21,7 +21,7 @@ function Rightbar({ setCamera }: Props) {
     });
 
     return (
-        <Column min={15} width={20} max={25}>
+        <Column min={18} width={24} max={30}>
             <div className={[st["main"]].join(" ")}>
                 <h3>Просмотр</h3>
                 <video

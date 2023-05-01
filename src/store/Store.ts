@@ -341,14 +341,46 @@ export default class Store {
     }
 
     removeImageByIndex(cardIndex: number, imageIndex: number) {
+        let nonReversedIndex =
+            this.base64Array[cardIndex].length - 1 - imageIndex;
+
         this.base64Array[cardIndex] = removeItemAtIndex(
             this.base64Array[cardIndex],
+            nonReversedIndex
             // массив который приходит в этот метод перевернут
-            this.base64Array[cardIndex].length - 1 - imageIndex
+        );
+
+        // ! метод не удаляет данные из trainingData inputs & outputs
+
+        const indexArray: number[] = [];
+
+        for (let i = 0; i < this.trainingDataOutputs.length; i++) {
+            let cur = this.trainingDataOutputs[i];
+
+            // если аутпут равен кардИндексу (порядковому номеру карточки)
+            // то пушим этот индекс в массив
+            // так как этот элемент будет одним из изображений класса
+            if (cur === cardIndex) {
+                indexArray.push(i);
+            }
+        }
+        // теперь в indexArray лежат индексы изображений
+        // находим индекс изображения которое нужно удалить
+        // так как оригинальный массив не реверснут
+        // то это изображение будет по реверс индексу
+        const spliceIndex = indexArray[nonReversedIndex];
+
+        this.trainingDataInputs = removeItemAtIndex(
+            this.trainingDataInputs,
+            spliceIndex
+        );
+        this.trainingDataOutputs = removeItemAtIndex(
+            this.trainingDataOutputs,
+            spliceIndex
         );
 
         if (this.base64Array[cardIndex].length === 0) {
-            console.log("ZERO");
+            this.checkAllDataGathered();
         }
     }
 }
