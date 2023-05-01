@@ -370,6 +370,10 @@ export default class Store {
         // то это изображение будет по реверс индексу
         const spliceIndex = indexArray[nonReversedIndex];
 
+        // сохраняем ссылку на тензор
+        const removedInput = this.trainingDataInputs[spliceIndex];
+
+        // удаляем из массива обучающих данных
         this.trainingDataInputs = removeItemAtIndex(
             this.trainingDataInputs,
             spliceIndex
@@ -378,6 +382,11 @@ export default class Store {
             this.trainingDataOutputs,
             spliceIndex
         );
+
+        // избавляемся от ненужного тензора
+        removedInput.dispose();
+
+        // console.log(tf.memory().numTensors);
 
         if (this.base64Array[cardIndex].length === 0) {
             this.checkAllDataGathered();

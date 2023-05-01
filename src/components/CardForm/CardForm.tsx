@@ -66,6 +66,9 @@ function CardForm({ queue }: Props) {
                         store.setSwitchFrom(queue);
                         store.setFormSwitched(false);
                     }
+
+                    // блюр при нажатии на enter
+                    inputRef.current.blur();
                 }}
                 onBlur={() => {
                     const inputValueChanged =
