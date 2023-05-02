@@ -1,4 +1,8 @@
 .options-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     width: 100%;
 
     margin-block: auto;
@@ -38,4 +42,13 @@
     color: rgb(200, 200, 200);
 
     cursor: auto;
+}
+
+.icon {
+    margin-inline-start: 0.5rem;
+    font-size: 1.2rem;
+}
+
+.rotate {
+    transform: translateY(10%) rotate(180deg);
 }

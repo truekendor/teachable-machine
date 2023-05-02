@@ -4,6 +4,8 @@ import { Context } from "../../../../index";
 import { observer } from "mobx-react-lite";
 
 import st from "./OptionsBtn.module.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
 
 type Props = {
     onClick: () => void;
@@ -21,7 +23,13 @@ function OptionsBtn({ onClick, expandOpt }: Props) {
             ].join(" ")}
             onClick={onClick}
         >
-            дополнительно
+            дополнительно{"  "}
+            <FontAwesomeIcon
+                className={[st["icon"], expandOpt ? st["rotate"] : ""].join(
+                    " "
+                )}
+                icon={faCaretDown}
+            />
         </button>
     );
 }

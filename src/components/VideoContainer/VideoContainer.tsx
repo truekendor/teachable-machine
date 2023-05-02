@@ -1,4 +1,4 @@
-import { useRef, useContext, useEffect, useState } from "react";
+import { useRef, useContext, useEffect } from "react";
 import * as tf from "@tensorflow/tfjs";
 import { Context } from "../../index";
 import { observer } from "mobx-react-lite";
@@ -6,13 +6,8 @@ import { observer } from "mobx-react-lite";
 import st from "./VideoContainer.module.css";
 import DataCollectorBtn from "../UI/DataCollectorBtn/DataCollectorBtn";
 import Webcam from "../Webcam/Webcam";
-import useDebounce from "../../hooks/useDebounce";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-    faLeftRight,
-    faRightLeft,
-    faXmark,
-} from "@fortawesome/free-solid-svg-icons";
+import { faLeftRight, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 interface Props {
     queue: number;
@@ -33,9 +28,6 @@ function VideoContainer({ queue }: Props) {
     const camRef = useRef<HTMLVideoElement>();
 
     const testRef = useRef<HTMLCanvasElement>();
-
-    // Автовыключение камеры если не было собрано данных за последние N секунд
-    // const debouncedDisableCamera = useDebounce(disableViaMicrotask, 20 * 1000);
 
     function disableViaMicrotask() {
         queueMicrotask(disableCamera);
@@ -96,8 +88,6 @@ function VideoContainer({ queue }: Props) {
             return;
         }
 
-        // debouncedDisableCamera();
-
         const result = await navigator.mediaDevices.getUserMedia(constraints);
         stream.current = result;
         camRef.current.srcObject = result;
@@ -117,9 +107,11 @@ function VideoContainer({ queue }: Props) {
     // TODO времени между кадрами
     function dataGatherLoop() {
         if (!store.isGatheringData || !store.isCameraReady) {
+            console.log("RETURN FROM LOOP");
             return;
         }
 
+        console.log("INSIDE LOOP");
         let imageFeatures: tf.Tensor1D = store.calculateFeaturesOnCurrentFrame(
             camRef.current
         );
@@ -127,6 +119,8 @@ function VideoContainer({ queue }: Props) {
         const data = createImageFromVideo();
         if (data) {
             store.pushToBase64(data, queue);
+        } else {
+            console.log("no image data");
         }
 
         store.pushToTrainingData(imageFeatures, queue);

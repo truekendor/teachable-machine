@@ -88,6 +88,11 @@ function App() {
         predictionCamRef.current = ref;
     }
 
+    if (!store.mobilenet) {
+        return null;
+        // return <div>Loading mobilenet</div>;
+    }
+
     // TODO <TrainingArea /> && <Rightbar />сделать логику их размеров через CSS
     return (
         <div ref={appRef} className="App">

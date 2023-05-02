@@ -1,12 +1,19 @@
-import { makeAutoObservable, remove } from "mobx";
+import { makeAutoObservable } from "mobx";
 import * as tf from "@tensorflow/tfjs";
 import { BoundingBoxPart } from "../types/types";
 import { removeItemAtIndex } from "../utils/utils";
 
-interface trainingOpt {
-    shuffle: boolean;
+const Optimizer = {
+    adam: "adam",
+    sgd: "sgd",
+} as const;
+
+export interface TrainingProps {
     batchSize: number;
     epochs: number;
+    optimizer: (typeof Optimizer)[keyof typeof Optimizer];
+    validationSplit?: number;
+    learningRate?: number;
 }
 
 export default class Store {
@@ -32,51 +39,51 @@ export default class Store {
     predictionList: number[] = [];
 
     currentCard = -1;
-
-    cardBoundingBoxes: BoundingBoxPart[] = [];
-    wasDoubleClick = false;
-
     switchFrom = -1;
     formSwitched = true;
+
+    cardBoundingBoxes: BoundingBoxPart[] = [];
+
     mirrorWebcam = false;
+    wasDoubleClick = false;
     newCardAdded = false;
 
     innerHeight = `${100}vh`;
-
     isCameraReady = false;
 
     base64Array: string[][] = [];
 
     allDataGathered = false;
 
-    trainingOptions: trainingOpt;
+    defaultTrainingOptions: TrainingProps = {
+        batchSize: 16,
+        epochs: 20,
+        optimizer: "adam",
+        validationSplit: 0.15,
+        learningRate: 0.001,
+    } as const;
+
+    trainingOptions: TrainingProps = {
+        batchSize: 16,
+        epochs: 20,
+        optimizer: "adam",
+        validationSplit: 0.15,
+        learningRate: 0.001,
+    };
 
     constructor() {
         makeAutoObservable(this);
         this.setupModel();
         this.loadMobilenetModel();
+
+        this.setupBase64();
     }
 
-    pushToLabels(label: string) {
-        this.labelsArray.push(label);
-        this.base64Array.push([]);
-
-        this.allDataGathered = false;
-
-        this.setupModel();
-    }
-
-    changeLabelAtIndex(label: string, index: number) {
-        this.labelsArray[index] = label;
-    }
-
+    // ==============================
+    //  NEURAL NETWORK SECTION
+    // ==============================
     setMobilenet(mobilenet: tf.GraphModel) {
         this.mobilenet ??= mobilenet;
-    }
-
-    // record data on mouseBtnHold
-    setIsGatheringData(bool: boolean) {
-        this.isGatheringData = bool;
     }
 
     setupModel() {
@@ -99,7 +106,11 @@ export default class Store {
         );
 
         this.model.compile({
-            optimizer: "adam",
+            optimizer:
+                this.trainingOptions.optimizer === "adam"
+                    ? "adam"
+                    : tf.train.sgd(this.trainingOptions.learningRate),
+
             loss:
                 this.labelsArray.length === 2
                     ? "binaryCrossentropy"
@@ -114,8 +125,9 @@ export default class Store {
         let result = await tf.loadGraphModel(this.URL, { fromTFHub: true });
         this.setMobilenet(result);
 
+        // ? без этого не работает нажатие на кнопку записи первые пару секунд
         tf.tidy(() => {
-            let answer = this.mobilenet.predict(
+            const answer = this.mobilenet.predict(
                 // !         batch_size=1, y, x, 3
                 tf.zeros([
                     1,
@@ -129,6 +141,51 @@ export default class Store {
         });
     }
 
+    async train() {
+        try {
+            this.setIsTraining(true);
+
+            tf.util.shuffleCombo(
+                this.trainingDataInputs,
+                this.trainingDataOutputs
+            );
+
+            let outputsAsTensor = tf.tensor1d(
+                this.trainingDataOutputs,
+                "int32"
+            );
+            let oneHotOutputs = tf.oneHot(
+                outputsAsTensor,
+                this.labelsArray.length
+            );
+            let inputsAsTensor = tf.stack(this.trainingDataInputs);
+
+            await this.model.fit(inputsAsTensor, oneHotOutputs, {
+                // ! добавить в пропсы
+                shuffle: true,
+                batchSize: this.trainingOptions.batchSize,
+                epochs: this.trainingOptions.epochs,
+                validationSplit: this.trainingOptions.validationSplit || 0,
+
+                callbacks: { onEpochEnd: this.logProgress },
+            });
+
+            outputsAsTensor.dispose();
+            oneHotOutputs.dispose();
+            inputsAsTensor.dispose();
+
+            this.setIsModelTrained(true);
+        } catch (e: any) {
+            this.setIsModelTrained(false);
+            console.log(e.message);
+        } finally {
+            this.setIsTraining(false);
+        }
+    }
+
+    // ==============================
+    // NEURAL NETWORK RELATED
+    // ==============================
     pushToTrainingData(input: tf.Tensor1D, output: number) {
         this.trainingDataInputs.push(input);
         this.trainingDataOutputs.push(output);
@@ -169,74 +226,6 @@ export default class Store {
         });
     }
 
-    async train() {
-        try {
-            this.setIsTraining(true);
-
-            tf.util.shuffleCombo(
-                this.trainingDataInputs,
-                this.trainingDataOutputs
-            );
-
-            let outputsAsTensor = tf.tensor1d(
-                this.trainingDataOutputs,
-                "int32"
-            );
-            let oneHotOutputs = tf.oneHot(
-                outputsAsTensor,
-                this.labelsArray.length
-            );
-            let inputsAsTensor = tf.stack(this.trainingDataInputs);
-
-            await this.model.fit(inputsAsTensor, oneHotOutputs, {
-                shuffle: true,
-                batchSize: 5,
-                epochs: 10,
-
-                callbacks: { onEpochEnd: this.logProgress },
-            });
-
-            outputsAsTensor.dispose();
-            oneHotOutputs.dispose();
-            inputsAsTensor.dispose();
-
-            this.setIsModelTrained(true);
-        } catch (e: any) {
-            this.setIsModelTrained(false);
-            console.log(e.message);
-        } finally {
-            this.setIsTraining(false);
-        }
-    }
-
-    logProgress(epoch: any, logs: any) {
-        console.log("Data for epoch " + epoch, logs);
-    }
-
-    setIsModelTrained(bool: boolean) {
-        this.isModelTrained = bool;
-    }
-
-    setPredictionList(array: number[]) {
-        this.predictionList = [...array];
-    }
-
-    setIsTraining(bool: boolean) {
-        this.isTraining = bool;
-    }
-
-    setCurrentCard(index: number) {
-        this.currentCard = index;
-    }
-
-    setCardBoundingBoxByIndex(index: number, bBox: BoundingBoxPart) {
-        this.cardBoundingBoxes[index] = bBox;
-    }
-
-    setWasDoubleClick(bool: boolean) {
-        this.wasDoubleClick = bool;
-    }
-
     removeLabelByIndex(index: number) {
         this.labelsArray = removeItemAtIndex(this.labelsArray, index);
         this.cardBoundingBoxes = removeItemAtIndex(
@@ -274,42 +263,19 @@ export default class Store {
         this.trainingDataOutputs = [...newOut];
     }
 
-    setSwitchFrom(index: number) {
-        this.switchFrom = index;
+    setTrainingOptions(options: Partial<TrainingProps>) {
+        this.trainingOptions = {
+            ...this.trainingOptions,
+            ...options,
+        };
     }
 
-    setFormSwitched(bool: boolean) {
-        this.formSwitched = bool;
+    setIsModelTrained(bool: boolean) {
+        this.isModelTrained = bool;
     }
 
-    setIsCameraReady(state: boolean) {
-        this.isCameraReady = state;
-    }
-
-    pushToBase64(string: string, index: number) {
-        // если нет массива по этому индексу
-        // ! по идее deprecated так как pushToLabels создает
-        // ! этот массив
-        if (!this.base64Array[index]) {
-            console.log("HMMM");
-            for (let i = 0; i < this.labelsArray.length; i++) {
-                this.base64Array[i] = [];
-            }
-        }
-
-        this.base64Array[index].push(string);
-    }
-
-    removeBoundingBoxByIndex(index: number) {
-        this.cardBoundingBoxes = removeItemAtIndex(
-            this.cardBoundingBoxes,
-            index
-        );
-    }
-
-    setTrainingOptions(options: trainingOpt) {
-        // ! пока неактивно
-        this.trainingOptions = { ...options };
+    setIsTraining(bool: boolean) {
+        this.isTraining = bool;
     }
 
     checkAllDataGathered() {
@@ -323,6 +289,27 @@ export default class Store {
         }
 
         this.allDataGathered = true;
+    }
+
+    logProgress(epoch: any, logs: any) {
+        console.log("Data for epoch " + epoch, logs);
+    }
+
+    // ==============================
+    // UI STATES
+    // ==============================
+
+    setIsGatheringData(bool: boolean) {
+        // record data on mouseBtnHold
+        this.isGatheringData = bool;
+    }
+
+    setIsCameraReady(state: boolean) {
+        this.isCameraReady = state;
+    }
+
+    setCurrentCard(index: number) {
+        this.currentCard = index;
     }
 
     toggleMirrorWebcam() {
@@ -385,6 +372,67 @@ export default class Store {
 
         if (this.base64Array[cardIndex].length === 0) {
             this.checkAllDataGathered();
+        }
+    }
+
+    // ==============================
+    // OTHER STATES
+    // ==============================
+    setSwitchFrom(index: number) {
+        this.switchFrom = index;
+    }
+
+    setFormSwitched(bool: boolean) {
+        this.formSwitched = bool;
+    }
+
+    setWasDoubleClick(bool: boolean) {
+        this.wasDoubleClick = bool;
+    }
+
+    // ==============================
+    // COMPONENTS STATES
+    // ==============================
+
+    pushToLabels(label: string) {
+        this.labelsArray.push(label);
+        this.base64Array.push([]);
+
+        this.allDataGathered = false;
+
+        this.setupModel();
+    }
+
+    changeLabelAtIndex(label: string, index: number) {
+        this.labelsArray[index] = label;
+    }
+
+    setPredictionList(array: number[]) {
+        this.predictionList = [...array];
+    }
+
+    setCardBoundingBoxByIndex(index: number, bBox: BoundingBoxPart) {
+        this.cardBoundingBoxes[index] = bBox;
+    }
+
+    // ==============================
+    // OTHERS
+    // ==============================
+
+    pushToBase64(string: string, index: number) {
+        this.base64Array[index].push(string);
+    }
+
+    removeBoundingBoxByIndex(index: number) {
+        this.cardBoundingBoxes = removeItemAtIndex(
+            this.cardBoundingBoxes,
+            index
+        );
+    }
+
+    setupBase64() {
+        for (let i = 0; i < this.labelsArray.length; i++) {
+            this.base64Array[i] = [];
         }
     }
 }
