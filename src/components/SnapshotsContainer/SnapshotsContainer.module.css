@@ -1,5 +1,5 @@
 .snapshots-container {
-    margin: 0.5rem;
+    margin-block-start: 0.5rem;
 
     height: 300px;
 
@@ -30,7 +30,12 @@
 }
 
 .image-container {
-    display: flex;
+    margin-block-start: 0.4rem;
+
+    padding-inline: 0.3rem;
+
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(3.5rem, 1fr));
 
     gap: 0.2rem;
 
@@ -48,19 +53,7 @@
     max-width: 100%;
 }
 
-.swap {
-    -webkit-transform: rotateY(180deg);
-    -moz-transform: rotateY(180deg);
-    transform: rotateY(180deg);
-}
-
 .helper-div {
-    min-width: 1.5rem;
-    width: 31%;
-    max-width: 45%;
-
-    /* flex: 1; */
-
     position: relative;
 
     overflow: hidden;
@@ -72,6 +65,12 @@
 
     object-fit: cover;
     max-width: 100%;
+}
+
+.swap {
+    -webkit-transform: rotateY(180deg);
+    -moz-transform: rotateY(180deg);
+    transform: rotateY(180deg);
 }
 
 .helper-btn {
@@ -87,6 +86,8 @@
     background-color: transparent;
 
     transition: background-color 50ms ease-in-out;
+
+    z-index: 10;
 }
 
 .helper-btn:hover {
