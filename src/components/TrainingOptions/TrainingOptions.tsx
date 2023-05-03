@@ -114,12 +114,15 @@ function TrainingOptions() {
                 </label>
                 <button
                     onClick={() => {
-                        console.log({ ...store.trainingOptions });
-                        // store.setTrainingOptions({
-                        //     ...store.defaultTrainingOptions,
-                        // });
+                        // console.log({ ...store.trainingOptions });
+                        // ! ==================
+                        // TODO доделать
 
-                        // setEpochsValue(`${20}`)
+                        store.setTrainingOptions({
+                            ...store.defaultTrainingOptions,
+                        });
+
+                        setEpochsValue(`${20}`);
                     }}
                     className={st["default-btn"]}
                 >
