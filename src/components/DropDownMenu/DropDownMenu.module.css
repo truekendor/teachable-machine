@@ -1,8 +1,4 @@
 .menu-container {
-    --trigger-height: 1.8rem;
-    --trigger-pd-y: 0.2rem;
-    --trigger-pd-x: 1rem;
-
     position: relative;
 
     border-top: 1px solid var(--inner-line-clr);
@@ -30,7 +26,7 @@
     visibility: hidden;
     pointer-events: none;
 
-    top: var(--trigger-height);
+    top: var(--input-height);
     left: 0;
     right: 0;
 
@@ -52,13 +48,13 @@
 
     font-size: 0.9rem;
 
-    height: var(--trigger-height);
+    height: var(--input-height);
     width: min-content;
 
     background-color: var(--bg-color-light-blue);
     color: var(--bg-color-deep-blue);
 
-    padding: var(--trigger-pd-y) var(--trigger-pd-x);
+    padding: var(--input-pd-y) var(--input-pd-x);
     padding-inline-end: 0;
 
     cursor: default;
@@ -95,7 +91,7 @@
 
 .menu-active {
     outline-offset: 1px;
-    outline: 2px solid var(--bg-color-deep-blue-hover);
+    outline: 2px solid var(--bg-color-deep-blue-lighter);
 }
 
 .icon {
@@ -104,7 +100,7 @@
 
     font-size: 1.2rem;
 
-    height: var(--trigger-height);
+    height: var(--input-height);
 
     margin-inline-start: 1rem;
 

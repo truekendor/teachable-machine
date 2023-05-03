@@ -2,15 +2,13 @@
     display: flex;
     flex-direction: column;
 
-    padding-block: 1rem;
+    padding-block-end: 1rem;
     padding-inline: var(--training-area-pd);
 
     min-height: 10rem;
     /* height: min-content; */
 
     width: 100%;
-
-    /* background-color: rgb(246, 185, 185); */
 
     border-bottom-left-radius: var(--card-border-radius);
     border-bottom-right-radius: var(--card-border-radius);
@@ -36,19 +34,40 @@
 }
 
 .label > input {
+    border: transparent;
+    outline: transparent;
+
+    outline: var(--bg-color-deep-blue-lighter);
+
     max-width: 100%;
-    width: 30%;
+    width: 50%;
+
+    height: var(--input-height);
+    padding: var(--input-pd-y) var(--input-pd-x);
+
+    background-color: var(--bg-color-light-blue);
+    color: var(--bg-color-deep-blue);
 }
 
-.opt {
-    padding: 0.4rem 0.6rem;
-
-    border: 3px solid salmon;
+.label > input:focus {
+    outline: 2px solid var(--bg-color-deep-blue-lighter);
 }
 
-.opt-warn {
-    color: rgb(221, 65, 37);
-    background-color: rgb(255, 239, 236);
+.epochs-input {
+    /*  */
+}
 
-    outline: 1px solid currentColor;
+.default-btn {
+    display: flex;
+
+    justify-content: space-around;
+    align-items: center;
+
+    background-color: var(--bg-color-deep-blue);
+    color: var(--bg-color-light-blue);
+
+    padding: 0.5rem 1rem;
+    border-radius: 0.2rem;
+
+    margin-block-start: 0.5rem;
 }

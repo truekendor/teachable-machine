@@ -21,12 +21,16 @@
     --bg-color-light-blue: rgb(240, 240, 255);
 
     --bg-color-deep-blue: rgb(58, 58, 204);
-    --bg-color-deep-blue-hover: rgb(74, 90, 255);
+    --bg-color-deep-blue-lighter: rgb(74, 90, 255);
 
     --inner-line-clr: rgb(189, 189, 189);
     --training-area-pd: 10px;
 
     --app-bg-color: rgb(238, 238, 238);
+
+    --input-height: 1.8rem;
+    --input-pd-y: 0.2rem;
+    --input-pd-x: 1rem;
 }
 
 body {
@@ -137,4 +141,15 @@ button {
 
     font-size: 1.3rem;
     color: rgb(66, 97, 209);
+}
+
+input[type="number"] {
+    -webkit-appearance: textfield;
+    -moz-appearance: textfield;
+    appearance: textfield;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
 }

@@ -1,9 +1,9 @@
 .train-btn {
     cursor: not-allowed;
 
-    padding: 10px 15px;
+    padding: 0.6rem 1rem;
 
-    margin-block: auto;
+    margin-block: 0.2rem;
     margin-inline: var(--training-area-pd);
 
     border-radius: 5px;

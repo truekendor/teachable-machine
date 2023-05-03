@@ -59,7 +59,7 @@
     background-color: rgb(255, 237, 233);
     color: rgb(254, 79, 48);
 
-    z-index: 3;
+    z-index: 20;
 
     pointer-events: none;
 

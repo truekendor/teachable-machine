@@ -4,8 +4,9 @@
     align-items: center;
 
     width: 100%;
+    height: 3rem;
 
-    margin-block: auto;
+    margin-block-start: auto;
     padding: var(--training-area-pd);
 
     font-weight: 600;

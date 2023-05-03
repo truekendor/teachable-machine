@@ -46,7 +46,7 @@
 }
 
 .top-panel > button:hover {
-    color: var(--bg-color-deep-blue-hover);
+    color: var(--bg-color-deep-blue-lighter);
 }
 
 .cancel-video-btn {
