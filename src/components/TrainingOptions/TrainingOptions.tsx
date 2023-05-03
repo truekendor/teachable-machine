@@ -41,12 +41,54 @@ function TrainingOptions() {
                         }}
                         id="batch-size"
                     >
-                        <option disabled={length < 16}>16</option>
-                        <option disabled={length < 32}>32</option>
-                        <option disabled={length < 64}>64</option>
-                        <option disabled={length < 128}>128</option>
-                        <option disabled={length < 256}>256</option>
-                        <option disabled={length < 512}>512</option>
+                        <option
+                            className={[
+                                st["opt"],
+                                length < 16 ? st["opt-warn"] : "",
+                            ].join(" ")}
+                        >
+                            16
+                        </option>
+                        <option
+                            className={[
+                                st["opt"],
+                                length < 32 ? st["opt-warn"] : "",
+                            ].join(" ")}
+                        >
+                            32
+                        </option>
+                        <option
+                            className={[
+                                st["opt"],
+                                length < 64 ? st["opt-warn"] : "",
+                            ].join(" ")}
+                        >
+                            64
+                        </option>
+                        <option
+                            className={[
+                                st["opt"],
+                                length < 128 ? st["opt-warn"] : "",
+                            ].join(" ")}
+                        >
+                            128
+                        </option>
+                        <option
+                            className={[
+                                st["opt"],
+                                length < 256 ? st["opt-warn"] : "",
+                            ].join(" ")}
+                        >
+                            256
+                        </option>
+                        <option
+                            className={[
+                                st["opt"],
+                                length < 512 ? st["opt-warn"] : "",
+                            ].join(" ")}
+                        >
+                            512
+                        </option>
                     </select>
                 </label>
                 <label className={[st["label"]].join(" ")} htmlFor="epochs">

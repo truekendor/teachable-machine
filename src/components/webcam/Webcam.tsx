@@ -29,8 +29,9 @@ const Webcam = forwardRef(function (
                     st["video"],
 
                     store.mirrorWebcam ? st["swap"] : "",
-                    (!isCurrent || !store.isCameraReady) &&
-                        st["visually-hidden"],
+                    !isCurrent || !store.isCameraReady
+                        ? st["visually-hidden"]
+                        : "",
                 ].join(" ")}
             ></video>
         </div>

@@ -107,11 +107,9 @@ function VideoContainer({ queue }: Props) {
     // TODO времени между кадрами
     function dataGatherLoop() {
         if (!store.isGatheringData || !store.isCameraReady) {
-            console.log("RETURN FROM LOOP");
             return;
         }
 
-        console.log("INSIDE LOOP");
         let imageFeatures: tf.Tensor1D = store.calculateFeaturesOnCurrentFrame(
             camRef.current
         );

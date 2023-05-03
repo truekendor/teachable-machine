@@ -39,3 +39,16 @@
     max-width: 100%;
     width: 30%;
 }
+
+.opt {
+    padding: 0.4rem 0.6rem;
+
+    border: 3px solid salmon;
+}
+
+.opt-warn {
+    color: rgb(221, 65, 37);
+    background-color: rgb(255, 239, 236);
+
+    outline: 1px solid currentColor;
+}

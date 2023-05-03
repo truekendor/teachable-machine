@@ -18,38 +18,34 @@ function SnapshotsContainer({ queue }: Props) {
                 Количество образцов: {store.base64Array[queue]?.length || 0}
             </div>
             <div className={[st["image-container"]].join(" ")}>
-                {store.base64Array[queue] &&
-                    store.base64Array[queue]
-                        ?.slice()
-                        ?.reverse()
-                        .map((base64, index) => {
-                            return (
-                                <div
-                                    key={v4()}
-                                    className={[st["helper-div"]].join(" ")}
+                {store.base64Array[queue]
+                    ?.slice()
+                    ?.reverse()
+                    .map((base64, index) => {
+                        return (
+                            <div
+                                key={v4()}
+                                className={[st["helper-div"]].join(" ")}
+                            >
+                                <button
+                                    onClick={() => {
+                                        store.removeImageByIndex(queue, index);
+                                    }}
+                                    className={[st["helper-btn"]].join(" ")}
                                 >
-                                    <button
-                                        onClick={() => {
-                                            store.removeImageByIndex(
-                                                queue,
-                                                index
-                                            );
-                                        }}
-                                        className={[st["helper-btn"]].join(" ")}
-                                    >
-                                        <FontAwesomeIcon icon={faXmark} />
-                                    </button>
-                                    <img
-                                        className={[
-                                            st["img"],
-                                            store.mirrorWebcam && st["swap"],
-                                        ].join(" ")}
-                                        src={base64}
-                                        alt="data"
-                                    />
-                                </div>
-                            );
-                        })}
+                                    <FontAwesomeIcon icon={faXmark} />
+                                </button>
+                                <img
+                                    className={[
+                                        st["img"],
+                                        store.mirrorWebcam && st["swap"],
+                                    ].join(" ")}
+                                    src={base64}
+                                    alt="data"
+                                />
+                            </div>
+                        );
+                    })}
             </div>
         </div>
     );
