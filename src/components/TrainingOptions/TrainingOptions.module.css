@@ -18,6 +18,8 @@
     display: flex;
     flex-direction: column;
 
+    gap: 0.1rem;
+
     width: 100%;
 }
 
@@ -26,6 +28,10 @@
     flex-direction: column;
 
     max-width: 100%;
+
+    position: relative;
+
+    margin-block-end: 0.2rem;
 }
 
 .label > h4 {
@@ -70,4 +76,27 @@
     border-radius: 0.2rem;
 
     margin-block-start: 0.5rem;
+}
+
+.stroked {
+    text-decoration: line-through;
+}
+
+.adam-warn {
+    position: absolute;
+    visibility: hidden;
+
+    pointer-events: none;
+}
+
+input:hover + .adam-warn,
+label:hover > .adam-warn {
+    background-color: rgb(240, 156, 20);
+
+    padding: 0.4rem 1rem;
+
+    border-radius: 0.2rem;
+
+    color: white;
+    visibility: visible;
 }

@@ -19,7 +19,7 @@ function OptionsBtn({ onClick, expandOpt }: Props) {
             disabled={store.isModelTrained}
             className={[
                 st["options-btn"],
-                expandOpt || store.isModelTrained ? st["expanded"] : "",
+                expandOpt && !store.isModelTrained ? st["expanded"] : "",
             ].join(" ")}
             onClick={onClick}
         >
