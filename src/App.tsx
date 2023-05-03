@@ -35,7 +35,13 @@ function App() {
 
         // currentCard меняется при клике на кнопку включения камеры, а она
         // меняет размеры карточки
-    }, [store.labelsArray.length, store.currentCard, store.isModelTrained]);
+    }, [
+        store.labelsArray.length,
+        store.currentCard,
+        store.isModelTrained,
+        store.optionsBtnClicked,
+        store,
+    ]);
 
     async function enableCamera() {
         const constraints = {

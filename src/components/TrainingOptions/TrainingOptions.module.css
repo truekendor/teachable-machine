@@ -6,11 +6,11 @@
     padding-inline: var(--training-area-pd);
 
     min-height: 10rem;
-    height: min-content;
+    /* height: min-content; */
 
     width: 100%;
 
-    background-color: rgb(246, 185, 185);
+    /* background-color: rgb(246, 185, 185); */
 
     border-bottom-left-radius: var(--card-border-radius);
     border-bottom-right-radius: var(--card-border-radius);

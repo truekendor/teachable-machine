@@ -1,0 +1,115 @@
+.menu-container {
+    --trigger-height: 1.8rem;
+    --trigger-pd-y: 0.2rem;
+    --trigger-pd-x: 1rem;
+
+    position: relative;
+
+    border-top: 1px solid var(--inner-line-clr);
+
+    margin-block: 0.5rem;
+    margin-inline: calc(var(--training-area-pd) * -1);
+
+    padding-inline: var(--training-area-pd);
+    padding-block: 0.4rem;
+}
+
+.menu {
+    font-family: "Poppins", sans-serif;
+    position: absolute;
+
+    display: flex;
+    flex-direction: column;
+
+    height: 0;
+
+    /* background-color: ; */
+    background-color: var(--bg-color-light-blue);
+
+    overflow: hidden;
+    visibility: hidden;
+    pointer-events: none;
+
+    top: var(--trigger-height);
+    left: 0;
+    right: 0;
+
+    border-radius: 0.5rem;
+
+    outline: 1px solid hsl(235, 90%, 81%);
+}
+
+.title {
+    margin-block-end: 0.5rem;
+}
+
+.trigger {
+    position: relative;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 0.9rem;
+
+    height: var(--trigger-height);
+    width: min-content;
+
+    background-color: var(--bg-color-light-blue);
+    color: var(--bg-color-deep-blue);
+
+    padding: var(--trigger-pd-y) var(--trigger-pd-x);
+    padding-inline-end: 0;
+
+    cursor: default;
+}
+
+.menu > ul {
+    display: contents;
+}
+
+.menu-item {
+    width: 1fr;
+    cursor: pointer;
+
+    padding: 0.4rem 0.8rem;
+
+    list-style: none;
+
+    background-color: var(--bg-color-light-blue);
+    color: var(--bg-color-deep-blue);
+}
+
+.menu-item:hover {
+    color: var(--bg-color-light-blue);
+    background-color: var(--bg-color-deep-blue);
+}
+
+.active {
+    visibility: visible;
+    pointer-events: all;
+
+    height: min-content;
+    z-index: 10;
+}
+
+.menu-active {
+    outline-offset: 1px;
+    outline: 2px solid var(--bg-color-deep-blue-hover);
+}
+
+.icon {
+    display: flex;
+    align-items: center;
+
+    font-size: 1.2rem;
+
+    height: var(--trigger-height);
+
+    margin-inline-start: 1rem;
+
+    padding: 0 0.8rem;
+
+    color: var(--bg-color-light-blue);
+    background-color: var(--bg-color-deep-blue);
+}

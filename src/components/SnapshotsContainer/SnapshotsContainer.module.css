@@ -29,6 +29,15 @@
     border-radius: 20px;
 }
 
+.amount-counter {
+    font-size: 0.9rem;
+    font-weight: 600;
+
+    color: rgb(80, 80, 80);
+
+    max-width: 100%;
+}
+
 .image-container {
     margin-block-start: 0.4rem;
 
@@ -44,19 +53,8 @@
     width: 100%;
 }
 
-.amount-counter {
-    font-size: 0.9rem;
-    font-weight: 600;
-
-    color: rgb(80, 80, 80);
-
-    max-width: 100%;
-}
-
-.helper-div {
+.image-div {
     position: relative;
-
-    display: flex;
 
     overflow: hidden;
     border-radius: 4px;

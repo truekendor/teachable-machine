@@ -54,7 +54,10 @@ function TrainingArea({ onClick }: Props) {
                 <h3>Обучение</h3>
                 {!store.isModelTrained && (
                     <TrainBtn
-                        onClick={onClick}
+                        onClick={() => {
+                            store.toggleOptionBtnClicked();
+                            return onClick();
+                        }}
                         onMouseEnter={mouseEnterHandler}
                         onMouseLeave={mouseLeaveHandler}
                     />

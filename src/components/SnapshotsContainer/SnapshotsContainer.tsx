@@ -25,7 +25,7 @@ function SnapshotsContainer({ queue }: Props) {
                         return (
                             <div
                                 key={v4()}
-                                className={[st["helper-div"]].join(" ")}
+                                className={[st["image-div"]].join(" ")}
                             >
                                 <button
                                     onClick={() => {

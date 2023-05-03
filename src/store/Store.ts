@@ -47,6 +47,7 @@ export default class Store {
     mirrorWebcam = false;
     wasDoubleClick = false;
     newCardAdded = false;
+    optionsBtnClicked = false;
 
     innerHeight = `${100}vh`;
     isCameraReady = false;
@@ -375,6 +376,9 @@ export default class Store {
         }
     }
 
+    toggleOptionBtnClicked() {
+        this.optionsBtnClicked = !this.optionsBtnClicked;
+    }
     // ==============================
     // OTHER STATES
     // ==============================

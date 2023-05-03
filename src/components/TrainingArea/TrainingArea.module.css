@@ -14,9 +14,9 @@
 
     min-height: 10rem;
 
-    gap: 1.1rem;
+    gap: 0.4rem;
 
-    height: min-content;
+    height: max-content;
 
     width: 100%;
 
