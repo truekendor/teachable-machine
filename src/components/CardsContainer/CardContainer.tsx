@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { useContext } from "react";
 import { observer } from "mobx-react-lite";
 import { Context } from "../../index";
 import Card from "../Card/Card";
@@ -8,9 +8,7 @@ import { v4 } from "uuid";
 
 import st from "./CardContainer.module.css";
 
-type Props = {};
-
-function CardContainer({}: Props) {
+function CardContainer() {
     const { store } = useContext(Context);
 
     return (
@@ -20,7 +18,7 @@ function CardContainer({}: Props) {
             })}
 
             <NewCardBtn
-                hidden={store.isModelTrained}
+                hidden={false}
                 onClick={() => {
                     store.pushToLabels(`Class ${store.labelsArray.length + 1}`);
                     store.setNewCardAdded(true);

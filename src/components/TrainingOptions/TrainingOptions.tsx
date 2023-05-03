@@ -14,6 +14,7 @@ function TrainingOptions() {
     const { store } = useContext(Context);
 
     const [epochsValue, setEpochsValue] = useState("20");
+    const [learningRate, setLearningRate] = useState("0.0001");
 
     const isAdam = store.trainingOptions.optimizer === "adam";
 
@@ -68,7 +69,7 @@ function TrainingOptions() {
                             }
                             let val = parseInt?.(e.target.value);
 
-                            if (val === 0 || val > 999) return;
+                            if (val > 999) return;
 
                             setEpochsValue(`${val}`);
                             store.setTrainingOptions({
@@ -87,8 +88,21 @@ function TrainingOptions() {
                     <input
                         disabled={isAdam}
                         className={[isAdam ? st["stroked"] : ""].join(" ")}
-                        defaultValue={0.001}
-                        type="text"
+                        value={learningRate}
+                        onChange={(e) => {
+                            if (e.target.value === "") {
+                                setLearningRate("");
+                                return;
+                            }
+
+                            setLearningRate(`${e.target.value}`);
+                            store.setTrainingOptions({
+                                learningRate:
+                                    parseFloat(e.target.value) ||
+                                    store.defaultTrainingOptions.learningRate,
+                            });
+                        }}
+                        type="number"
                         id="learning-rate"
                     />
                     {isAdam && (
@@ -100,9 +114,12 @@ function TrainingOptions() {
                 </label>
                 <button
                     onClick={() => {
-                        store.setTrainingOptions({
-                            ...store.defaultTrainingOptions,
-                        });
+                        console.log({ ...store.trainingOptions });
+                        // store.setTrainingOptions({
+                        //     ...store.defaultTrainingOptions,
+                        // });
+
+                        // setEpochsValue(`${20}`)
                     }}
                     className={st["default-btn"]}
                 >

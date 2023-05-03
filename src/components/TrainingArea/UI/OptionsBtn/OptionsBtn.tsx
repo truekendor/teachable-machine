@@ -5,7 +5,7 @@ import { observer } from "mobx-react-lite";
 
 import st from "./OptionsBtn.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
 
 type Props = {
     onClick: () => void;
@@ -16,10 +16,9 @@ function OptionsBtn({ onClick, expandOpt }: Props) {
 
     return (
         <button
-            disabled={store.isModelTrained}
             className={[
                 st["options-btn"],
-                expandOpt && !store.isModelTrained ? st["expanded"] : "",
+                expandOpt ? st["expanded"] : "",
             ].join(" ")}
             onClick={onClick}
         >

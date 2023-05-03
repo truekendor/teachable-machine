@@ -52,16 +52,16 @@ function TrainingArea({ onClick }: Props) {
         <Column min={9} width={13.5} max={15}>
             <div className={[st["main-area"]].join(" ")}>
                 <h3>Обучение</h3>
-                {!store.isModelTrained && (
-                    <TrainBtn
-                        onClick={() => {
-                            store.toggleOptionBtnClicked();
-                            return onClick();
-                        }}
-                        onMouseEnter={mouseEnterHandler}
-                        onMouseLeave={mouseLeaveHandler}
-                    />
-                )}
+                {/* {!store.isModelTrained && ( */}
+                <TrainBtn
+                    onClick={() => {
+                        store.toggleOptionBtnClicked();
+                        return onClick();
+                    }}
+                    onMouseEnter={mouseEnterHandler}
+                    onMouseLeave={mouseLeaveHandler}
+                />
+                {/* )} */}
                 {warn && (
                     <p className={[st["warn"]].join(" ")}>
                         <FontAwesomeIcon icon={faExclamationCircle} /> Данные
@@ -76,7 +76,7 @@ function TrainingArea({ onClick }: Props) {
                     }}
                 />
 
-                {expandOpt && !store.isModelTrained && <TrainingOptions />}
+                {expandOpt && <TrainingOptions />}
             </div>
         </Column>
     );

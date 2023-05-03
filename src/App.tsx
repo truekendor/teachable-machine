@@ -59,22 +59,27 @@ function App() {
     }
 
     function predictLoop() {
-        if (!store.isModelTrained) return;
+        if (!store.isModelTrained || store.isGatheringData) return;
 
-        tf.tidy(function () {
-            let imageFeatures = store.calculateFeaturesOnCurrentFrame(
-                predictionCamRef.current
-            );
-            let prediction = store.model
-                .predict(imageFeatures.expandDims())
-                // @ts-ignore
-                .squeeze();
-            let predictionArray = prediction.arraySync();
+        try {
+            tf.tidy(function () {
+                let imageFeatures = store.calculateFeaturesOnCurrentFrame(
+                    predictionCamRef.current
+                );
 
-            store.setPredictionList(predictionArray);
-        });
+                let prediction = store.model
+                    ?.predict(imageFeatures?.expandDims?.())
+                    // @ts-ignore
+                    ?.squeeze();
+                let predictionArray = prediction.arraySync();
 
-        window.requestAnimationFrame(predictLoop);
+                store.setPredictionList(predictionArray);
+            });
+
+            window.requestAnimationFrame(predictLoop);
+        } catch (e: any) {
+            console.log(e.message);
+        }
     }
 
     async function onClickHandler() {
@@ -107,7 +112,18 @@ function App() {
             </header>
 
             {store.isTraining && (
-                <div className="warn">
+                <div
+                    style={
+                        {
+                            "--epoch-completed": `${
+                                (store.currentEpoch /
+                                    store.trainingOptions.epochs) *
+                                100
+                            }%`,
+                        } as React.CSSProperties
+                    }
+                    className="warn"
+                >
                     Не переключайте вкладки пока модель обучается
                 </div>
             )}

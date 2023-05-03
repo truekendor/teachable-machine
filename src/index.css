@@ -78,10 +78,10 @@ button {
 .warn {
     position: fixed;
     top: 5%;
-    left: 10%;
-    right: 10%;
+    left: 50%;
+    transform: translateX(-50%);
 
-    background-color: rgb(246, 56, 56);
+    background-color: rgb(255, 112, 112);
     color: rgb(255, 233, 233);
 
     border-radius: 5px;
@@ -89,6 +89,25 @@ button {
     padding: 10px 15px;
 
     z-index: 1000;
+    isolation: isolate;
+
+    overflow: hidden;
+}
+
+.warn::before {
+    content: "";
+    position: absolute;
+
+    left: 0;
+    top: 0;
+    bottom: 0;
+
+    z-index: -1;
+
+    width: var(--epoch-completed);
+
+    /* height: 3px; */
+    background-color: rgb(231, 77, 21);
 }
 
 .visually-hidden {

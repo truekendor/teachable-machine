@@ -65,7 +65,7 @@ function Card({ queue }: Props) {
         <div ref={containerRef} className={[st["card"]].join(" ")}>
             <header className={[st["header"]].join(" ")}>
                 <CardForm queue={queue} />
-                {!store.isModelTrained && (
+                {
                     <button
                         onDoubleClick={doubleClickHandler}
                         onClick={debounce}
@@ -74,21 +74,19 @@ function Card({ queue }: Props) {
                     >
                         <FontAwesomeIcon icon={faTrash} />
                     </button>
-                )}
+                }
             </header>
             <div className={[st["card-body"]].join(" ")}>
-                {!isCurrent && !store.isModelTrained && (
+                {!isCurrent && (
                     <CameraEnableBtn
                         onClick={() => {
                             store.setCurrentCard(queue);
                         }}
                     />
                 )}
-                {!store.isModelTrained && <VideoContainer queue={queue} />}
+                <VideoContainer queue={queue} />
 
-                {isCurrent && !store.isModelTrained && (
-                    <SnapshotsContainer queue={queue} />
-                )}
+                {isCurrent && <SnapshotsContainer queue={queue} />}
             </div>
         </div>
     );

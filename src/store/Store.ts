@@ -16,7 +16,7 @@ export interface TrainingProps {
     learningRate?: number;
 }
 
-export default class Store {
+export class Store {
     URL = `https://tfhub.dev/google/tfjs-model/imagenet/mobilenet_v3_small_100_224/feature_vector/5/default/1`;
 
     model: tf.Sequential;
@@ -55,6 +55,7 @@ export default class Store {
     base64Array: string[][] = [];
 
     allDataGathered = false;
+    currentEpoch = -1;
 
     defaultTrainingOptions: TrainingProps = {
         batchSize: 16,
@@ -168,7 +169,10 @@ export default class Store {
                 epochs: this.trainingOptions.epochs,
                 validationSplit: this.trainingOptions.validationSplit || 0,
 
-                callbacks: { onEpochEnd: this.logProgress },
+                callbacks: {
+                    onEpochEnd: this.logProgress.bind(this),
+                    onEpochBegin: this.epochPromise.bind(this),
+                },
             });
 
             outputsAsTensor.dispose();
@@ -269,6 +273,8 @@ export default class Store {
             ...this.trainingOptions,
             ...options,
         };
+
+        this.setupModel();
     }
 
     setIsModelTrained(bool: boolean) {
@@ -439,4 +445,20 @@ export default class Store {
             this.base64Array[i] = [];
         }
     }
+
+    epochPromise(number: number) {
+        new Promise((res, rej) => {
+            res(number);
+        }).then((epoch) => {
+            // @ts-ignore
+            this.setCurrentEpoch(epoch);
+        });
+    }
+
+    setCurrentEpoch(epoch: number) {
+        this.currentEpoch = epoch;
+    }
 }
+const store = new Store();
+
+export default store;
