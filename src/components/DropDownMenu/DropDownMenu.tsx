@@ -1,26 +1,34 @@
 import { observer } from "mobx-react-lite";
 import { useState, useContext, useEffect, useRef } from "react";
+import { Context } from "../..";
 import { v4 } from "uuid";
 
 import st from "./DropDownMenu.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCaretDown } from "@fortawesome/free-solid-svg-icons";
+import { faCaretDown, faQuestion } from "@fortawesome/free-solid-svg-icons";
+import { TrainingProps } from "../../store/Store";
+import { infoText } from "../../utils/infoText";
 
 type Props = {
     list: string[];
     onChoose: (val: string) => void;
     title: string;
+    helpText?: string;
+    propName: keyof TrainingProps;
 };
 
-function DropDownMenu({ list, title, onChoose }: Props) {
+function DropDownMenu({ list, title, onChoose, propName, helpText }: Props) {
     const [isOpen, setIsOpen] = useState(false);
-    const [value, setValue] = useState(list[0]);
+    const { store } = useContext(Context);
+
+    // так как лист содержит знак "%", то обрабатываем иначе
+    const isValidation = propName === "validationSplit";
 
     const menuRef = useRef<HTMLDivElement>();
 
     useEffect(() => {
         function mouseDownHandler(e: MouseEvent) {
-            // @ts-ignore
+            // @ts-ignore - TS понятия не имеет что говорит
             if (!menuRef.current.contains(e.target)) setIsOpen(false);
         }
 
@@ -34,44 +42,58 @@ function DropDownMenu({ list, title, onChoose }: Props) {
     return (
         <div className={st["menu-container"]}>
             <h4 className={st["title"]}>{title}</h4>
-            <div
-                ref={menuRef}
-                className={[
-                    st["trigger"],
-                    isOpen ? st["menu-active"] : "",
-                ].join(" ")}
-                tabIndex={1}
-                onClick={() => setIsOpen(!isOpen)}
-            >
-                <p>{value}</p>
-                <div className={st["icon"]}>
-                    <FontAwesomeIcon icon={faCaretDown} />
-                </div>
+
+            <div className={st["test"]}>
                 <div
-                    className={[st["menu"], isOpen ? st["active"] : ""].join(
-                        " "
-                    )}
+                    ref={menuRef}
+                    className={[
+                        st["trigger"],
+                        isOpen ? st["menu-active"] : "",
+                    ].join(" ")}
+                    tabIndex={1}
+                    onClick={() => setIsOpen(!isOpen)}
                 >
-                    <ul>
-                        {list.map((value) => {
-                            return (
-                                <li
-                                    className={[st["menu-item"]].join(" ")}
-                                    onClick={(e) => {
-                                        e.stopPropagation();
+                    <p>
+                        {isValidation
+                            ? `${store.trainingOptions[propName] * 100}%`
+                            : store.trainingOptions[propName]}
+                    </p>
+                    <div className={st["icon"]}>
+                        <FontAwesomeIcon icon={faCaretDown} />
+                    </div>
 
-                                        setIsOpen(false);
-                                        setValue(value);
+                    <div
+                        className={[
+                            st["menu"],
+                            isOpen ? st["active"] : "",
+                        ].join(" ")}
+                    >
+                        <ul>
+                            {list.map((value) => {
+                                return (
+                                    <li
+                                        className={[st["menu-item"]].join(" ")}
+                                        onClick={(e) => {
+                                            e.stopPropagation();
 
-                                        onChoose(value);
-                                    }}
-                                    key={v4()}
-                                >
-                                    {value}
-                                </li>
-                            );
-                        })}
-                    </ul>
+                                            setIsOpen(false);
+                                            onChoose(value);
+                                        }}
+                                        key={v4()}
+                                    >
+                                        {value}
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </div>
+                </div>
+
+                <div data-info-text={helpText} className={st["more-info"]}>
+                    <FontAwesomeIcon
+                        className={st["cosmetic"]}
+                        icon={faQuestion}
+                    />
                 </div>
             </div>
         </div>

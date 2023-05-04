@@ -46,24 +46,3 @@
     background-color: var(--inner-line-clr);
     height: 1px;
 }
-
-.warn {
-    position: absolute;
-    bottom: 10px;
-
-    width: 95%;
-
-    padding: var(--training-area-pd);
-    border-radius: 5px;
-
-    background-color: rgb(255, 237, 233);
-    color: rgb(254, 79, 48);
-
-    z-index: 20;
-
-    pointer-events: none;
-
-    outline: 2px solid tomato;
-
-    transform: translateY(50%);
-}

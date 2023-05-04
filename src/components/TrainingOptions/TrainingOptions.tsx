@@ -6,9 +6,13 @@ import { observer } from "mobx-react-lite";
 import DropDownMenu from "../DropDownMenu/DropDownMenu";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
+    faCircleQuestion,
     faExclamationCircle,
     faHistory,
+    faQuestion,
+    faQuestionCircle,
 } from "@fortawesome/free-solid-svg-icons";
+import { infoText } from "../../utils/infoText";
 
 function TrainingOptions() {
     const { store } = useContext(Context);
@@ -28,24 +32,28 @@ function TrainingOptions() {
                 className={[st["options-form"]].join(" ")}
             >
                 <DropDownMenu
-                    list={["Adam", "SGD"]}
+                    list={["adam", "sgd"]}
                     onChoose={(value) => {
                         type T = "adam" | "sgd";
                         value = value.toLocaleLowerCase();
 
                         store.setTrainingOptions({ optimizer: value as T });
                     }}
+                    propName={"optimizer"}
                     title="Оптимизатор"
+                    helpText={infoText.optimizer}
                 />
                 <DropDownMenu
-                    list={["0%", "5%", "10%", "15%"]}
+                    list={["0%", "10%", "15%", "20%"]}
                     onChoose={(value) => {
                         let num = parseInt(value);
                         num /= 100;
 
                         store.setTrainingOptions({ validationSplit: num });
                     }}
+                    propName={`validationSplit`}
                     title="Валидация"
+                    helpText={infoText.validationSplit}
                 />
 
                 <DropDownMenu
@@ -55,13 +63,15 @@ function TrainingOptions() {
 
                         store.setTrainingOptions({ batchSize: num });
                     }}
+                    propName={"batchSize"}
                     title="Размер пакета"
+                    helpText={infoText.batchSize}
                 />
 
                 <label className={st["label"]} htmlFor="epochs">
-                    <h4>Количество Эпох</h4>
+                    <h4 className={st["header"]}>Количество Эпох</h4>
                     <input
-                        className={st["epochs-input"]}
+                        className={[st["input"], st["epochs-input"]].join(" ")}
                         onChange={(e) => {
                             if (e.target.value === "") {
                                 setEpochsValue("");
@@ -81,13 +91,26 @@ function TrainingOptions() {
                         type="number"
                         id="epochs"
                     />
+                    <div
+                        data-info-text={infoText.epochs}
+                        className={st["more-info"]}
+                    >
+                        <FontAwesomeIcon
+                            className={st["cosmetic"]}
+                            icon={faQuestion}
+                        />
+                        {/* <FontAwesomeIcon icon={faSealQuestion} /> */}
+                    </div>
                 </label>
 
                 <label className={st["label"]} htmlFor="learning-rate">
-                    <h4>Скорость обучения?</h4>
+                    <h4 className={st["header"]}>Скорость обучения?</h4>
                     <input
                         disabled={isAdam}
-                        className={[isAdam ? st["stroked"] : ""].join(" ")}
+                        className={[
+                            st["input"],
+                            isAdam ? st["stroked"] : "",
+                        ].join(" ")}
                         value={learningRate}
                         onChange={(e) => {
                             if (e.target.value === "") {
@@ -111,20 +134,31 @@ function TrainingOptions() {
                             автоматически выбирает скорость обучения
                         </div>
                     )}
+
+                    <div
+                        data-info-text={infoText.learningRate}
+                        className={st["more-info"]}
+                    >
+                        <FontAwesomeIcon
+                            className={st["cosmetic"]}
+                            icon={faQuestion}
+                        />
+                    </div>
                 </label>
                 <button
+                    className={st["default-btn"]}
                     onClick={() => {
-                        // console.log({ ...store.trainingOptions });
-                        // ! ==================
-                        // TODO доделать
-
                         store.setTrainingOptions({
                             ...store.defaultTrainingOptions,
                         });
 
-                        setEpochsValue(`${20}`);
+                        setEpochsValue(
+                            `${store.defaultTrainingOptions.epochs}`
+                        );
+                        setLearningRate(
+                            `${store.defaultTrainingOptions.learningRate}`
+                        );
                     }}
-                    className={st["default-btn"]}
                 >
                     Сбросить настройки <FontAwesomeIcon icon={faHistory} />
                 </button>

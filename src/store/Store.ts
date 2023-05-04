@@ -12,8 +12,8 @@ export interface TrainingProps {
     batchSize: number;
     epochs: number;
     optimizer: (typeof Optimizer)[keyof typeof Optimizer];
-    validationSplit?: number;
-    learningRate?: number;
+    validationSplit: number;
+    learningRate: number;
 }
 
 export class Store {
@@ -55,6 +55,7 @@ export class Store {
     base64Array: string[][] = [];
 
     allDataGathered = false;
+    noDataIndex = -1;
     currentEpoch = -1;
 
     defaultTrainingOptions: TrainingProps = {
@@ -77,6 +78,7 @@ export class Store {
         makeAutoObservable(this);
         this.setupModel();
         this.loadMobilenetModel();
+        this.checkAllDataGathered();
 
         this.setupBase64();
     }
@@ -290,12 +292,15 @@ export class Store {
             const index = this.trainingDataOutputs.indexOf(i);
 
             if (index === -1) {
+                this.noDataIndex = i;
                 this.allDataGathered = false;
+
                 return;
             }
         }
 
         this.allDataGathered = true;
+        this.noDataIndex = -1;
     }
 
     logProgress(epoch: any, logs: any) {

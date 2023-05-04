@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import * as tf from "@tensorflow/tfjs";
 import { Context } from "./index";
 import { observer } from "mobx-react-lite";
@@ -9,12 +9,16 @@ import CanvasForCurves from "./components/CanvasForCurves/CanvasForCurves";
 import Rightbar from "./components/Rightbar/Rightbar";
 import CardContainer from "./components/CardsContainer/CardContainer";
 import Column from "./components/Column/Column";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
 
 function App() {
     const { store } = useContext(Context);
+
     const appRef = useRef<HTMLDivElement>();
     const predictionCamRef = useRef<HTMLVideoElement>();
 
+    const [warn, setWarn] = useState(false);
     // ! debug
     // setInterval(() => {
     //     console.log(tf.memory().numTensors);
@@ -83,6 +87,14 @@ function App() {
     }
 
     async function onClickHandler() {
+        setTimeout(() => {
+            setWarn(true);
+        });
+
+        setTimeout(() => {
+            setWarn(false);
+        }, 1500);
+
         if (!store.allDataGathered) return;
 
         store.setCurrentCard(-1);
@@ -111,6 +123,18 @@ function App() {
                 <h2 className="header">Teachable machine</h2>
             </header>
 
+            {warn && (
+                <div className={"warn no-data"}>
+                    <>
+                        <FontAwesomeIcon icon={faExclamationCircle} /> Данные
+                        собраны не для всех классов{" "}
+                        <p className="warn-accent">
+                            {store.labelsArray[store.noDataIndex]}
+                        </p>
+                    </>
+                </div>
+            )}
+
             {store.isTraining && (
                 <div
                     style={
@@ -124,7 +148,10 @@ function App() {
                     }
                     className="warn"
                 >
-                    Не переключайте вкладки пока модель обучается
+                    <div>Не переключайте вкладки пока модель обучается</div>
+                    <div>
+                        {store.currentEpoch} / {store.trainingOptions.epochs}
+                    </div>
                 </div>
             )}
 

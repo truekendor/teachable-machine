@@ -18,8 +18,8 @@
     flex-direction: column;
 
     height: 0;
+    width: 100%;
 
-    /* background-color: ; */
     background-color: var(--bg-color-light-blue);
 
     overflow: hidden;
@@ -44,12 +44,12 @@
 
     display: flex;
     align-items: center;
-    justify-content: center;
+    /* justify-content: center; */
 
     font-size: 0.9rem;
 
     height: var(--input-height);
-    width: min-content;
+    width: 60%;
 
     background-color: var(--bg-color-light-blue);
     color: var(--bg-color-deep-blue);
@@ -58,6 +58,10 @@
     padding-inline-end: 0;
 
     cursor: default;
+}
+
+.trigger p {
+    margin-inline-end: auto;
 }
 
 .menu > ul {
@@ -108,4 +112,74 @@
 
     color: var(--bg-color-light-blue);
     background-color: var(--bg-color-deep-blue);
+}
+
+.more-info {
+    display: flex;
+
+    font-size: 1rem;
+
+    color: rgb(145, 145, 145);
+    margin-inline-start: auto;
+}
+
+.more-info::before {
+    opacity: 0;
+
+    transition: opacity 100ms ease-in-out;
+}
+
+.more-info:hover::before {
+    content: attr(data-info-text);
+    position: absolute;
+
+    font-size: 1rem;
+
+    inset: 0;
+    opacity: 1;
+
+    width: calc(100% - var(--training-area-pd));
+    height: min-content;
+
+    padding: 0.5rem;
+    margin: auto;
+
+    border-radius: 0.3rem;
+
+    background-color: rgba(0, 0, 0, 0.95);
+    color: white;
+
+    pointer-events: none;
+
+    z-index: 30;
+}
+
+.cosmetic {
+    width: 1.2rem;
+    height: 1.2rem;
+
+    font-size: inherit;
+
+    background-color: transparent;
+
+    border-radius: 50%;
+
+    outline: 2px solid currentColor;
+    outline-offset: 1px;
+}
+
+.test {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+
+    width: 100%;
+}
+
+/* .test :first-child {
+    width: 60%;
+} */
+
+.test :last-child {
+    /* margin-left: auto; */
 }

@@ -19,34 +19,7 @@ type Props = {
 function TrainingArea({ onClick }: Props) {
     const { store } = useContext(Context);
 
-    const [warn, setWarn] = useState(false);
-    const [inside, setInside] = useState(false);
     const [expandOpt, setExpandOpt] = useState(false);
-
-    const debounce = useDebounce(
-        () => {
-            if (store.allDataGathered) {
-                setWarn(false);
-                return;
-            }
-            setWarn(true);
-        },
-        500,
-        () => {
-            setWarn(false);
-            return !inside;
-        }
-    );
-
-    function mouseEnterHandler() {
-        setInside(true);
-        debounce();
-    }
-
-    function mouseLeaveHandler() {
-        setInside(false);
-        debounce();
-    }
 
     return (
         <Column min={9} width={13.5} max={15}>
@@ -56,18 +29,10 @@ function TrainingArea({ onClick }: Props) {
                 <TrainBtn
                     onClick={() => {
                         store.toggleOptionBtnClicked();
+
                         return onClick();
                     }}
-                    onMouseEnter={mouseEnterHandler}
-                    onMouseLeave={mouseLeaveHandler}
                 />
-                {/* )} */}
-                {warn && (
-                    <p className={[st["warn"]].join(" ")}>
-                        <FontAwesomeIcon icon={faExclamationCircle} /> Данные
-                        собраны не для всех классов
-                    </p>
-                )}
 
                 <OptionsBtn
                     expandOpt={expandOpt}

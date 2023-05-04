@@ -7,10 +7,8 @@ import st from "./TrainBtn.module.css";
 
 type Props = {
     onClick: () => void;
-    onMouseEnter: () => void;
-    onMouseLeave: () => void;
 };
-function TrainBtn({ onClick, onMouseEnter, onMouseLeave }: Props) {
+function TrainBtn({ onClick }: Props) {
     const { store } = useContext(Context);
 
     return (
@@ -20,8 +18,6 @@ function TrainBtn({ onClick, onMouseEnter, onMouseLeave }: Props) {
                 store.allDataGathered ? st["all-gathered"] : "",
             ].join(" ")}
             onClick={onClick}
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
         >
             Обучить модель
         </button>
