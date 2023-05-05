@@ -57,8 +57,6 @@ function App() {
         const result = await navigator.mediaDevices.getUserMedia(constraints);
 
         predictionCamRef.current.srcObject = result;
-        cancelAnimationFrame(animationFrame.current);
-
         predictionCamRef.current.addEventListener("loadeddata", () => {
             predictLoop();
         });
@@ -98,6 +96,8 @@ function App() {
         }, 1500);
 
         if (!store.allDataGathered) return;
+
+        cancelAnimationFrame(animationFrame?.current);
         store.setIsModelTrained(false);
 
         store.setCurrentCard(-1);
