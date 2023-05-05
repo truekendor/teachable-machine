@@ -1,4 +1,4 @@
-import { useContext, useRef, forwardRef } from "react";
+import { useContext, forwardRef } from "react";
 
 import st from "./Webcam.module.css";
 import { Context } from "../../index";

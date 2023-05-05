@@ -6,11 +6,9 @@ import { observer } from "mobx-react-lite";
 import DropDownMenu from "../DropDownMenu/DropDownMenu";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-    faCircleQuestion,
     faExclamationCircle,
     faHistory,
     faQuestion,
-    faQuestionCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { infoText } from "../../utils/infoText";
 
@@ -21,9 +19,6 @@ function TrainingOptions() {
     const [learningRate, setLearningRate] = useState("0.0001");
 
     const isAdam = store.trainingOptions.optimizer === "adam";
-
-    // ! возможны ошибке при выборе
-    // const length = store.base64Array.flat().length;
 
     return (
         <div className={[st["options"]].join(" ")}>

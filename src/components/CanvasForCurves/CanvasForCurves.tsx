@@ -62,6 +62,7 @@ function CanvasForCurves({ width }: Props) {
         }
 
         queueMicrotask(draw);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         width,
         store.cardBoundingBoxes,

@@ -63,7 +63,7 @@ export class Store {
         epochs: 20,
         optimizer: "adam",
         validationSplit: 0.15,
-        learningRate: 0.001,
+        learningRate: 0.0001,
     } as const;
 
     trainingOptions: TrainingProps = {
@@ -71,7 +71,7 @@ export class Store {
         epochs: 20,
         optimizer: "adam",
         validationSplit: 0.15,
-        learningRate: 0.001,
+        learningRate: 0.0001,
     };
 
     constructor() {
