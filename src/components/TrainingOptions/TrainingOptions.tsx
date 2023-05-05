@@ -16,7 +16,9 @@ function TrainingOptions() {
     const { store } = useContext(Context);
 
     const [epochsValue, setEpochsValue] = useState("20");
-    const [learningRate, setLearningRate] = useState("0.0001");
+    const [learningRate, setLearningRate] = useState(
+        `${store.trainingOptions.learningRate}`
+    );
 
     const isAdam = store.trainingOptions.optimizer === "adam";
 

@@ -87,13 +87,15 @@ function App() {
     }
 
     async function onClickHandler() {
-        setTimeout(() => {
-            setWarn(true);
-        });
+        if (!store.allDataGathered) {
+            setTimeout(() => {
+                setWarn(true);
+            });
 
-        setTimeout(() => {
-            setWarn(false);
-        }, 1500);
+            setTimeout(() => {
+                setWarn(false);
+            }, 1500);
+        }
 
         if (!store.allDataGathered) return;
 
