@@ -17,12 +17,11 @@ function CardForm({ queue }: Props) {
     const id = useId();
 
     function isValidKeyCode(code: string) {
-        return code === "Enter" || code === "Escape" || code === "Tab";
+        return code === "Enter" || code === "Escape";
     }
 
     function isSwitchToOtherForm(e: React.KeyboardEvent<HTMLInputElement>) {
-        const switchCodes =
-            (e.code === "Enter" && e.shiftKey) || e.code === "Tab";
+        const switchCodes = e.code === "Enter" && e.shiftKey;
 
         return switchCodes;
     }

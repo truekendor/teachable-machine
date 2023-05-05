@@ -74,6 +74,9 @@
 
     padding: 0.4rem 0.8rem;
 
+    -webkit-user-select: none;
+    user-select: none;
+
     list-style: none;
 
     background-color: var(--bg-color-light-blue);
@@ -174,12 +177,4 @@
     flex-direction: row;
 
     width: 100%;
-}
-
-/* .test :first-child {
-    width: 60%;
-} */
-
-.test :last-child {
-    /* margin-left: auto; */
 }

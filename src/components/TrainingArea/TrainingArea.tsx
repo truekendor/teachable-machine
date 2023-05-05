@@ -28,6 +28,7 @@ function TrainingArea({ onClick }: Props) {
                 {/* {!store.isModelTrained && ( */}
                 <TrainBtn
                     onClick={() => {
+                        // ! хз что это, потом уберу
                         store.toggleOptionBtnClicked();
 
                         return onClick();

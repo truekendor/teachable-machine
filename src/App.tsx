@@ -17,6 +17,7 @@ function App() {
 
     const appRef = useRef<HTMLDivElement>();
     const predictionCamRef = useRef<HTMLVideoElement>();
+    const animationFrame = useRef<number>();
 
     const [warn, setWarn] = useState(false);
     // ! debug
@@ -56,13 +57,14 @@ function App() {
         const result = await navigator.mediaDevices.getUserMedia(constraints);
 
         predictionCamRef.current.srcObject = result;
+        cancelAnimationFrame(animationFrame.current);
 
         predictionCamRef.current.addEventListener("loadeddata", () => {
             predictLoop();
         });
     }
 
-    function predictLoop() {
+    function predictLoop(time = 0) {
         if (!store.isModelTrained || store.isGatheringData) return;
 
         try {
@@ -80,7 +82,7 @@ function App() {
                 store.setPredictionList(predictionArray);
             });
 
-            window.requestAnimationFrame(predictLoop);
+            animationFrame.current = window.requestAnimationFrame(predictLoop);
         } catch (e: any) {
             console.log(e.message);
         }
@@ -96,6 +98,7 @@ function App() {
         }, 1500);
 
         if (!store.allDataGathered) return;
+        store.setIsModelTrained(false);
 
         store.setCurrentCard(-1);
 
