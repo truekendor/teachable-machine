@@ -143,6 +143,7 @@ function TrainingOptions() {
                     </div>
                 </label>
                 <button
+                    type="button"
                     className={st["default-btn"]}
                     onClick={() => {
                         store.setTrainingOptions({
