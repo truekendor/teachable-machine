@@ -20,7 +20,7 @@ function CardContainer() {
             <NewCardBtn
                 hidden={false}
                 onClick={() => {
-                    store.pushToLabels(`Class ${store.labelsArray.length + 1}`);
+                    store.pushToLabels(`Class ${store.getNextClassNumber()}`);
                     store.setNewCardAdded(true);
                 }}
             />

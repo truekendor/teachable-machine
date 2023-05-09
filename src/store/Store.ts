@@ -2,6 +2,7 @@ import { makeAutoObservable } from "mobx";
 import * as tf from "@tensorflow/tfjs";
 import { BoundingBoxPart } from "../types/types";
 import { removeItemAtIndex } from "../utils/utils";
+import canvas from "./Canvas";
 
 const Optimizer = {
     adam: "adam",
@@ -57,6 +58,8 @@ export class Store {
     allDataGathered = false;
     noDataIndex = -1;
     currentEpoch = -1;
+
+    nextClassNumber = 4;
 
     defaultTrainingOptions: TrainingProps = {
         batchSize: 16,
@@ -322,6 +325,7 @@ export class Store {
 
     setCurrentCard(index: number) {
         this.currentCard = index;
+        this.drawOnCanvas();
     }
 
     toggleMirrorWebcam() {
@@ -415,6 +419,7 @@ export class Store {
 
         this.allDataGathered = false;
 
+        this.drawOnCanvas();
         this.setupModel();
     }
 
@@ -428,6 +433,8 @@ export class Store {
 
     setCardBoundingBoxByIndex(index: number, bBox: BoundingBoxPart) {
         this.cardBoundingBoxes[index] = bBox;
+
+        this.drawOnCanvas();
     }
 
     // ==============================
@@ -454,14 +461,28 @@ export class Store {
     epochPromise(number: number) {
         new Promise((res, rej) => {
             res(number);
-        }).then((epoch) => {
-            // @ts-ignore
-            this.setCurrentEpoch(epoch);
-        });
+        })
+            .then((epoch) => {
+                // @ts-ignore
+                this.setCurrentEpoch(epoch);
+            })
+            .catch((e) => console.log(e.message));
     }
 
     setCurrentEpoch(epoch: number) {
         this.currentEpoch = epoch;
+    }
+
+    getNextClassNumber() {
+        this.nextClassNumber += 1;
+
+        return this.nextClassNumber - 1;
+    }
+
+    drawOnCanvas() {
+        if (canvas.canvas) {
+            canvas.draw();
+        }
     }
 }
 const store = new Store();

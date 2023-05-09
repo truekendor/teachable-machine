@@ -53,13 +53,7 @@ function Card({ queue }: Props) {
         };
 
         store.setCardBoundingBoxByIndex(queue, bBox);
-
-        // выключаем камеру потому что мне кажется что так лучше
-        // store.setCurrentCard(-1);
-    }, [store.labelsArray.length, queue, store]);
-
-    // TODO выключить видео при создании новой карты
-    // TODO и включить его на последней
+    });
 
     return (
         <div ref={containerRef} className={[st["card"]].join(" ")}>
