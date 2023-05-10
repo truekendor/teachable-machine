@@ -1,4 +1,3 @@
-import { type } from "os";
 import { TrainingProps } from "../store/Store";
 
 const epochs =

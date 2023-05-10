@@ -1,16 +1,21 @@
-import { useRef, useContext, useEffect } from "react";
-import st from "./Card.module.css";
+import { useRef, useContext, useEffect, useState } from "react";
+
 import CameraEnableBtn from "../UI/CameraEnableBtn/CameraEnableBtn";
-import CardForm from "../CardForm/CardForm";
 import VideoContainer from "../VideoContainer/VideoContainer";
+import SnapshotsContainer from "../SnapshotsContainer/SnapshotsContainer";
+import CardForm from "../CardForm/CardForm";
+
 import { Context } from "../../index";
+import useDebounce from "../../hooks/useDebounce";
 
 import { observer } from "mobx-react-lite";
 import { BoundingBoxPart } from "../../types/types";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import useDebounce from "../../hooks/useDebounce";
-import SnapshotsContainer from "../SnapshotsContainer/SnapshotsContainer";
+
+import "../../index.css";
+import st from "./Card.module.css";
 
 interface Props {
     queue: number;
@@ -61,6 +66,12 @@ function Card({ queue }: Props) {
                 <CardForm queue={queue} />
                 {
                     <button
+                        // TODO
+                        // * ============
+                        // onClick={() => {
+                        //     setIsOptionsOpen(!isOptionsOpen);
+                        // }}
+                        // * ============
                         onDoubleClick={doubleClickHandler}
                         onClick={debounce}
                         className={`${st["delete-btn"]}`}

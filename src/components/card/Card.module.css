@@ -24,6 +24,8 @@
     border-bottom: 1px solid rgb(189, 189, 189);
 
     padding: var(--card-padding);
+
+    position: relative;
 }
 
 .delete-btn {
@@ -43,4 +45,17 @@
 .card-body {
     display: flex;
     padding: var(--card-padding);
+}
+
+.options {
+    position: absolute;
+
+    display: flex;
+
+    top: 2.5rem;
+    right: 0;
+
+    padding: 0.5rem;
+
+    background-color: salmon;
 }

@@ -1,16 +1,21 @@
+// * core
 import { useContext, useEffect, useRef, useState } from "react";
-import * as tf from "@tensorflow/tfjs";
-import { Context } from "./index";
+import { tidy, memory } from "@tensorflow/tfjs";
 import { observer } from "mobx-react-lite";
 
-import "./index.css";
+import { Context } from "./index";
+
+// * components
 import TrainingArea from "./components/TrainingArea/TrainingArea";
 import CanvasForCurves from "./components/CanvasForCurves/CanvasForCurves";
 import Rightbar from "./components/Rightbar/Rightbar";
 import CardContainer from "./components/CardsContainer/CardContainer";
 import Column from "./components/Column/Column";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
+import ProgressBar from "./components/ProgressBar/ProgressBar";
+import WarnComponent from "./components/WarnComponent/WarnComponent";
+
+// * styles
+import "./index.css";
 
 function App() {
     const { store } = useContext(Context);
@@ -20,6 +25,11 @@ function App() {
     const animationFrame = useRef<number>();
 
     const [warn, setWarn] = useState(false);
+
+    const mainStyle = {
+        "--inner-height": store.innerHeight,
+    } as React.CSSProperties;
+
     // ! debug
     // setInterval(() => {
     //     console.log(tf.memory().numTensors);
@@ -43,7 +53,7 @@ function App() {
         if (!store.isModelTrained || store.isGatheringData) return;
 
         try {
-            tf.tidy(function () {
+            tidy(function () {
                 let imageFeatures = store.calculateFeaturesOnCurrentFrame(
                     predictionCamRef.current
                 );
@@ -105,44 +115,16 @@ function App() {
                 <h2 className="header">Teachable machine</h2>
             </header>
 
-            {warn && (
-                <div className={"warn no-data"}>
-                    <FontAwesomeIcon icon={faExclamationCircle} /> Данные
-                    собраны не для всех классов{" "}
-                    <p className="warn-accent">
-                        {store.labelsArray[store.noDataIndex]}
-                    </p>
-                </div>
-            )}
+            {warn && <WarnComponent />}
 
             {store.isTraining && (
-                <div
-                    style={
-                        {
-                            "--epoch-completed": `${
-                                (store.currentEpoch /
-                                    store.trainingOptions.epochs) *
-                                100
-                            }%`,
-                        } as React.CSSProperties
-                    }
-                    className="warn"
-                >
-                    <div>Не переключайте вкладки пока модель обучается</div>
-                    <div>
-                        {store.currentEpoch} / {store.trainingOptions.epochs}
-                    </div>
-                </div>
+                <ProgressBar
+                    currentEpoch={store.currentEpoch}
+                    numOfEpochs={store.trainingOptions.epochs}
+                />
             )}
 
-            <main
-                style={
-                    {
-                        "--inner-height": store.innerHeight,
-                    } as React.CSSProperties
-                }
-                className={`main`}
-            >
+            <main style={mainStyle} className={`main`}>
                 <CardContainer />
 
                 <CanvasForCurves width={60} />

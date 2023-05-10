@@ -1,5 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import * as tf from "@tensorflow/tfjs";
+
 import { BoundingBoxPart } from "../types/types";
 import { removeItemAtIndex } from "../utils/utils";
 import canvas from "./Canvas";
