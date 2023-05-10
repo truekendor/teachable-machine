@@ -5,6 +5,7 @@
 /.pnp
 .pnp.js
 .hintrc
+.env
 
 # testing
 /coverage
