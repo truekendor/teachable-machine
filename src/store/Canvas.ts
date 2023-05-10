@@ -13,7 +13,9 @@ export class Canvas {
 
     setCanvas(ref: HTMLCanvasElement) {
         this.canvas = ref;
+
         this.c = ref.getContext("2d");
+        this.canvas.height = window.innerHeight;
     }
 
     setWidth(width: number) {
@@ -22,13 +24,15 @@ export class Canvas {
 
     draw() {
         const list = [...store.cardBoundingBoxes];
+        const { top } = this.canvas.getBoundingClientRect();
+        const heightInPixels =
+            (parseInt(store.innerHeight) / 100) * window.innerHeight * 1.14;
 
-        const { height: canvasHeight, top } =
-            this.canvas.getBoundingClientRect();
-
-        this.canvas.height = canvasHeight;
+        this.canvas.height = Math.max(heightInPixels, window.innerHeight);
+        this.c.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
         // TODO мб сделать стиль линий dashed и тогда их можно будет анимировать
+
         for (let i = 0; i < list.length; i++) {
             let { node } = list[i];
             this.c.strokeStyle = "rgb(165, 165, 165)";
@@ -38,11 +42,12 @@ export class Canvas {
                 node.offsetTop + node.clientHeight / 2 - this.canvas.offsetTop;
 
             let halfCanvas = window.innerHeight / 2 - top;
+            // let halfCanvas = this.canvas.height / 2 - top;
 
-            const OFFSET = this.canvas.width / 2 + 10;
+            const HORIZONTAL_OFFSET = this.canvas.width / 2 + 10;
 
-            let cpx1 = OFFSET;
-            let cpx2 = this.canvas.width - OFFSET;
+            let cpx1 = HORIZONTAL_OFFSET;
+            let cpx2 = this.canvas.width - HORIZONTAL_OFFSET;
             let cpy1 = halfCard;
             let cpy2 = halfCanvas;
 

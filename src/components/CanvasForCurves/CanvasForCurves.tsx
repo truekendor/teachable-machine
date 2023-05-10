@@ -1,10 +1,11 @@
-import { useCallback, useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { Context } from "../../index";
 import { observer } from "mobx-react-lite";
 
 import canvas from "../../store/Canvas";
 
 import st from "./CanvasForCurves.module.css";
+import Column from "../Column/Column";
 
 type Props = {
     width: number;
@@ -15,13 +16,11 @@ function CanvasForCurves({ width }: Props) {
 
     const canvasRef = useRef<HTMLCanvasElement>();
 
-    const drawCurves = useCallback(() => {
-        queueMicrotask(() => {
-            canvas.draw();
-        });
-    }, []);
-
     useEffect(() => {
+        function drawCurves() {
+            canvas.draw();
+        }
+
         window.addEventListener("scroll", drawCurves);
 
         canvas.setCanvas(canvasRef.current);
@@ -35,9 +34,7 @@ function CanvasForCurves({ width }: Props) {
     });
 
     return (
-        // <div className={[st["container"]].join(" ")}>
         <canvas className={[st["canvas"]].join(" ")} ref={canvasRef}></canvas>
-        // </div>
     );
 }
 

@@ -25,29 +25,6 @@ function App() {
     //     console.log(tf.memory().numTensors);
     // }, 1500);
 
-    useEffect(() => {
-        function adjustParentHeight() {
-            let size =
-                ((appRef?.current?.clientHeight || window.innerHeight) /
-                    window.innerHeight) *
-                    100 -
-                10;
-
-            store.setInnerHeight(size);
-        }
-
-        adjustParentHeight();
-
-        // currentCard меняется при клике на кнопку включения камеры, а она
-        // меняет размеры карточки
-    }, [
-        store.labelsArray.length,
-        store.currentCard,
-        store.isModelTrained,
-        store.optionsBtnClicked,
-        store,
-    ]);
-
     async function enableCamera() {
         const constraints = {
             video: true,

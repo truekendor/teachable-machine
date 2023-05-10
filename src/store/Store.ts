@@ -61,6 +61,8 @@ export class Store {
 
     nextClassNumber = 4;
 
+    buttonRef: HTMLButtonElement;
+
     defaultTrainingOptions: TrainingProps = {
         batchSize: 16,
         epochs: 20,
@@ -271,6 +273,8 @@ export class Store {
 
         this.trainingDataInputs = [...newIn];
         this.trainingDataOutputs = [...newOut];
+
+        this.applyUI();
     }
 
     setTrainingOptions(options: Partial<TrainingProps>) {
@@ -325,7 +329,8 @@ export class Store {
 
     setCurrentCard(index: number) {
         this.currentCard = index;
-        this.drawOnCanvas();
+
+        this.applyUI();
     }
 
     toggleMirrorWebcam() {
@@ -419,7 +424,8 @@ export class Store {
 
         this.allDataGathered = false;
 
-        this.drawOnCanvas();
+        this.applyUI();
+
         this.setupModel();
     }
 
@@ -434,7 +440,7 @@ export class Store {
     setCardBoundingBoxByIndex(index: number, bBox: BoundingBoxPart) {
         this.cardBoundingBoxes[index] = bBox;
 
-        this.drawOnCanvas();
+        this.applyUI();
     }
 
     // ==============================
@@ -479,10 +485,29 @@ export class Store {
         return this.nextClassNumber - 1;
     }
 
+    setButton(ref: HTMLButtonElement) {
+        this.buttonRef = ref;
+    }
+
+    applyUI() {
+        this.adjustParentHeight();
+        this.drawOnCanvas();
+    }
+
     drawOnCanvas() {
         if (canvas.canvas) {
             canvas.draw();
         }
+    }
+
+    adjustParentHeight() {
+        let size =
+            ((this?.buttonRef?.offsetTop || window.innerHeight) /
+                window.innerHeight) *
+                100 -
+            10;
+
+        this.setInnerHeight(Math.round(size));
     }
 }
 const store = new Store();

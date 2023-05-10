@@ -1,16 +1,39 @@
-import React from "react";
+import { useContext, useRef, useEffect } from "react";
 import st from "./NewCardBtn.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusSquare } from "@fortawesome/free-solid-svg-icons";
+import { observer } from "mobx-react-lite";
+import { Context } from "../../../index";
 
 interface Props {
     onClick: () => void;
     hidden: boolean;
 }
 
-export default function NewCardBtn({ onClick, hidden }: Props) {
+function NewCardBtn({ onClick, hidden }: Props) {
+    const { store } = useContext(Context);
+    const buttonRef = useRef<HTMLButtonElement>();
+
+    useEffect(() => {
+        function adjustParentHeight() {
+            let size =
+                ((buttonRef?.current?.offsetTop || window.innerHeight) /
+                    window.innerHeight) *
+                    100 -
+                10;
+
+            store.setInnerHeight(Math.round(size));
+        }
+
+        adjustParentHeight();
+        store.drawOnCanvas();
+
+        store.setButton(buttonRef.current);
+    });
+
     return (
         <button
+            ref={buttonRef}
             onClick={onClick}
             className={[
                 st["new-card-btn"],
@@ -22,3 +45,5 @@ export default function NewCardBtn({ onClick, hidden }: Props) {
         </button>
     );
 }
+
+export default observer(NewCardBtn);
