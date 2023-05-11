@@ -8,6 +8,7 @@ import DataCollectorBtn from "../UI/DataCollectorBtn/DataCollectorBtn";
 import Webcam from "../Webcam/Webcam";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLeftRight, faXmark } from "@fortawesome/free-solid-svg-icons";
+import cardStore from "../../store/CardStore";
 
 interface Props {
     queue: number;

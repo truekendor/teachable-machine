@@ -1,7 +1,9 @@
 // * core
 import { useContext, useEffect, useRef, useState } from "react";
-import { tidy, memory } from "@tensorflow/tfjs";
 import { observer } from "mobx-react-lite";
+
+import { tidy, memory } from "@tensorflow/tfjs";
+// import * as tf from "@tensorflow/tfjs";
 
 import { Context } from "./index";
 

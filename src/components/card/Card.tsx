@@ -16,6 +16,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 import "../../index.css";
 import st from "./Card.module.css";
+import cardStore from "../../store/CardStore";
 
 interface Props {
     queue: number;
@@ -28,16 +29,16 @@ function Card({ queue }: Props) {
     const containerRef = useRef<HTMLDivElement>();
 
     const debounce = useDebounce(singleClickHandler, 500, () => {
-        return !store.wasDoubleClick;
+        return !cardStore.wasDoubleClick;
     });
 
     function singleClickHandler() {
-        if (store.wasDoubleClick) return;
+        if (cardStore.wasDoubleClick) return;
         window.confirm("Кликните дважды чтобы удалить элемент");
     }
 
     function doubleClickHandler() {
-        store.setWasDoubleClick(true);
+        cardStore.setWasDoubleClick(true);
 
         const agreed = window.confirm(
             `Удалить карточку ${store.labelsArray[queue]}?`
@@ -48,7 +49,7 @@ function Card({ queue }: Props) {
         }
 
         setTimeout(() => {
-            store.setWasDoubleClick(false);
+            cardStore.setWasDoubleClick(false);
         }, 5);
     }
 

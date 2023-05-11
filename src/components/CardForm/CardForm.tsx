@@ -6,6 +6,7 @@ import { Context } from "../../index";
 
 import st from "./CardForm.module.css";
 import { observer } from "mobx-react-lite";
+import cardStore from "../../store/CardStore";
 
 interface Props {
     queue: number;
@@ -29,21 +30,21 @@ function CardForm({ queue }: Props) {
     useEffect(() => {
         const isThisCardLastAtQueue = store.labelsArray.length - 1 === queue;
 
-        if (isThisCardLastAtQueue && store.newCardAdded) {
+        if (isThisCardLastAtQueue && cardStore.newCardAdded) {
             inputRef.current.select();
-            store.setNewCardAdded(false);
+            cardStore.setNewCardAdded(false);
         }
 
-        if (queue === store.switchFrom + 1 && !store.formSwitched) {
-            store.setFormSwitched(true);
+        if (queue === cardStore.switchFrom + 1 && !cardStore.formSwitched) {
+            cardStore.setFormSwitched(true);
 
             setTimeout(() => {
                 inputRef.current.select();
             }, 5);
         } else if (queue === store.labelsArray.length - 1) {
-            store.setSwitchFrom(-1);
+            cardStore.setSwitchFrom(-1);
         }
-    }, [store.switchFrom, queue, store]);
+    }, [queue, cardStore]);
 
     return (
         <form
@@ -62,8 +63,8 @@ function CardForm({ queue }: Props) {
                     if (!isValidKeyCode(e.code)) return;
 
                     if (isSwitchToOtherForm(e)) {
-                        store.setSwitchFrom(queue);
-                        store.setFormSwitched(false);
+                        cardStore.setSwitchFrom(queue);
+                        cardStore.setFormSwitched(false);
                     }
 
                     // блюр при нажатии на enter
@@ -78,7 +79,7 @@ function CardForm({ queue }: Props) {
                     }
                 }}
                 onClick={() => {
-                    store.setSwitchFrom(queue);
+                    cardStore.setSwitchFrom(queue);
 
                     inputRef.current.select();
                 }}

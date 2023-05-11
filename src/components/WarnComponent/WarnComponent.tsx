@@ -8,7 +8,7 @@ export default function ProgressBar() {
             <FontAwesomeIcon icon={faExclamationCircle} /> Данные собраны не для
             всех классов{" "}
             <p className="warn-accent">
-                {store.labelsArray[store.noDataIndex]}
+                {store.labelsArray[store.indexOfClassWithNoData]}
             </p>
         </div>
     );

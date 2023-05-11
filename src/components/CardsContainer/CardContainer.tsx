@@ -7,6 +7,7 @@ import NewCardBtn from "../UI/NewCardBtn/NewCardBtn";
 import { v4 } from "uuid";
 
 import st from "./CardContainer.module.css";
+import cardStore from "../../store/CardStore";
 
 function CardContainer() {
     const { store } = useContext(Context);
@@ -20,8 +21,10 @@ function CardContainer() {
             <NewCardBtn
                 hidden={false}
                 onClick={() => {
-                    store.pushToLabels(`Class ${store.getNextClassNumber()}`);
-                    store.setNewCardAdded(true);
+                    store.pushToLabels(
+                        `Class ${cardStore.getNextClassNumber()}`
+                    );
+                    cardStore.setNewCardAdded(true);
                 }}
             />
         </div>
