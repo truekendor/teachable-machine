@@ -1,11 +1,11 @@
-import { useContext, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { observer } from "mobx-react-lite";
-import { Context } from "../../index";
 
 import st from "./Rightbar.module.css";
 import "../../index.css";
 import PredictionBoard from "../PredictionBoard/PredictionBoard";
 import Column from "../Column/Column";
+import neuralStore from "../../store/neuralStore";
 
 type Props = {
     setCamera: (ref: HTMLVideoElement) => void;
@@ -13,8 +13,6 @@ type Props = {
 
 function Rightbar({ setCamera }: Props) {
     const predictionCamRef = useRef();
-
-    const { store } = useContext(Context);
 
     useEffect(() => {
         setCamera(predictionCamRef.current);
@@ -27,14 +25,14 @@ function Rightbar({ setCamera }: Props) {
                 <video
                     className={[
                         st["video"],
-                        !store.isModelTrained && "visually-hidden",
+                        !neuralStore.isModelTrained && "visually-hidden",
                     ].join(" ")}
                     ref={predictionCamRef}
-                    autoPlay={store.isModelTrained}
+                    autoPlay={neuralStore.isModelTrained}
                 ></video>
                 <div className={[st["info"]].join(" ")}>
-                    {store.isModelTrained && <PredictionBoard />}
-                    {!store.isModelTrained && (
+                    {neuralStore.isModelTrained && <PredictionBoard />}
+                    {!neuralStore.isModelTrained && (
                         <p>
                             Перед началом предварительного просмотра обучите
                             модель

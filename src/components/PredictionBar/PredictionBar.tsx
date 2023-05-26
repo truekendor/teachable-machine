@@ -1,7 +1,6 @@
-import { useContext } from "react";
-import st from "./PredictionBar.module.css";
-import { Context } from "../../index";
 import { observer } from "mobx-react-lite";
+
+import st from "./PredictionBar.module.css";
 
 interface Props {
     value: number;

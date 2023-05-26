@@ -1,7 +1,12 @@
-import store from "../store/Store";
 import * as tf from "@tensorflow/tfjs";
 
-export function removeItemAtIndex(array: any[], index: number) {
+interface NewTrainingData {
+    trainingDataInputs: tf.Tensor1D[];
+    trainingDataOutputs: number[];
+    index: number;
+}
+
+export function removeItemAtIndex<T>(array: T[], index: number) {
     let result = [
         ...array.slice(0, index),
         ...array.slice(index + 1, array.length),
@@ -10,83 +15,65 @@ export function removeItemAtIndex(array: any[], index: number) {
     return result;
 }
 
-export function removeImageByIndexAtStore(
-    cardIndex: number,
-    imageIndex: number
-) {
-    let nonReversedIndex = store.base64Array[cardIndex].length - 1 - imageIndex;
-
-    // массив который приходит в этот метод перевернут
-    const resultArray = removeItemAtIndex(
-        store.base64Array[cardIndex],
-        nonReversedIndex
-    );
-
-    store.setBase64ForLabel(cardIndex, resultArray);
-
-    const indexArray: number[] = [];
-
-    for (let i = 0; i < store.trainingDataOutputs.length; i++) {
-        let cur = store.trainingDataOutputs[i];
-
-        // если аутпут равен кардИндексу (порядковому номеру карточки)
-        // то пушим этот индекс в массив
-        // так как этот элемент будет одним из изображений класса
-        if (cur === cardIndex) {
-            indexArray.push(i);
-        }
-    }
-    // теперь в indexArray лежат индексы изображений
-    // находим индекс изображения которое нужно удалить
-    // так как оригинальный массив не реверснут
-    // то это изображение будет по реверс индексу
-    const spliceIndex = indexArray[nonReversedIndex];
-
-    // сохраняем ссылку на тензор
-    const removedInput = store.trainingDataInputs[spliceIndex];
-
-    // удаляем из массива обучающих данных
-    store.setTrainingDataInputs(
-        removeItemAtIndex(store.trainingDataInputs, spliceIndex)
-    );
-    store.setTrainingDataOutputs(
-        removeItemAtIndex(store.trainingDataOutputs, spliceIndex)
-    );
-
-    // избавляемся от ненужного тензора
-    removedInput.dispose();
-
-    // console.log(tf.memory().numTensors);
-
-    if (store.base64Array[cardIndex].length === 0) {
-        store.checkAllDataGathered();
-    }
-}
-
-export function calculateNewTrainingData(index: number) {
+export function calculateNewTrainingData({
+    trainingDataInputs,
+    trainingDataOutputs,
+    index,
+}: NewTrainingData) {
     let newIn: tf.Tensor1D[] = [];
     let newOut: number[] = [];
 
-    for (let i = 0; i < store.trainingDataInputs.length; i++) {
-        const input = store.trainingDataInputs[i];
-        const output = store.trainingDataOutputs[i];
+    for (let i = 0; i < trainingDataInputs.length; i++) {
+        const input = trainingDataInputs[i];
+        const output = trainingDataOutputs[i];
 
-        // аутпуту присваивалось значение индекса карточки
+        // the output was assigned the index value of the card
         if (output === index) {
-            // очищаем память от ненужных тензоров
+            // clearing the memory of unnecessary tensors
             input?.dispose?.();
         } else {
             newIn.push(input);
-            // так как мы удаляем элемент, то нужно
-            // подвинуть аутпуты дальше по индексу влево.
-            // Если аутпут больше чем индекс, то его нужно
-            // сместить на единицу так как удалился один элемент
+            // since we are deleting an element, we need
+            // move the outputs further along the index to the left.
+            // If the output is larger than the index, then it needs
+            // offset by one since one element was deleted
             newOut.push(index < output ? output - 1 : output);
         }
     }
 
-    return {
-        newIn,
-        newOut,
-    };
+    return { newIn, newOut };
 }
+
+class DebugTfMemory {
+    private timerId: any;
+
+    public debugMemory() {
+        if (this.timerId) {
+            clearInterval(this.timerId);
+        }
+        this.timerId = setInterval(() => {
+            let numTensors = tf.memory().numTensors.toString();
+            let kbMemory = Math.floor(tf.memory().numBytes / 1000).toString();
+
+            let { str1, str2 } = this.stringNormal(numTensors, kbMemory);
+
+            console.log(
+                `%c${str1} - num tensors \n${str2} - num kb`,
+                "font-family: monospace;"
+            );
+        }, 1000);
+    }
+
+    private stringNormal(str1: string, str2: string) {
+        const diff = str2.length - str1.length;
+        if (diff >= 0) {
+            str1 = str1.concat("", " ".repeat(diff));
+        } else {
+            str2 = str2.concat("", " ".repeat(Math.abs(diff)));
+        }
+
+        return { str1, str2 };
+    }
+}
+
+export const debugTfMemory = new DebugTfMemory();

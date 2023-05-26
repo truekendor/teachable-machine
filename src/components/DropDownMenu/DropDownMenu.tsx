@@ -1,34 +1,31 @@
 import { observer } from "mobx-react-lite";
-import { useState, useContext, useEffect, useRef } from "react";
-import { Context } from "../..";
+import { useState, useEffect, useRef } from "react";
 import { v4 } from "uuid";
 
 import st from "./DropDownMenu.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown, faQuestion } from "@fortawesome/free-solid-svg-icons";
-import { TrainingProps } from "../../store/Store";
-import { infoText } from "../../utils/infoText";
+import neuralStore, { TrainingOptions } from "../../store/neuralStore";
 
 type Props = {
     list: string[];
     onChoose: (val: string) => void;
     title: string;
     helpText?: string;
-    propName: keyof TrainingProps;
+    propName: keyof TrainingOptions;
 };
 
 function DropDownMenu({ list, title, onChoose, propName, helpText }: Props) {
     const [isOpen, setIsOpen] = useState(false);
-    const { store } = useContext(Context);
 
-    // так как лист содержит знак "%", то обрабатываем иначе
+    // corner case since valSplit comes with "%"
     const isValidation = propName === "validationSplit";
 
     const menuRef = useRef<HTMLDivElement>();
 
     useEffect(() => {
         function mouseDownHandler(e: MouseEvent) {
-            // @ts-ignore - TS понятия не имеет что говорит
+            // @ts-ignore
             if (!menuRef.current.contains(e.target)) setIsOpen(false);
         }
 
@@ -43,7 +40,7 @@ function DropDownMenu({ list, title, onChoose, propName, helpText }: Props) {
         <div className={st["menu-container"]}>
             <h4 className={st["title"]}>{title}</h4>
 
-            <div className={st["test"]}>
+            <div className={st["container"]}>
                 <div
                     ref={menuRef}
                     className={[
@@ -55,8 +52,8 @@ function DropDownMenu({ list, title, onChoose, propName, helpText }: Props) {
                 >
                     <p>
                         {isValidation
-                            ? `${store.trainingOptions[propName] * 100}%`
-                            : store.trainingOptions[propName]}
+                            ? `${neuralStore.trainingOptions[propName] * 100}%`
+                            : neuralStore.trainingOptions[propName]}
                     </p>
                     <div className={st["icon"]}>
                         <FontAwesomeIcon icon={faCaretDown} />

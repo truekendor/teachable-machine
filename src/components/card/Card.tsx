@@ -1,4 +1,4 @@
-import { useRef, useContext, useEffect, useState } from "react";
+import { useRef, useContext, useEffect } from "react";
 
 import CameraEnableBtn from "../UI/CameraEnableBtn/CameraEnableBtn";
 import VideoContainer from "../VideoContainer/VideoContainer";
@@ -17,6 +17,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import "../../index.css";
 import st from "./Card.module.css";
 import cardStore from "../../store/CardStore";
+import neuralStore from "../../store/neuralStore";
 
 interface Props {
     queue: number;
@@ -46,6 +47,9 @@ function Card({ queue }: Props) {
 
         if (agreed) {
             store.removeLabelByIndex(queue);
+            neuralStore.removeLabelByIndex(queue);
+
+            neuralStore.setNumberOfCategories(store.labelsArray.length);
         }
 
         setTimeout(() => {

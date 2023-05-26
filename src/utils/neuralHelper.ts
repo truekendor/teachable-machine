@@ -1,14 +1,20 @@
 import * as tf from "@tensorflow/tfjs";
 import store from "../store/Store";
+import neuralStore, { TrainingOptions } from "../store/neuralStore";
 
+interface TrainObject {
+    trainingDataInputs: tf.Tensor1D[];
+    trainingDataOutputs: number[];
+    trainingOptions: TrainingOptions;
+    model: tf.Sequential;
+}
 export class NeuralHelper {
-    URL = `https://tfhub.dev/google/tfjs-model/imagenet/mobilenet_v3_small_100_224/feature_vector/5/default/1`;
-
-    MOBILE_NET_INPUT_HEIGHT = 224;
-    MOBILE_NET_INPUT_WIDTH = 224;
+    private URL = `https://tfhub.dev/google/tfjs-model/imagenet/mobilenet_v3_small_100_224/feature_vector/5/default/1`;
+    private MOBILE_NET_INPUT_HEIGHT = 224;
+    private MOBILE_NET_INPUT_WIDTH = 224;
 
     initialModelSetup() {
-        let model = tf.sequential();
+        const model = tf.sequential();
 
         model.add(
             tf.layers.dense({
@@ -35,10 +41,8 @@ export class NeuralHelper {
         return model;
     }
 
-    setupModel() {
-        store.model.dispose();
-
-        let model = tf.sequential();
+    setupModel(numberOfCategories: number, trainingOptions: TrainingOptions) {
+        const model = tf.sequential();
 
         model.add(
             tf.layers.dense({
@@ -51,19 +55,19 @@ export class NeuralHelper {
         // output layer
         model.add(
             tf.layers.dense({
-                units: store.labelsArray.length,
+                units: numberOfCategories,
                 activation: "softmax",
             })
         );
 
         model.compile({
             optimizer:
-                store.trainingOptions.optimizer === "adam"
+                trainingOptions.optimizer === "adam"
                     ? "adam"
-                    : tf.train.sgd(store.trainingOptions.learningRate),
+                    : tf.train.sgd(trainingOptions.learningRate),
 
             loss:
-                store.labelsArray.length === 2
+                numberOfCategories === 2
                     ? "binaryCrossentropy"
                     : "categoricalCrossentropy",
             metrics: ["accuracy"],
@@ -73,12 +77,13 @@ export class NeuralHelper {
     }
 
     async loadMobilenetModel() {
-        let result = await tf.loadGraphModel(this.URL, { fromTFHub: true });
+        const mobilenet = await tf.loadGraphModel(this.URL, {
+            fromTFHub: true,
+        });
 
-        // ? без этого не работает нажатие на кнопку записи первые пару секунд
         tf.tidy(() => {
-            result.predict(
-                // !         batch_size=1, y, x, 3
+            mobilenet.predict(
+                // * [1, y, x, 3]
                 tf.zeros([
                     1,
                     this.MOBILE_NET_INPUT_HEIGHT,
@@ -88,94 +93,85 @@ export class NeuralHelper {
             );
         });
 
-        return result;
+        return mobilenet;
     }
 
-    async train() {
+    async train({
+        trainingDataInputs,
+        trainingDataOutputs,
+        trainingOptions,
+        model,
+    }: TrainObject) {
+        tf.util.shuffleCombo(trainingDataInputs, trainingDataOutputs);
+
+        const outputsAsTensor = tf.tensor1d(trainingDataOutputs, "int32");
+        const oneHotOutputs = tf.oneHot(
+            outputsAsTensor,
+            store.labelsArray.length
+        );
+        const inputsAsTensor = tf.stack(trainingDataInputs);
+
+        await model.fit(inputsAsTensor, oneHotOutputs, {
+            shuffle: true,
+            batchSize: trainingOptions.batchSize,
+            epochs: trainingOptions.epochs,
+            validationSplit: trainingOptions.validationSplit || 0,
+
+            callbacks: {
+                // onEpochEnd: this.logProgress.bind(this),
+                onEpochBegin: this.epochPromise.bind(this),
+            },
+        });
+
+        outputsAsTensor.dispose();
+        oneHotOutputs.dispose();
+        inputsAsTensor.dispose();
+    }
+
+    calculateFeaturesOnCurrentFrame(
+        ref: HTMLVideoElement,
+        mobilenet: tf.GraphModel
+    ) {
         try {
-            store.setIsTraining(true);
+            return tf.tidy(() => {
+                const videoFrameAsTensor = tf.browser.fromPixels(ref);
 
-            tf.util.shuffleCombo(
-                store.trainingDataInputs,
-                store.trainingDataOutputs
-            );
-
-            let outputsAsTensor = tf.tensor1d(
-                store.trainingDataOutputs,
-                "int32"
-            );
-            let oneHotOutputs = tf.oneHot(
-                outputsAsTensor,
-                store.labelsArray.length
-            );
-            let inputsAsTensor = tf.stack(store.trainingDataInputs);
-
-            await store.model.fit(inputsAsTensor, oneHotOutputs, {
-                shuffle: true,
-                batchSize: store.trainingOptions.batchSize,
-                epochs: store.trainingOptions.epochs,
-                validationSplit: store.trainingOptions.validationSplit || 0,
-
-                callbacks: {
-                    onEpochEnd: this.logProgress.bind(this),
-                    onEpochBegin: this.epochPromise.bind(this),
-                },
-            });
-
-            outputsAsTensor.dispose();
-            oneHotOutputs.dispose();
-            inputsAsTensor.dispose();
-
-            store.setIsModelTrained(true);
-        } catch (e: any) {
-            store.setIsModelTrained(false);
-            console.log(e.message);
-        } finally {
-            store.setIsTraining(false);
-        }
-    }
-
-    calculateFeaturesOnCurrentFrame(ref: HTMLVideoElement) {
-        return tf.tidy(() => {
-            try {
-                // Считываем пиксели из видео
-                let videoFrameAsTensor = tf.browser.fromPixels(ref);
-
-                // Реcайз видео до размеров сети мобилнет
-                let resizedTensorFrame = tf.image.resizeBilinear(
+                // Resize image to mobilenet size
+                const resizedTensorFrame = tf.image.resizeBilinear(
                     videoFrameAsTensor,
                     [this.MOBILE_NET_INPUT_HEIGHT, this.MOBILE_NET_INPUT_WIDTH],
                     true
                 );
 
-                // нормализация тензора [0, 1]
-                let normalizedTensorFrame = resizedTensorFrame.div(255);
+                // tensors normalization [0, 1]
+                const normalizedTensorFrame = resizedTensorFrame.div(255);
 
                 return (
-                    store.mobilenet
+                    mobilenet
                         .predict(normalizedTensorFrame.expandDims())
                         // @ts-ignore
                         .squeeze()
                 );
-            } catch (e: any) {
-                console.log(e.message);
-            }
-        });
+            });
+        } catch (e: any) {
+            console.log(e.message);
+        }
     }
 
-    logProgress(epoch: any, logs: any) {
+    private logProgress(epoch: any, logs: any) {
         console.log("Data for epoch " + epoch, logs);
     }
 
-    epochPromise(number: number) {
+    private epochPromise(number: number) {
         new Promise((res) => {
             res(number);
         }).then((epoch) => {
             // @ts-ignore
-            store.setCurrentEpoch(epoch);
+            neuralStore.setCurrentEpoch(epoch);
         });
     }
 }
-const neutralHelper = new NeuralHelper();
 
-export default neutralHelper;
+const neuralHelper = new NeuralHelper();
+
+export default neuralHelper;

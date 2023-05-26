@@ -6,16 +6,17 @@ import { observer } from "mobx-react-lite";
 
 import ResetTrainingOptBtn from "../../UI/ResetTrainingOptBtn/ResetTrainingOptBtn";
 import TrainingLabel from "../../UI/TrainingLabel/TrainingLabel";
+import neuralStore from "../../../store/neuralStore";
 
 function LabelSet() {
     const { store } = useContext(Context);
 
     const [epochsValue, setEpochsValue] = useState("20");
     const [learningRate, setLearningRate] = useState(
-        `${store.trainingOptions.learningRate}`
+        `${neuralStore.trainingOptions.learningRate}`
     );
 
-    const isAdam = store.trainingOptions.optimizer === "adam";
+    const isAdam = neuralStore.trainingOptions.optimizer === "adam";
 
     function epochHandler(e: React.ChangeEvent<HTMLInputElement>) {
         if (e.target.value === "") {
@@ -27,7 +28,7 @@ function LabelSet() {
         if (val > 999) return;
 
         setEpochsValue(`${val}`);
-        store.setTrainingOptions({
+        neuralStore.setTrainingOptions({
             epochs: val,
         });
     }
@@ -39,20 +40,20 @@ function LabelSet() {
         }
 
         setLearningRate(`${e.target.value}`);
-        store.setTrainingOptions({
+        neuralStore.setTrainingOptions({
             learningRate:
                 parseFloat(e.target.value) ||
-                store.defaultTrainingOptions.learningRate,
+                neuralStore.defaultTrainingOptions.learningRate,
         });
     }
 
     function resetHandler() {
-        store.setTrainingOptions({
-            ...store.defaultTrainingOptions,
+        neuralStore.setTrainingOptions({
+            ...neuralStore.defaultTrainingOptions,
         });
 
-        setEpochsValue(`${store.defaultTrainingOptions.epochs}`);
-        setLearningRate(`${store.defaultTrainingOptions.learningRate}`);
+        setEpochsValue(`${neuralStore.defaultTrainingOptions.epochs}`);
+        setLearningRate(`${neuralStore.defaultTrainingOptions.learningRate}`);
     }
 
     return (

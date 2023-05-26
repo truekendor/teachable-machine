@@ -4,6 +4,7 @@ import { Context } from "../../../../index";
 import { observer } from "mobx-react-lite";
 
 import st from "./TrainBtn.module.css";
+import neuralStore from "../../../../store/neuralStore";
 
 type Props = {
     onClick: () => void;
@@ -15,7 +16,7 @@ function TrainBtn({ onClick }: Props) {
         <button
             className={[
                 st["train-btn"],
-                store.allDataGathered ? st["all-gathered"] : "",
+                store.isAllDataGathered ? st["all-gathered"] : "",
             ].join(" ")}
             onClick={onClick}
         >

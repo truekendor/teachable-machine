@@ -1,4 +1,6 @@
 .main-area {
+    contain: layout style;
+
     display: flex;
     flex-direction: column;
 

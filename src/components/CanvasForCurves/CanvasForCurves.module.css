@@ -1,6 +1,5 @@
 .canvas {
-    /* top: 0; */
+    contain: content;
 
-    /* position: -webkit-sticky; */
-    /* position: sticky; */
+    min-width: 30px;
 }

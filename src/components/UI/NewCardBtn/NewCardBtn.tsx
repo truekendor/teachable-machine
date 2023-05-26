@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlusSquare } from "@fortawesome/free-solid-svg-icons";
 import { observer } from "mobx-react-lite";
 import { Context } from "../../../index";
-import cardStore from "../../../store/CardStore";
 
 interface Props {
     onClick: () => void;
@@ -27,7 +26,6 @@ function NewCardBtn({ onClick, hidden }: Props) {
         }
 
         adjustParentHeight();
-        store.drawOnCanvas();
 
         store.setButton(buttonRef.current);
     });

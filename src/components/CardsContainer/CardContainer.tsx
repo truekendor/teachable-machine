@@ -8,9 +8,19 @@ import { v4 } from "uuid";
 
 import st from "./CardContainer.module.css";
 import cardStore from "../../store/CardStore";
+import neuralStore from "../../store/neuralStore";
 
 function CardContainer() {
     const { store } = useContext(Context);
+
+    function clickHandler() {
+        store.pushToLabels(`Class ${cardStore.getNextClassNumber()}`);
+
+        neuralStore.setNumberOfCategories(store.labelsArray.length);
+        neuralStore.setupModel();
+
+        cardStore.setNewCardAdded(true);
+    }
 
     return (
         <div className={[st["container"]].join(" ")}>
@@ -18,15 +28,7 @@ function CardContainer() {
                 return <Card key={v4()} queue={index} />;
             })}
 
-            <NewCardBtn
-                hidden={false}
-                onClick={() => {
-                    store.pushToLabels(
-                        `Class ${cardStore.getNextClassNumber()}`
-                    );
-                    cardStore.setNewCardAdded(true);
-                }}
-            />
+            <NewCardBtn hidden={false} onClick={clickHandler} />
         </div>
     );
 }

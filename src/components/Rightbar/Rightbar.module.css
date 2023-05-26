@@ -1,4 +1,6 @@
 .main {
+    contain: content;
+
     display: flex;
     flex-direction: column;
 
@@ -7,7 +9,9 @@
 
     background-color: var(--card-bg-color);
 
-    height: fit-content;
+    min-height: 160px;
+    height: min-content;
+
     width: 100%;
 
     top: 50%;

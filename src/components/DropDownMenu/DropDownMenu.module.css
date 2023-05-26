@@ -1,4 +1,5 @@
 .menu-container {
+    contain: style;
     position: relative;
 
     border-top: 1px solid var(--inner-line-clr);
@@ -37,6 +38,14 @@
 
 .title {
     margin-block-end: 0.5rem;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+
+    width: 100%;
 }
 
 .trigger {
@@ -169,12 +178,4 @@
 
     outline: 2px solid currentColor;
     outline-offset: 1px;
-}
-
-.test {
-    display: flex;
-    align-items: center;
-    flex-direction: row;
-
-    width: 100%;
 }

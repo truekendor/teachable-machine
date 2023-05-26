@@ -1,4 +1,6 @@
 .snapshots-container {
+    contain: strict;
+
     margin-block-start: 0.5rem;
 
     height: 300px;
@@ -25,17 +27,25 @@
 }
 
 .snapshots-container:hover::-webkit-scrollbar-track {
-    background: rgb(213, 219, 255);
+    background-color: rgb(213, 219, 255);
     border-radius: 20px;
 }
 
 .amount-counter {
+    max-width: 100%;
+
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+
+    background-color: var(--card-bg-color);
+
     font-size: 0.9rem;
     font-weight: 600;
 
     color: rgb(80, 80, 80);
 
-    max-width: 100%;
+    z-index: 100;
 }
 
 .image-container {
@@ -54,6 +64,7 @@
 }
 
 .image-div {
+    contain: content;
     position: relative;
 
     overflow: hidden;

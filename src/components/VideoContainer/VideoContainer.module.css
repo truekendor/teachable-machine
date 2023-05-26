@@ -1,4 +1,6 @@
 .video-container {
+    contain: content;
+
     display: flex;
     align-items: center;
 

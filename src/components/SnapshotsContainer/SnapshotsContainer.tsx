@@ -12,6 +12,13 @@ type Props = { queue: number };
 function SnapshotsContainer({ queue }: Props) {
     const { store } = useContext(Context);
 
+    function clickHandler(index: number) {
+        // calculate correct index since current one is reversed
+        const nonReversedIndex = store.base64Array[queue].length - index - 1;
+
+        store.removeImageByIndex(queue, nonReversedIndex);
+    }
+
     return (
         <div className={[st["snapshots-container"]].join(" ")}>
             <div className={[st["amount-counter"]].join(" ")}>
@@ -28,9 +35,7 @@ function SnapshotsContainer({ queue }: Props) {
                                 className={[st["image-div"]].join(" ")}
                             >
                                 <button
-                                    onClick={() => {
-                                        store.removeImageByIndex(queue, index);
-                                    }}
+                                    onClick={() => clickHandler(index)}
                                     className={[st["helper-btn"]].join(" ")}
                                 >
                                     <FontAwesomeIcon icon={faXmark} />
@@ -41,7 +46,7 @@ function SnapshotsContainer({ queue }: Props) {
                                         store.mirrorWebcam && st["swap"],
                                     ].join(" ")}
                                     src={base64}
-                                    alt="data"
+                                    alt="data sample for class"
                                 />
                             </div>
                         );

@@ -1,11 +1,15 @@
-// * core
-import { useContext, useEffect, useRef, useState } from "react";
+// * external modules
 import { observer } from "mobx-react-lite";
-
 import { tidy, memory } from "@tensorflow/tfjs";
 // import * as tf from "@tensorflow/tfjs";
 
+// * hooks
+import { useContext, useRef, useState } from "react";
+import useInterval from "./hooks/useInterval";
+
+// * stores
 import { Context } from "./index";
+import neuralStore from "./store/neuralStore";
 
 // * components
 import TrainingArea from "./components/TrainingArea/TrainingArea";
@@ -19,12 +23,22 @@ import WarnComponent from "./components/WarnComponent/WarnComponent";
 // * styles
 import "./index.css";
 
+// * others
+import { debugTfMemory } from "./utils/utils";
+
+export const videoConstrains = {
+    video: true,
+    width: 640,
+    height: 480,
+};
+
 function App() {
     const { store } = useContext(Context);
 
     const appRef = useRef<HTMLDivElement>();
     const predictionCamRef = useRef<HTMLVideoElement>();
-    const animationFrame = useRef<number>();
+
+    const predictInterval = useInterval(predictLoop, 50);
 
     const [warn, setWarn] = useState(false);
 
@@ -32,51 +46,52 @@ function App() {
         "--inner-height": store.innerHeight,
     } as React.CSSProperties;
 
-    // ! debug
-    // setInterval(() => {
-    //     console.log(tf.memory().numTensors);
-    // }, 1500);
+    // ! debug tf memory
+    // debugTfMemory.debugMemory();
+    // ! ====
 
     async function enableCamera() {
-        const constraints = {
-            video: true,
-            width: 640,
-            height: 480,
-        };
-        const result = await navigator.mediaDevices.getUserMedia(constraints);
+        const result = await navigator.mediaDevices.getUserMedia(
+            videoConstrains
+        );
+        const cancelPredict = predictInterval();
 
         predictionCamRef.current.srcObject = result;
         predictionCamRef.current.addEventListener("loadeddata", () => {
-            predictLoop();
+            // Forgive me, Father for I have sinned
+            cancelPredict();
+            predictInterval();
         });
     }
 
-    function predictLoop(time = 0) {
-        if (!store.isModelTrained || store.isGatheringData) return;
+    // TODO вынести в utils как функцию помощник
+    function predictLoop() {
+        if (!neuralStore.isModelTrained || store.isGatheringData) {
+            // double call cancels loop
+            predictInterval()();
+            return;
+        }
 
         try {
-            tidy(function () {
-                let imageFeatures = store.calculateFeaturesOnCurrentFrame(
+            tidy(() => {
+                let imageFeatures = neuralStore.calculateFeaturesOnCurrentFrame(
                     predictionCamRef.current
                 );
 
-                let prediction = store.model
-                    ?.predict(imageFeatures?.expandDims?.())
+                let prediction = neuralStore.model
+                    .predict(imageFeatures.expandDims())
                     // @ts-ignore
-                    ?.squeeze();
+                    .squeeze();
                 let predictionArray = prediction.arraySync();
-
-                store.setPredictionList(predictionArray);
+                neuralStore.setPredictionList(predictionArray);
             });
-
-            animationFrame.current = window.requestAnimationFrame(predictLoop);
         } catch (e: any) {
             console.log(e.message);
         }
     }
 
     async function onClickHandler() {
-        if (!store.allDataGathered) {
+        if (!store.isAllDataGathered) {
             setTimeout(() => {
                 setWarn(true);
             });
@@ -84,19 +99,13 @@ function App() {
             setTimeout(() => {
                 setWarn(false);
             }, 1500);
+
+            return;
         }
-
-        if (!store.allDataGathered) return;
-
-        cancelAnimationFrame(animationFrame?.current);
-        store.setIsModelTrained(false);
 
         store.setCurrentCard(-1);
 
-        await store.train();
-
-        // in case of an error
-        if (!store.isModelTrained) return;
+        await neuralStore.train();
 
         await enableCamera();
     }
@@ -105,12 +114,6 @@ function App() {
         predictionCamRef.current = ref;
     }
 
-    // if (!store.mobilenet) {
-    //     return null;
-    //     // return <div>Loading mobilenet</div>;
-    // }
-
-    // TODO <TrainingArea /> && <Rightbar />сделать логику их размеров через CSS
     return (
         <div ref={appRef} className="App">
             <header>
@@ -119,12 +122,7 @@ function App() {
 
             {warn && <WarnComponent />}
 
-            {store.isTraining && (
-                <ProgressBar
-                    currentEpoch={store.currentEpoch}
-                    numOfEpochs={store.trainingOptions.epochs}
-                />
-            )}
+            {neuralStore.isTraining && <ProgressBar />}
 
             <main style={mainStyle} className={`main`}>
                 <CardContainer />

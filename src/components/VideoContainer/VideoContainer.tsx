@@ -1,24 +1,29 @@
-import { useRef, useContext, useEffect } from "react";
-import * as tf from "@tensorflow/tfjs";
-import { Context } from "../../index";
+// * external modules
 import { observer } from "mobx-react-lite";
+import * as tf from "@tensorflow/tfjs";
 
-import st from "./VideoContainer.module.css";
+// * hooks
+import { useRef, useContext, useEffect } from "react";
+
+// * stores
+import { Context } from "../../index";
+import neuralStore from "../../store/neuralStore";
+
+// * components
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DataCollectorBtn from "../UI/DataCollectorBtn/DataCollectorBtn";
 import Webcam from "../Webcam/Webcam";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+// * styles/icons
+import st from "./VideoContainer.module.css";
 import { faLeftRight, faXmark } from "@fortawesome/free-solid-svg-icons";
-import cardStore from "../../store/CardStore";
+
+// * other
+import { videoConstrains } from "../../App";
 
 interface Props {
     queue: number;
 }
-
-const constraints = {
-    video: true,
-    width: 640,
-    height: 480,
-};
 
 function VideoContainer({ queue }: Props) {
     const { store } = useContext(Context);
@@ -65,7 +70,8 @@ function VideoContainer({ queue }: Props) {
         const c = testRef.current.getContext("2d");
 
         testRef.current.width = 100;
-        testRef.current.height = (constraints.height / constraints.width) * 100;
+        testRef.current.height =
+            (videoConstrains.height / videoConstrains.width) * 100;
 
         c.translate(testRef.current.width, 0);
         c.scale(-1, 1);
@@ -89,7 +95,9 @@ function VideoContainer({ queue }: Props) {
             return;
         }
 
-        const result = await navigator.mediaDevices.getUserMedia(constraints);
+        const result = await navigator.mediaDevices.getUserMedia(
+            videoConstrains
+        );
         stream.current = result;
         camRef.current.srcObject = result;
 
@@ -111,9 +119,8 @@ function VideoContainer({ queue }: Props) {
             return;
         }
 
-        let imageFeatures: tf.Tensor1D = store.calculateFeaturesOnCurrentFrame(
-            camRef.current
-        );
+        let imageFeatures: tf.Tensor1D =
+            neuralStore.calculateFeaturesOnCurrentFrame(camRef.current);
 
         const data = createImageFromVideo();
         if (data) {
@@ -122,7 +129,7 @@ function VideoContainer({ queue }: Props) {
             console.log("no image data");
         }
 
-        store.pushToTrainingData(imageFeatures, queue);
+        neuralStore.pushToTrainingData(imageFeatures, queue);
 
         window.requestAnimationFrame(dataGatherLoop);
     }

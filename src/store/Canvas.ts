@@ -1,11 +1,11 @@
 import { makeAutoObservable } from "mobx";
-import * as tf from "@tensorflow/tfjs";
 import store from "./Store";
 
 export class Canvas {
     canvas: HTMLCanvasElement;
-    c: CanvasRenderingContext2D;
-    width: number;
+    private c: CanvasRenderingContext2D;
+    private lineColor = "rgb(165, 165, 165)";
+    private lineWidth = 1;
 
     constructor() {
         makeAutoObservable(this);
@@ -14,12 +14,12 @@ export class Canvas {
     setCanvas(ref: HTMLCanvasElement) {
         this.canvas = ref;
 
-        this.c = ref.getContext("2d");
-        this.canvas.height = window.innerHeight;
+        this.setupCanvas();
     }
 
-    setWidth(width: number) {
-        this.canvas.width = width;
+    setupCanvas() {
+        this.c = this.canvas.getContext("2d");
+        this.canvas.height = window.innerHeight;
     }
 
     draw() {
@@ -31,12 +31,10 @@ export class Canvas {
         this.canvas.height = Math.max(heightInPixels, window.innerHeight);
         this.c.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        // TODO мб сделать стиль линий dashed и тогда их можно будет анимировать
-
         for (let i = 0; i < list.length; i++) {
             let { node } = list[i];
-            this.c.strokeStyle = "rgb(165, 165, 165)";
-            this.c.lineWidth = 1;
+            this.c.strokeStyle = this.lineColor;
+            this.c.lineWidth = this.lineWidth;
 
             let halfCard =
                 node.offsetTop + node.clientHeight / 2 - this.canvas.offsetTop;
@@ -44,10 +42,10 @@ export class Canvas {
             let halfCanvas = window.innerHeight / 2 - top;
             // let halfCanvas = this.canvas.height / 2 - top;
 
-            const HORIZONTAL_OFFSET = this.canvas.width / 2 + 10;
+            const horizontalOffset = this.canvas.width / 2 + 10;
 
-            let cpx1 = HORIZONTAL_OFFSET;
-            let cpx2 = this.canvas.width - HORIZONTAL_OFFSET;
+            let cpx1 = horizontalOffset;
+            let cpx2 = this.canvas.width - horizontalOffset;
             let cpy1 = halfCard;
             let cpy2 = halfCanvas;
 

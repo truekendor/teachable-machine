@@ -1,20 +1,23 @@
-import { useContext, useState } from "react";
+// * external modules
 import { observer } from "mobx-react-lite";
-import { Context } from "../../index";
 
-import st from "./TrainingArea.module.css";
+// * hooke
+import { useState } from "react";
+
+// * components
 import TrainBtn from "./UI/TrainBtn/TrainBtn";
 import OptionsBtn from "./UI/OptionsBtn/OptionsBtn";
 import Column from "../Column/Column";
 import TrainingOptions from "../TrainingOptions/TrainingOptions";
+
+// * styles
+import st from "./TrainingArea.module.css";
 
 type Props = {
     onClick: () => void;
 };
 
 function TrainingArea({ onClick }: Props) {
-    const { store } = useContext(Context);
-
     const [expandOpt, setExpandOpt] = useState(false);
 
     return (
@@ -23,9 +26,6 @@ function TrainingArea({ onClick }: Props) {
                 <h3>Обучение</h3>
                 <TrainBtn
                     onClick={() => {
-                        // ! хз что это, потом уберу
-                        store.toggleOptionBtnClicked();
-
                         return onClick();
                     }}
                 />

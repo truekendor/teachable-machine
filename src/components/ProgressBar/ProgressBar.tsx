@@ -1,15 +1,16 @@
-type Props = {
-    currentEpoch: number;
-    numOfEpochs: number;
-};
+import { observer } from "mobx-react-lite";
 
-export default function ProgressBar({ currentEpoch, numOfEpochs }: Props) {
+import neuralStore from "../../store/neuralStore";
+
+function ProgressBar() {
     return (
         <div
             style={
                 {
                     "--epoch-completed": `${
-                        (currentEpoch / numOfEpochs) * 100
+                        (neuralStore.currentEpoch /
+                            neuralStore.trainingOptions.epochs) *
+                        100
                     }%`,
                 } as React.CSSProperties
             }
@@ -17,8 +18,11 @@ export default function ProgressBar({ currentEpoch, numOfEpochs }: Props) {
         >
             <div>Не переключайте вкладки пока модель обучается</div>
             <div>
-                {currentEpoch} / {numOfEpochs}
+                {neuralStore.currentEpoch} /{" "}
+                {neuralStore.trainingOptions.epochs}
             </div>
         </div>
     );
 }
+
+export default observer(ProgressBar);

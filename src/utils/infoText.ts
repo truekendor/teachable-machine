@@ -1,4 +1,4 @@
-import { TrainingProps } from "../store/Store";
+import { TrainingOptions } from "../store/neuralStore";
 
 const epochs =
     "Эпоха означает, что модель изучила каждый пример из обучающего образца хотя бы раз. Например, если указано 50 эпох, то при обучении набор данных обработается 50 раз. В целом чем больше это значение, тем лучше модель научится прогнозировать данные.";
@@ -11,7 +11,7 @@ const optimizer =
 const validationSplit =
     "Откладывает процент данных в сет валидации и не использует его для обучения модели";
 
-type TextType = Partial<Record<keyof TrainingProps, string>>;
+type TextType = Partial<Record<keyof TrainingOptions, string>>;
 
 export const infoText: TextType = {
     epochs,

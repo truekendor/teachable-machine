@@ -5,7 +5,6 @@ import { observer } from "mobx-react-lite";
 import canvas from "../../store/Canvas";
 
 import st from "./CanvasForCurves.module.css";
-import Column from "../Column/Column";
 
 type Props = {
     width: number;
@@ -24,7 +23,6 @@ function CanvasForCurves({ width }: Props) {
         window.addEventListener("scroll", drawCurves);
 
         canvas.setCanvas(canvasRef.current);
-        canvas.setWidth(width);
 
         drawCurves();
 
@@ -34,7 +32,11 @@ function CanvasForCurves({ width }: Props) {
     });
 
     return (
-        <canvas className={[st["canvas"]].join(" ")} ref={canvasRef}></canvas>
+        <canvas
+            width={width}
+            className={[st["canvas"]].join(" ")}
+            ref={canvasRef}
+        ></canvas>
     );
 }
 
