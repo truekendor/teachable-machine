@@ -1,0 +1,19 @@
+.menu-item {
+    width: 1fr;
+    cursor: pointer;
+
+    padding: 0.4rem 0.8rem;
+
+    -webkit-user-select: none;
+    user-select: none;
+
+    list-style: none;
+
+    background-color: var(--bg-color-light-blue);
+    color: var(--bg-color-deep-blue);
+}
+
+.menu-item:hover {
+    color: var(--bg-color-light-blue);
+    background-color: var(--bg-color-deep-blue);
+}

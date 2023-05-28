@@ -3,6 +3,7 @@ import { useContext, forwardRef } from "react";
 import st from "./Webcam.module.css";
 import { Context } from "../../index";
 import { observer } from "mobx-react-lite";
+import { MirrorContext } from "../CardsContainer/CardContainer";
 
 interface Props {
     isCurrent: boolean;
@@ -13,6 +14,7 @@ const Webcam = forwardRef(function (
     ref: React.LegacyRef<HTMLVideoElement>
 ) {
     const { store } = useContext(Context);
+    const { mirror } = useContext(MirrorContext);
 
     function setClasses() {
         if (isCurrent && !store.isCameraReady) {
@@ -28,7 +30,7 @@ const Webcam = forwardRef(function (
                 className={[
                     st["video"],
 
-                    store.mirrorWebcam ? st["swap"] : "",
+                    mirror ? st["swap"] : "",
                     !isCurrent || !store.isCameraReady
                         ? st["visually-hidden"]
                         : "",

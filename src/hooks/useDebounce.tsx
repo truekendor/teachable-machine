@@ -18,7 +18,7 @@ export default function useDebounce(
                 callback();
             }
         }, delay);
-    }, [callback, delay]);
+    }, [callback, delay, condition]);
 
     return debouncedCallback;
 }

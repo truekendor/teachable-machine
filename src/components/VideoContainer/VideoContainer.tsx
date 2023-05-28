@@ -1,13 +1,12 @@
 // * external modules
 import { observer } from "mobx-react-lite";
-import * as tf from "@tensorflow/tfjs";
 
 // * hooks
 import { useRef, useContext, useEffect } from "react";
 
-// * stores
+// * stores & contexts
 import { Context } from "../../index";
-import neuralStore from "../../store/neuralStore";
+import { MirrorContext } from "../CardsContainer/CardContainer";
 
 // * components
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -20,6 +19,7 @@ import { faLeftRight, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 // * other
 import { videoConstrains } from "../../App";
+import { gatherDataForVideoContainer } from "../../utils/utils";
 
 interface Props {
     queue: number;
@@ -27,13 +27,13 @@ interface Props {
 
 function VideoContainer({ queue }: Props) {
     const { store } = useContext(Context);
+    const { toggleMirror } = useContext(MirrorContext);
 
     const isCurrent = store.currentCard === queue;
 
     const stream = useRef<MediaStream>();
     const camRef = useRef<HTMLVideoElement>();
-
-    const testRef = useRef<HTMLCanvasElement>();
+    const canvasRef = useRef<HTMLCanvasElement>();
 
     function disableViaMicrotask() {
         queueMicrotask(disableCamera);
@@ -66,29 +66,6 @@ function VideoContainer({ queue }: Props) {
         return !!navigator?.mediaDevices?.getUserMedia;
     }
 
-    function createImageFromVideo() {
-        const c = testRef.current.getContext("2d");
-
-        testRef.current.width = 100;
-        testRef.current.height =
-            (videoConstrains.height / videoConstrains.width) * 100;
-
-        c.translate(testRef.current.width, 0);
-        c.scale(-1, 1);
-
-        c.drawImage(
-            camRef.current,
-            0,
-            0,
-            testRef.current.width,
-            testRef.current.height
-        );
-
-        const dataUrl = testRef.current.toDataURL();
-
-        return dataUrl;
-    }
-
     async function enableCamera() {
         if (!userHasCamera()) {
             console.warn("Камера не поддерживается вашим браузером");
@@ -112,24 +89,20 @@ function VideoContainer({ queue }: Props) {
         stream?.current?.getTracks?.().forEach((track) => track.stop());
     }
 
-    // TODO переделать на setInterval для большей кастомизации
-    // TODO времени между кадрами
     function dataGatherLoop() {
-        if (!store.isGatheringData || !store.isCameraReady) {
+        const breakCondition = !store.isGatheringData || !store.isCameraReady;
+
+        if (breakCondition) {
+            // there is no need to call cancelAnimationFrame
+            // since we don't call requestAnimationFrame
             return;
         }
 
-        let imageFeatures: tf.Tensor1D =
-            neuralStore.calculateFeaturesOnCurrentFrame(camRef.current);
-
-        const data = createImageFromVideo();
-        if (data) {
-            store.pushToBase64(data, queue);
-        } else {
-            console.log("no image data");
-        }
-
-        neuralStore.pushToTrainingData(imageFeatures, queue);
+        gatherDataForVideoContainer({
+            camera: camRef.current,
+            canvas: canvasRef.current,
+            queue,
+        });
 
         window.requestAnimationFrame(dataGatherLoop);
     }
@@ -141,12 +114,9 @@ function VideoContainer({ queue }: Props) {
             )}
         >
             {isCurrent && (
+                // TODO decompose me
                 <div className={[st["top-panel"]].join(" ")}>
-                    <button
-                        onClick={() => {
-                            store.toggleMirrorWebcam();
-                        }}
-                    >
+                    <button onClick={toggleMirror}>
                         <FontAwesomeIcon icon={faLeftRight} />
                     </button>
                     <button onClick={disableViaMicrotask}>
@@ -158,7 +128,7 @@ function VideoContainer({ queue }: Props) {
             {isCurrent && <DataCollectorBtn onMouseDown={dataGatherLoop} />}
             <canvas
                 className={[st["canvas"], st["visually-hidden"]].join(" ")}
-                ref={testRef}
+                ref={canvasRef}
             ></canvas>
         </div>
     );

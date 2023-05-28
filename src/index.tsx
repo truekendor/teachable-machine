@@ -1,9 +1,9 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext } from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
-import storeC from "./store/Store";
+import storeCtx from "./store/Store";
 
-const store = storeC;
+const store = storeCtx;
 
 export const Context = createContext({ store });
 

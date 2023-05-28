@@ -1,15 +1,11 @@
-import { useContext } from "react";
-import { Context } from "../../index";
-
 import { observer } from "mobx-react-lite";
 
-import st from "./TrainingOptions.module.css";
 import DropDownSet from "./Lists/DropDownSet";
 import LabelSet from "./Lists/LabelSet";
 
-function TrainingOptions() {
-    const { store } = useContext(Context);
+import st from "./TrainingOptions.module.css";
 
+function TrainingOptions() {
     return (
         <div className={[st["options"]].join(" ")}>
             <form

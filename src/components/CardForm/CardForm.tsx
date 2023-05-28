@@ -1,12 +1,13 @@
+import { observer } from "mobx-react-lite";
 import React, { useRef, useContext, useId, useEffect } from "react";
+
+import { Context } from "../../index";
+import cardStore from "../../store/CardStore";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
-import { Context } from "../../index";
 
 import st from "./CardForm.module.css";
-import { observer } from "mobx-react-lite";
-import cardStore from "../../store/CardStore";
 
 interface Props {
     queue: number;

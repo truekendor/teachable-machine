@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, createContext, useState } from "react";
 import { observer } from "mobx-react-lite";
 import { Context } from "../../index";
 import Card from "../Card/Card";
@@ -10,8 +10,11 @@ import st from "./CardContainer.module.css";
 import cardStore from "../../store/CardStore";
 import neuralStore from "../../store/neuralStore";
 
+export const MirrorContext = createContext(null);
+
 function CardContainer() {
     const { store } = useContext(Context);
+    const [mirror, setMirror] = useState(false);
 
     function clickHandler() {
         store.pushToLabels(`Class ${cardStore.getNextClassNumber()}`);
@@ -24,9 +27,16 @@ function CardContainer() {
 
     return (
         <div className={[st["container"]].join(" ")}>
-            {store.labelsArray.map((el, index) => {
-                return <Card key={v4()} queue={index} />;
-            })}
+            <MirrorContext.Provider
+                value={{
+                    mirror,
+                    toggleMirror: () => setMirror((prev) => !prev),
+                }}
+            >
+                {store.labelsArray.map((el, index) => {
+                    return <Card key={v4()} queue={index} />;
+                })}
+            </MirrorContext.Provider>
 
             <NewCardBtn hidden={false} onClick={clickHandler} />
         </div>

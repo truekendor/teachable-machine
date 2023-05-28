@@ -11,36 +11,11 @@
     padding-block: 0.4rem;
 }
 
-.menu {
-    font-family: "Poppins", sans-serif;
-    position: absolute;
-
-    display: flex;
-    flex-direction: column;
-
-    height: 0;
-    width: 100%;
-
-    background-color: var(--bg-color-light-blue);
-
-    overflow: hidden;
-    visibility: hidden;
-    pointer-events: none;
-
-    top: var(--input-height);
-    left: 0;
-    right: 0;
-
-    border-radius: 0.5rem;
-
-    outline: 1px solid hsl(235, 90%, 81%);
-}
-
 .title {
     margin-block-end: 0.5rem;
 }
 
-.container {
+.main-content {
     display: flex;
     align-items: center;
     flex-direction: row;
@@ -73,28 +48,30 @@
     margin-inline-end: auto;
 }
 
-.menu > ul {
-    display: contents;
-}
+.menu {
+    contain: content;
+    font-family: "Poppins", sans-serif;
+    position: absolute;
 
-.menu-item {
-    width: 1fr;
-    cursor: pointer;
+    display: flex;
+    flex-direction: column;
 
-    padding: 0.4rem 0.8rem;
-
-    -webkit-user-select: none;
-    user-select: none;
-
-    list-style: none;
+    height: 0;
+    width: 100%;
 
     background-color: var(--bg-color-light-blue);
-    color: var(--bg-color-deep-blue);
-}
 
-.menu-item:hover {
-    color: var(--bg-color-light-blue);
-    background-color: var(--bg-color-deep-blue);
+    overflow: hidden;
+    visibility: hidden;
+    pointer-events: none;
+
+    top: var(--input-height);
+    left: 0;
+    right: 0;
+
+    border-radius: 0.5rem;
+
+    outline: 1px solid hsl(235, 90%, 81%);
 }
 
 .active {
@@ -105,12 +82,17 @@
     z-index: 10;
 }
 
+.menu > ul {
+    display: contents;
+}
+
 .menu-active {
     outline-offset: 1px;
     outline: 2px solid var(--bg-color-deep-blue-lighter);
 }
 
 .icon {
+    contain: content;
     display: flex;
     align-items: center;
 
@@ -136,9 +118,9 @@
 }
 
 .more-info::before {
-    opacity: 0;
+    contain: content;
 
-    transition: opacity 100ms ease-in-out;
+    visibility: hidden;
 }
 
 .more-info:hover::before {
@@ -148,7 +130,7 @@
     font-size: 1rem;
 
     inset: 0;
-    opacity: 1;
+    visibility: visible;
 
     width: calc(100% - var(--training-area-pd));
     height: min-content;
@@ -162,11 +144,10 @@
     color: white;
 
     pointer-events: none;
-
     z-index: 30;
 }
 
-.cosmetic {
+.question {
     width: 1.2rem;
     height: 1.2rem;
 

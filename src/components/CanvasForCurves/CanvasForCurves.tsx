@@ -1,6 +1,6 @@
-import { useContext, useEffect, useRef } from "react";
-import { Context } from "../../index";
 import { observer } from "mobx-react-lite";
+
+import { useEffect, useRef } from "react";
 
 import canvas from "../../store/Canvas";
 
@@ -11,8 +11,6 @@ type Props = {
 };
 
 function CanvasForCurves({ width }: Props) {
-    const { store } = useContext(Context);
-
     const canvasRef = useRef<HTMLCanvasElement>();
 
     useEffect(() => {

@@ -1,6 +1,5 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 
-import { Context } from "../../../index";
 import { infoText } from "../../../utils/infoText";
 import { observer } from "mobx-react-lite";
 
@@ -9,8 +8,6 @@ import TrainingLabel from "../../UI/TrainingLabel/TrainingLabel";
 import neuralStore from "../../../store/neuralStore";
 
 function LabelSet() {
-    const { store } = useContext(Context);
-
     const [epochsValue, setEpochsValue] = useState("20");
     const [learningRate, setLearningRate] = useState(
         `${neuralStore.trainingOptions.learningRate}`

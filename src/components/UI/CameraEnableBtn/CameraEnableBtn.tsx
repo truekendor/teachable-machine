@@ -1,8 +1,5 @@
-import { useContext } from "react";
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVideoCamera } from "@fortawesome/free-solid-svg-icons";
-import { Context } from "../../../index";
 
 import st from "./CameraEnableBtn.module.css";
 import { observer } from "mobx-react-lite";

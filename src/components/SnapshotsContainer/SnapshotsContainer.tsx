@@ -1,16 +1,19 @@
-import { useContext } from "react";
-import { Context } from "../../index";
+import { observer } from "mobx-react-lite";
 import { v4 } from "uuid";
 
+import { useContext } from "react";
+
+import { Context } from "../../index";
+import { MirrorContext } from "../CardsContainer/CardContainer";
+import Snapshot from "../Snapshot/Snapshot";
+
 import st from "./SnapshotsContainer.module.css";
-import { observer } from "mobx-react-lite";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 type Props = { queue: number };
 
 function SnapshotsContainer({ queue }: Props) {
     const { store } = useContext(Context);
+    const { mirror } = useContext(MirrorContext);
 
     function clickHandler(index: number) {
         // calculate correct index since current one is reversed
@@ -30,25 +33,12 @@ function SnapshotsContainer({ queue }: Props) {
                     ?.reverse()
                     .map((base64, index) => {
                         return (
-                            <div
+                            <Snapshot
                                 key={v4()}
-                                className={[st["image-div"]].join(" ")}
-                            >
-                                <button
-                                    onClick={() => clickHandler(index)}
-                                    className={[st["helper-btn"]].join(" ")}
-                                >
-                                    <FontAwesomeIcon icon={faXmark} />
-                                </button>
-                                <img
-                                    className={[
-                                        st["img"],
-                                        store.mirrorWebcam && st["swap"],
-                                    ].join(" ")}
-                                    src={base64}
-                                    alt="data sample for class"
-                                />
-                            </div>
+                                base64={base64}
+                                onClick={() => clickHandler(index)}
+                                mirror={mirror}
+                            />
                         );
                     })}
             </div>

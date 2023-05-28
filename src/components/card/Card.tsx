@@ -1,4 +1,7 @@
+import { observer } from "mobx-react-lite";
+
 import { useRef, useContext, useEffect } from "react";
+import useDebounce from "../../hooks/useDebounce";
 
 import CameraEnableBtn from "../UI/CameraEnableBtn/CameraEnableBtn";
 import VideoContainer from "../VideoContainer/VideoContainer";
@@ -6,23 +9,21 @@ import SnapshotsContainer from "../SnapshotsContainer/SnapshotsContainer";
 import CardForm from "../CardForm/CardForm";
 
 import { Context } from "../../index";
-import useDebounce from "../../hooks/useDebounce";
 
-import { observer } from "mobx-react-lite";
+import cardStore from "../../store/CardStore";
+import neuralStore from "../../store/neuralStore";
+
 import { BoundingBoxPart } from "../../types/types";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
-import "../../index.css";
 import st from "./Card.module.css";
-import cardStore from "../../store/CardStore";
-import neuralStore from "../../store/neuralStore";
 
 interface Props {
     queue: number;
 }
-
+// TODO create card Context form tracking queue
 function Card({ queue }: Props) {
     const { store } = useContext(Context);
 
@@ -71,12 +72,6 @@ function Card({ queue }: Props) {
                 <CardForm queue={queue} />
                 {
                     <button
-                        // TODO
-                        // * ============
-                        // onClick={() => {
-                        //     setIsOptionsOpen(!isOptionsOpen);
-                        // }}
-                        // * ============
                         onDoubleClick={doubleClickHandler}
                         onClick={debounce}
                         className={`${st["delete-btn"]}`}
@@ -86,6 +81,7 @@ function Card({ queue }: Props) {
                     </button>
                 }
             </header>
+
             <div className={[st["card-body"]].join(" ")}>
                 {!isCurrent && (
                     <CameraEnableBtn
@@ -95,7 +91,6 @@ function Card({ queue }: Props) {
                     />
                 )}
                 <VideoContainer queue={queue} />
-
                 {isCurrent && <SnapshotsContainer queue={queue} />}
             </div>
         </div>

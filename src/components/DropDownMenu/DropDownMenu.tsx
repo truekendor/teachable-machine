@@ -6,6 +6,7 @@ import st from "./DropDownMenu.module.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCaretDown, faQuestion } from "@fortawesome/free-solid-svg-icons";
 import neuralStore, { TrainingOptions } from "../../store/neuralStore";
+import DropDownMenuItem from "../DropDownMenuItem/DropDownMenuItem";
 
 type Props = {
     list: string[];
@@ -40,7 +41,7 @@ function DropDownMenu({ list, title, onChoose, propName, helpText }: Props) {
         <div className={st["menu-container"]}>
             <h4 className={st["title"]}>{title}</h4>
 
-            <div className={st["container"]}>
+            <div className={st["main-content"]}>
                 <div
                     ref={menuRef}
                     className={[
@@ -66,29 +67,23 @@ function DropDownMenu({ list, title, onChoose, propName, helpText }: Props) {
                         ].join(" ")}
                     >
                         <ul>
-                            {list.map((value) => {
-                                return (
-                                    <li
-                                        className={[st["menu-item"]].join(" ")}
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-
-                                            setIsOpen(false);
-                                            onChoose(value);
-                                        }}
-                                        key={v4()}
-                                    >
-                                        {value}
-                                    </li>
-                                );
-                            })}
+                            {list.map((value) => (
+                                <DropDownMenuItem
+                                    key={v4()}
+                                    value={value}
+                                    onClick={() => {
+                                        setIsOpen(false);
+                                        onChoose(value);
+                                    }}
+                                />
+                            ))}
                         </ul>
                     </div>
                 </div>
 
                 <div data-info-text={helpText} className={st["more-info"]}>
                     <FontAwesomeIcon
-                        className={st["cosmetic"]}
+                        className={st["question"]}
                         icon={faQuestion}
                     />
                 </div>

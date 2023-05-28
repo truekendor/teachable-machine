@@ -17,11 +17,13 @@
 
 .bar > p {
     mix-blend-mode: difference;
+
+    width: max-content;
+
     font-weight: 500;
     font-size: 1.1rem;
 
     letter-spacing: 0.07rem;
-    /* filter: contrast(1000%); */
 }
 
 .bar::before {

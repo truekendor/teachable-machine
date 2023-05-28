@@ -16,7 +16,6 @@ export class Store {
     isAllDataGathered = false;
 
     // * Camera States
-    mirrorWebcam = false;
     isCameraReady = false;
 
     // * contains base64 string representation of input images
@@ -32,7 +31,6 @@ export class Store {
         this.setupBase64();
     }
 
-    // TODO вынести в другое место, так как для сетки важно только количество классов
     removeLabelByIndex(index: number) {
         this.labelsArray = removeItemAtIndex(this.labelsArray, index);
         this.cardBoundingBoxes = removeItemAtIndex(
@@ -45,9 +43,6 @@ export class Store {
         this.checkIsAllDataGathered();
     }
 
-    // * ==============================
-    // * UI STATES
-    // * ==============================
     setIsGatheringData(bool: boolean) {
         // record data on mouseBtnHold
         this.isGatheringData = bool;
@@ -61,11 +56,6 @@ export class Store {
         this.currentCard = index;
 
         this.applyUI();
-    }
-
-    // TODO to local useContext?
-    toggleMirrorWebcam() {
-        this.mirrorWebcam = !this.mirrorWebcam;
     }
 
     setInnerHeight(value: number) {
@@ -87,9 +77,10 @@ export class Store {
         this.checkIsAllDataGathered();
     }
 
-    // ==============================
-    // COMPONENTS STATES
-    // ==============================
+    pushToBase64(string: string, index: number) {
+        this.base64Array[index].push(string);
+        this.checkIsAllDataGathered();
+    }
 
     pushToLabels(label: string) {
         this.labelsArray.push(label);
@@ -107,15 +98,6 @@ export class Store {
         this.cardBoundingBoxes[index] = bBox;
 
         this.applyUI();
-    }
-
-    // ==============================
-    // TODO ???? set name for this part
-    // ==============================
-
-    pushToBase64(string: string, index: number) {
-        this.base64Array[index].push(string);
-        this.checkIsAllDataGathered();
     }
 
     setButton(ref: HTMLButtonElement) {

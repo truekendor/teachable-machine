@@ -1,10 +1,9 @@
+import { observer } from "mobx-react-lite";
+
 import { useContext } from "react";
 import { Context } from "../../../../index";
 
-import { observer } from "mobx-react-lite";
-
 import st from "./TrainBtn.module.css";
-import neuralStore from "../../../../store/neuralStore";
 
 type Props = {
     onClick: () => void;

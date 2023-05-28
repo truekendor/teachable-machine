@@ -1,4 +1,7 @@
 import * as tf from "@tensorflow/tfjs";
+import { videoConstrains } from "../App";
+import neuralStore from "../store/neuralStore";
+import store from "../store/Store";
 
 interface NewTrainingData {
     trainingDataInputs: tf.Tensor1D[];
@@ -77,3 +80,44 @@ class DebugTfMemory {
 }
 
 export const debugTfMemory = new DebugTfMemory();
+
+export function createImageFromVideoElement(
+    canvas: HTMLCanvasElement,
+    camera: HTMLVideoElement
+) {
+    const c = canvas.getContext("2d");
+
+    canvas.width = 100;
+    canvas.height = (videoConstrains.height / videoConstrains.width) * 100;
+
+    c.translate(canvas.width, 0);
+    c.scale(-1, 1);
+
+    c.drawImage(camera, 0, 0, canvas.width, canvas.height);
+
+    const dataUrl = canvas.toDataURL();
+
+    return dataUrl;
+}
+
+export function gatherDataForVideoContainer({
+    camera,
+    canvas,
+    queue,
+}: {
+    camera: HTMLVideoElement;
+    canvas: HTMLCanvasElement;
+    queue: number;
+}) {
+    const imageFeatures: tf.Tensor1D =
+        neuralStore.calculateFeaturesOnCurrentFrame(camera);
+
+    const data = createImageFromVideoElement(canvas, camera);
+
+    if (data) {
+        store.pushToBase64(data, queue);
+        neuralStore.pushToTrainingData(imageFeatures, queue);
+    } else {
+        console.warn("Unable to gather data from videoElement");
+    }
+}
