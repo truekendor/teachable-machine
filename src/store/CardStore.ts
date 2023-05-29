@@ -5,18 +5,18 @@ import store from "./Store";
 import canvas from "./Canvas";
 
 export class CardStore {
-    switchFrom = -1;
-    formSwitched = true;
+    private switchFrom = -1;
+    private formSwitched = true;
     wasDoubleClick = false;
 
-    currentCard = -1;
-    cardBoundingBoxes: BoundingBoxPart[] = [];
+    private currentCard = -1;
+    private cardBoundingBoxes: BoundingBoxPart[] = [];
 
-    newCardAdded = false;
+    private newCardAdded = false;
 
-    cardFormRefs: HTMLInputElement[] = [];
+    private cardFormRefs: HTMLInputElement[] = [];
 
-    nextClassNumber = 4;
+    private nextClassNumber = 4;
 
     constructor() {
         makeAutoObservable(this);

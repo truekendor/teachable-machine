@@ -10,11 +10,8 @@ import st from "./CardContainer.module.css";
 import cardStore from "../../store/CardStore";
 import neuralStore from "../../store/neuralStore";
 
-export const MirrorContext = createContext(null);
-
 function CardContainer() {
     const { store } = useContext(Context);
-    const [mirror, setMirror] = useState(false);
 
     function clickHandler() {
         store.pushToLabels(`Class ${cardStore.getNextClassNumber()}`);
@@ -27,16 +24,9 @@ function CardContainer() {
 
     return (
         <div className={[st["container"]].join(" ")}>
-            <MirrorContext.Provider
-                value={{
-                    mirror,
-                    toggleMirror: () => setMirror((prev) => !prev),
-                }}
-            >
-                {store.labelsArray.map((el, index) => {
-                    return <Card key={v4()} queue={index} />;
-                })}
-            </MirrorContext.Provider>
+            {store.labelsArray.map((el, index) => {
+                return <Card key={v4()} queue={index} />;
+            })}
 
             <NewCardBtn hidden={false} onClick={clickHandler} />
         </div>

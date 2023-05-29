@@ -6,12 +6,11 @@ import { useRef, useContext, useEffect } from "react";
 
 // * stores & contexts
 import { Context } from "../../index";
-import { MirrorContext } from "../CardsContainer/CardContainer";
+import webcamStore from "../../store/Webcam";
 
 // * components
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DataCollectorBtn from "../UI/DataCollectorBtn/DataCollectorBtn";
-import Webcam from "../Webcam/Webcam";
 
 // * styles/icons
 import st from "./VideoContainer.module.css";
@@ -21,76 +20,76 @@ import { faLeftRight, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { videoConstrains } from "../../App";
 import { gatherDataForVideoContainer } from "../../utils/utils";
 
-interface Props {
+interface Prop {
     queue: number;
 }
 
-function VideoContainer({ queue }: Props) {
+function VideoContainer({ queue }: Prop) {
     const { store } = useContext(Context);
-    const { toggleMirror } = useContext(MirrorContext);
+    // const { queue } = useContext(CardContext);
 
     const isCurrent = store.currentCard === queue;
 
-    const stream = useRef<MediaStream>();
-    const camRef = useRef<HTMLVideoElement>();
+    const canvasMinifierRef = useRef<HTMLCanvasElement>();
     const canvasRef = useRef<HTMLCanvasElement>();
 
-    function disableViaMicrotask() {
-        queueMicrotask(disableCamera);
-        store.setCurrentCard(-1);
-    }
-
+    // TODO deprecated?
     useEffect(() => {
         async function handleCamera() {
-            if (!isCurrent || store.currentCard === -1) {
-                disableCamera();
+            if (isCurrent) {
+                await enableCamera();
+                animateCanvas();
+            }
+        }
+        handleCamera();
+    });
+
+    async function enableCamera() {
+        canvasRef.current.width = videoConstrains.width;
+        canvasRef.current.height = videoConstrains.height;
+
+        await webcamStore.enableCamera(canvasRef.current);
+    }
+
+    function animateCanvas() {
+        try {
+            if (!isCurrent) {
                 return;
             }
 
-            // На всякий
-            if (!store.isCameraReady) {
-                await enableCamera();
+            const c = canvasRef.current.getContext("2d");
+
+            if (!webcamStore.isFlipped) {
+                c.translate(canvasRef.current.width, 0);
+                c.scale(-1, 1);
+
+                webcamStore.setIsFlipped(true);
             }
+
+            c.clearRect(
+                0,
+                0,
+                canvasRef.current.width,
+                canvasRef.current.height
+            );
+            c.drawImage(
+                webcamStore.camera,
+                0,
+                0,
+                canvasRef.current.width,
+                canvasRef.current.height
+            );
+
+            window.requestAnimationFrame(animateCanvas);
+        } catch {
+            //
         }
-
-        handleCamera();
-
-        return () => {
-            if (!isCurrent) {
-                disableCamera();
-            }
-        };
-    });
-
-    function userHasCamera() {
-        return !!navigator?.mediaDevices?.getUserMedia;
     }
 
-    async function enableCamera() {
-        if (!userHasCamera()) {
-            console.warn("Камера не поддерживается вашим браузером");
-            return;
-        }
-
-        const result = await navigator.mediaDevices.getUserMedia(
-            videoConstrains
-        );
-        stream.current = result;
-        camRef.current.srcObject = result;
-
-        camRef.current.addEventListener("loadeddata", () => {
-            store.setIsCameraReady(true);
-        });
-    }
-
-    function disableCamera() {
-        store.setIsCameraReady(false);
-
-        stream?.current?.getTracks?.().forEach((track) => track.stop());
-    }
-
+    // TODO replace with useInterval
     function dataGatherLoop() {
-        const breakCondition = !store.isGatheringData || !store.isCameraReady;
+        const breakCondition =
+            !store.isGatheringData || !webcamStore.isCameraReady;
 
         if (breakCondition) {
             // there is no need to call cancelAnimationFrame
@@ -99,8 +98,8 @@ function VideoContainer({ queue }: Props) {
         }
 
         gatherDataForVideoContainer({
-            camera: camRef.current,
-            canvas: canvasRef.current,
+            camera: webcamStore.camera,
+            canvas: canvasMinifierRef.current,
             queue,
         });
 
@@ -116,19 +115,34 @@ function VideoContainer({ queue }: Props) {
             {isCurrent && (
                 // TODO decompose me
                 <div className={[st["top-panel"]].join(" ")}>
-                    <button onClick={toggleMirror}>
+                    <button
+                        onClick={() => {
+                            webcamStore.toggleIsMirror();
+                            webcamStore.setIsFlipped(false);
+                        }}
+                    >
                         <FontAwesomeIcon icon={faLeftRight} />
                     </button>
-                    <button onClick={disableViaMicrotask}>
+                    <button onClick={() => store.setCurrentCard(-1)}>
                         <FontAwesomeIcon icon={faXmark} />
                     </button>
                 </div>
             )}
-            <Webcam isCurrent={isCurrent} ref={camRef} />
+            {/* 
+            // ! new element
+            */}
+            {isCurrent && (
+                <div className={`${st["wrapper"]}`}>
+                    <canvas
+                        className={[st["canvas-instead"]].join(" ")}
+                        ref={canvasRef}
+                    ></canvas>
+                </div>
+            )}
             {isCurrent && <DataCollectorBtn onMouseDown={dataGatherLoop} />}
             <canvas
                 className={[st["canvas"], st["visually-hidden"]].join(" ")}
-                ref={canvasRef}
+                ref={canvasMinifierRef}
             ></canvas>
         </div>
     );

@@ -1,43 +1,14 @@
-import { useContext, forwardRef } from "react";
+import { useEffect, useRef } from "react";
+import webcamStore from "../../store/Webcam";
 
-import st from "./Webcam.module.css";
-import { Context } from "../../index";
-import { observer } from "mobx-react-lite";
-import { MirrorContext } from "../CardsContainer/CardContainer";
+export function Webcam() {
+    const camRef = useRef<HTMLVideoElement>();
 
-interface Props {
-    isCurrent: boolean;
-}
-
-const Webcam = forwardRef(function (
-    { isCurrent }: Props,
-    ref: React.LegacyRef<HTMLVideoElement>
-) {
-    const { store } = useContext(Context);
-    const { mirror } = useContext(MirrorContext);
-
-    function setClasses() {
-        if (isCurrent && !store.isCameraReady) {
-            return st["waiting"];
-        }
-    }
+    useEffect(() => {
+        webcamStore.setWebcam(camRef.current);
+    });
 
     return (
-        <div className={[st["container"], setClasses()].join(" ")}>
-            <video
-                ref={ref}
-                autoPlay={true}
-                className={[
-                    st["video"],
-
-                    mirror ? st["swap"] : "",
-                    !isCurrent || !store.isCameraReady
-                        ? st["visually-hidden"]
-                        : "",
-                ].join(" ")}
-            ></video>
-        </div>
+        <video autoPlay={true} className="visually-hidden" ref={camRef}></video>
     );
-});
-
-export default observer(Webcam);
+}

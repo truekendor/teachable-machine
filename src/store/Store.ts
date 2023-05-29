@@ -15,9 +15,6 @@ export class Store {
     innerHeight = `${100}vh`;
     isAllDataGathered = false;
 
-    // * Camera States
-    isCameraReady = false;
-
     // * contains base64 string representation of input images
     base64Array: string[][] = [];
 
@@ -46,10 +43,6 @@ export class Store {
     setIsGatheringData(bool: boolean) {
         // record data on mouseBtnHold
         this.isGatheringData = bool;
-    }
-
-    setIsCameraReady(state: boolean) {
-        this.isCameraReady = state;
     }
 
     setCurrentCard(index: number) {

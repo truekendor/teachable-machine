@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 
 import st from "./CardForm.module.css";
+import { CardContext } from "../Card/Card";
 
 interface Props {
     queue: number;
@@ -15,37 +16,14 @@ interface Props {
 
 function CardForm({ queue }: Props) {
     const { store } = useContext(Context);
+    // const { queue } = useContext(CardContext);
+
     const inputRef = useRef<HTMLInputElement>();
     const id = useId();
 
     function isValidKeyCode(code: string) {
         return code === "Enter" || code === "Escape";
     }
-
-    function isSwitchToOtherForm(e: React.KeyboardEvent<HTMLInputElement>) {
-        const switchCodes = e.code === "Enter" && e.shiftKey;
-
-        return switchCodes;
-    }
-
-    useEffect(() => {
-        const isThisCardLastAtQueue = store.labelsArray.length - 1 === queue;
-
-        if (isThisCardLastAtQueue && cardStore.newCardAdded) {
-            inputRef.current.select();
-            cardStore.setNewCardAdded(false);
-        }
-
-        if (queue === cardStore.switchFrom + 1 && !cardStore.formSwitched) {
-            cardStore.setFormSwitched(true);
-
-            setTimeout(() => {
-                inputRef.current.select();
-            }, 5);
-        } else if (queue === store.labelsArray.length - 1) {
-            cardStore.setSwitchFrom(-1);
-        }
-    }, [queue, cardStore]);
 
     return (
         <form
@@ -62,11 +40,6 @@ function CardForm({ queue }: Props) {
                 ref={inputRef}
                 onKeyDown={(e) => {
                     if (!isValidKeyCode(e.code)) return;
-
-                    if (isSwitchToOtherForm(e)) {
-                        cardStore.setSwitchFrom(queue);
-                        cardStore.setFormSwitched(false);
-                    }
 
                     // блюр при нажатии на enter
                     inputRef.current.blur();

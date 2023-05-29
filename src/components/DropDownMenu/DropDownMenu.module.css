@@ -48,7 +48,7 @@
     margin-inline-end: auto;
 }
 
-.menu {
+.menu-list {
     contain: content;
     font-family: "Poppins", sans-serif;
     position: absolute;
@@ -82,7 +82,7 @@
     z-index: 10;
 }
 
-.menu > ul {
+.menu-list > ul {
     display: contents;
 }
 

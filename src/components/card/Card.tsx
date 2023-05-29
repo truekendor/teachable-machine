@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
 
-import { useRef, useContext, useEffect } from "react";
+import { useRef, useContext, useEffect, createContext } from "react";
 import useDebounce from "../../hooks/useDebounce";
 
 import CameraEnableBtn from "../UI/CameraEnableBtn/CameraEnableBtn";
@@ -19,6 +19,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 import st from "./Card.module.css";
+
+export const CardContext = createContext(null);
 
 interface Props {
     queue: number;
@@ -68,6 +70,7 @@ function Card({ queue }: Props) {
 
     return (
         <div ref={containerRef} className={[st["card"]].join(" ")}>
+            {/* <CardContext.Provider value={{ queue }}> */}
             <header className={[st["header"]].join(" ")}>
                 <CardForm queue={queue} />
                 {
@@ -93,6 +96,7 @@ function Card({ queue }: Props) {
                 <VideoContainer queue={queue} />
                 {isCurrent && <SnapshotsContainer queue={queue} />}
             </div>
+            {/* </CardContext.Provider> */}
         </div>
     );
 }

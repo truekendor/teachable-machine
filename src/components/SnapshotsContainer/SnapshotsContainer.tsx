@@ -4,16 +4,20 @@ import { v4 } from "uuid";
 import { useContext } from "react";
 
 import { Context } from "../../index";
-import { MirrorContext } from "../CardsContainer/CardContainer";
+import { CardContext } from "../Card/Card";
+
 import Snapshot from "../Snapshot/Snapshot";
 
 import st from "./SnapshotsContainer.module.css";
+import webcamStore from "../../store/Webcam";
 
-type Props = { queue: number };
+interface Prop {
+    queue: number;
+}
 
-function SnapshotsContainer({ queue }: Props) {
+function SnapshotsContainer({ queue }: Prop) {
     const { store } = useContext(Context);
-    const { mirror } = useContext(MirrorContext);
+    // const { queue } = useContext(CardContext);
 
     function clickHandler(index: number) {
         // calculate correct index since current one is reversed
@@ -37,7 +41,7 @@ function SnapshotsContainer({ queue }: Props) {
                                 key={v4()}
                                 base64={base64}
                                 onClick={() => clickHandler(index)}
-                                mirror={mirror}
+                                mirror={!webcamStore.isMirror}
                             />
                         );
                     })}

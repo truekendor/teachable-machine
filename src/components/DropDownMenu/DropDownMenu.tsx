@@ -62,7 +62,7 @@ function DropDownMenu({ list, title, onChoose, propName, helpText }: Props) {
 
                     <div
                         className={[
-                            st["menu"],
+                            st["menu-list"],
                             isOpen ? st["active"] : "",
                         ].join(" ")}
                     >

@@ -19,6 +19,7 @@ import CardContainer from "./components/CardsContainer/CardContainer";
 import Column from "./components/Column/Column";
 import ProgressBar from "./components/ProgressBar/ProgressBar";
 import WarnComponent from "./components/WarnComponent/WarnComponent";
+import { Webcam } from "./components/Webcam/Webcam";
 
 // * styles
 import "./index.css";
@@ -36,6 +37,7 @@ function App() {
     const { store } = useContext(Context);
 
     const appRef = useRef<HTMLDivElement>();
+
     const predictionCamRef = useRef<HTMLVideoElement>();
 
     const predictInterval = useInterval(predictLoop, 50);
@@ -74,15 +76,18 @@ function App() {
 
         try {
             tidy(() => {
-                let imageFeatures = neuralStore.calculateFeaturesOnCurrentFrame(
-                    predictionCamRef.current
-                );
+                const imageFeatures =
+                    neuralStore.calculateFeaturesOnCurrentFrame(
+                        predictionCamRef.current
+                    );
 
-                let prediction = neuralStore.model
+                if (!imageFeatures) return;
+
+                const prediction = neuralStore.model
                     .predict(imageFeatures.expandDims())
                     // @ts-ignore
                     .squeeze();
-                let predictionArray = prediction.arraySync();
+                const predictionArray = prediction.arraySync();
                 neuralStore.setPredictionList(predictionArray);
             });
         } catch (e: any) {
@@ -136,6 +141,8 @@ function App() {
                 </Column>
 
                 <Rightbar setCamera={setPredictionCamera} />
+
+                <Webcam />
             </main>
         </div>
     );

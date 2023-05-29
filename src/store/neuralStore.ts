@@ -125,10 +125,12 @@ export class NeuralStore {
     }
 
     calculateFeaturesOnCurrentFrame(ref: HTMLVideoElement) {
-        return neuralHelper.calculateFeaturesOnCurrentFrame(
+        const result = neuralHelper.calculateFeaturesOnCurrentFrame(
             ref,
             this.mobilenet
         );
+
+        if (result) return result;
     }
 
     setCurrentEpoch(epoch: number) {

@@ -1,8 +1,10 @@
 import { useContext } from "react";
 import { Context } from "../../../index";
 
-import st from "./DataCollectorBtn.module.css";
 import { observer } from "mobx-react-lite";
+import webcamStore from "../../../store/Webcam";
+
+import st from "./DataCollectorBtn.module.css";
 
 type Props = {
     onMouseDown: () => void;
@@ -13,7 +15,7 @@ function DataCollectorBtn({ onMouseDown }: Props) {
 
     return (
         <button
-            disabled={!store.isCameraReady}
+            disabled={!webcamStore.isCameraReady}
             className={`${st["record-btn"]}`}
             onMouseDown={() => {
                 store.setIsGatheringData(true);
