@@ -1,13 +1,14 @@
 .snapshots-container {
     contain: strict;
+    grid-column: span 7;
 
     margin-block-start: 0.5rem;
 
-    height: 300px;
+    /* height: 300px; */
 
     overflow-y: scroll;
 
-    flex: 4;
+    /* flex: 4; */
 
     gap: 0.2rem;
 }
@@ -45,7 +46,7 @@
 
     color: rgb(80, 80, 80);
 
-    z-index: 100;
+    z-index: var(--z-idx-4);
 }
 
 .image-container {
@@ -54,7 +55,7 @@
     padding-inline: 0.3rem;
 
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(3.5rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(3.8rem, 1fr));
 
     gap: 0.2rem;
 

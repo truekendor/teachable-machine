@@ -1,14 +1,21 @@
-import { useContext, createContext, useState } from "react";
+// * external modules
 import { observer } from "mobx-react-lite";
+import { v4 } from "uuid";
+
+// * hooks
+import { useContext } from "react";
+
+// * stores/contexts
 import { Context } from "../../index";
+import neuralStore from "../../store/neuralStore";
+import cardStore from "../../store/CardStore";
+
+// * components
 import Card from "../Card/Card";
 import NewCardBtn from "../UI/NewCardBtn/NewCardBtn";
 
-import { v4 } from "uuid";
-
+// * styles/icons
 import st from "./CardContainer.module.css";
-import cardStore from "../../store/CardStore";
-import neuralStore from "../../store/neuralStore";
 
 function CardContainer() {
     const { store } = useContext(Context);
@@ -24,7 +31,7 @@ function CardContainer() {
 
     return (
         <div className={[st["container"]].join(" ")}>
-            {store.labelsArray.map((el, index) => {
+            {store.labelsArray.map((_, index) => {
                 return <Card key={v4()} queue={index} />;
             })}
 

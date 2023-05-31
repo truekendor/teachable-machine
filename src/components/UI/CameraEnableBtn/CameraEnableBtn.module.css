@@ -1,4 +1,7 @@
 .cam-enable-btn {
+    contain: content;
+    grid-column: span 4;
+
     display: flex;
     flex-direction: column;
 

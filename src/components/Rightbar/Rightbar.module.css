@@ -38,12 +38,12 @@
 }
 
 .info {
+    contain: content;
     padding: 10px;
     margin-block-start: 1rem;
 }
 
-.info > p {
+.p-warn {
     color: gray;
     font-weight: 600;
-    margin-top: 10px;
 }

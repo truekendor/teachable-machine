@@ -17,37 +17,6 @@
     box-shadow: var(--card-shadow);
 }
 
-.header {
-    /* width: 90%; */
-    display: flex;
-    justify-content: space-between;
-
-    border-bottom: 1px solid rgb(189, 189, 189);
-
-    padding: var(--card-padding);
-
-    position: relative;
-}
-
-.delete-btn {
-    outline: transparent;
-    border: transparent;
-    background-color: transparent;
-
-    cursor: pointer;
-    color: rgb(123, 123, 123);
-
-    padding: 0.5rem;
-    border-radius: 5px;
-
-    font-size: 1rem;
-}
-
-.card-body {
-    display: flex;
-    padding: var(--card-padding);
-}
-
 .options {
     position: absolute;
 

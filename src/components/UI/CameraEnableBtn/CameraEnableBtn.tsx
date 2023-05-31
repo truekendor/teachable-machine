@@ -1,8 +1,8 @@
+import { observer } from "mobx-react-lite";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faVideoCamera } from "@fortawesome/free-solid-svg-icons";
 
 import st from "./CameraEnableBtn.module.css";
-import { observer } from "mobx-react-lite";
 
 interface Props {
     onClick: () => void;

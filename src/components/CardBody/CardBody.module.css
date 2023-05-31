@@ -1,0 +1,7 @@
+.card-body {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: repeat(16, 1fr);
+
+    padding: var(--card-padding);
+}

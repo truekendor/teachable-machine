@@ -24,6 +24,8 @@
     --bg-color-deep-blue: rgb(58, 58, 204);
     --bg-color-deep-blue-lighter: rgb(74, 90, 255);
 
+    --card-outline-clr: rgb(134, 134, 255);
+
     --inner-line-clr: rgb(189, 189, 189);
     --training-area-pd: 10px;
 
@@ -32,6 +34,13 @@
     --input-height: 1.8rem;
     --input-pd-y: 0.2rem;
     --input-pd-x: 1rem;
+
+    --z-idx-6: 7;
+    --z-idx-5: 6;
+    --z-idx-4: 5;
+    --z-idx-3: 4;
+    --z-idx-2: 3;
+    --z-idx-1: 2;
 }
 
 body {
@@ -90,7 +99,7 @@ button {
 
     padding: 10px 15px;
 
-    z-index: 1000;
+    z-index: var(--z-idx-5);
     isolation: isolate;
 
     overflow: hidden;
@@ -144,7 +153,7 @@ button {
     display: flex;
     align-items: center;
 
-    z-index: 100;
+    z-index: var(--z-idx-4);
 
     position: fixed;
     top: 0;

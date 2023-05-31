@@ -79,7 +79,7 @@
     pointer-events: all;
 
     height: min-content;
-    z-index: 10;
+    z-index: var(--z-idx-2);
 }
 
 .menu-list > ul {
@@ -144,7 +144,7 @@
     color: white;
 
     pointer-events: none;
-    z-index: 30;
+    z-index: var(--z-idx-3);
 }
 
 .question {

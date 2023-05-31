@@ -1,8 +1,7 @@
 import { observer } from "mobx-react-lite";
-import React, { useRef, useContext, useId, useEffect } from "react";
+import { useRef, useContext, useId, useState } from "react";
 
 import { Context } from "../../index";
-import cardStore from "../../store/CardStore";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
@@ -10,13 +9,11 @@ import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import st from "./CardForm.module.css";
 import { CardContext } from "../Card/Card";
 
-interface Props {
-    queue: number;
-}
-
-function CardForm({ queue }: Props) {
+function CardForm() {
     const { store } = useContext(Context);
-    // const { queue } = useContext(CardContext);
+    const { queue } = useContext(CardContext);
+
+    const [inputValue, setInputValue] = useState(store.labelsArray[queue]);
 
     const inputRef = useRef<HTMLInputElement>();
     const id = useId();
@@ -35,27 +32,23 @@ function CardForm({ queue }: Props) {
         >
             <input
                 id={id}
-                defaultValue={store.labelsArray[queue]}
+                value={inputValue}
+                // defaultValue={store.labelsArray[queue]}
                 className={[st["input"]].join(" ")}
                 ref={inputRef}
                 onKeyDown={(e) => {
                     if (!isValidKeyCode(e.code)) return;
 
-                    // блюр при нажатии на enter
                     inputRef.current.blur();
                 }}
                 onBlur={() => {
-                    const inputValueChanged =
-                        inputRef.current.value !== store.labelsArray[queue];
-
-                    if (inputValueChanged) {
-                        store.changeLabelAtIndex(inputRef.current.value, queue);
-                    }
+                    store.changeLabelAtIndex(inputValue, queue);
                 }}
                 onClick={() => {
-                    cardStore.setSwitchFrom(queue);
-
                     inputRef.current.select();
+                }}
+                onChange={(e) => {
+                    setInputValue(e.target.value);
                 }}
                 type="text"
                 title="Название класса"

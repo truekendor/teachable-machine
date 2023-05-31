@@ -38,7 +38,7 @@
     transition: backdrop-filter 50ms ease-in-out,
         background-color 50ms ease-in-out;
 
-    z-index: 10;
+    z-index: var(--z-idx-2);
 }
 
 .delete-btn:hover {

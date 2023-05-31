@@ -1,0 +1,15 @@
+.canvas {
+    /* position: fixed; */
+    border-radius: 0.5rem;
+    width: 100%;
+
+    aspect-ratio: 1/1;
+    object-fit: cover;
+
+    background-color: black;
+
+    z-index: var(--z-idx-5);
+    pointer-events: none;
+
+    /* transform: translate(0%, 50%); */
+}

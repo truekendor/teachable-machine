@@ -7,33 +7,28 @@ import { useRef, useContext, useEffect } from "react";
 // * stores & contexts
 import { Context } from "../../index";
 import webcamStore from "../../store/Webcam";
+import { CardContext } from "../Card/Card";
 
 // * components
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import DataCollectorBtn from "../UI/DataCollectorBtn/DataCollectorBtn";
+import VideoCanvas from "../VideoCanvas/VideoCanvas";
 
 // * styles/icons
 import st from "./VideoContainer.module.css";
 import { faLeftRight, faXmark } from "@fortawesome/free-solid-svg-icons";
 
-// * other
+// * others
 import { videoConstrains } from "../../App";
 import { gatherDataForVideoContainer } from "../../utils/utils";
 
-interface Prop {
-    queue: number;
-}
-
-function VideoContainer({ queue }: Prop) {
+function VideoContainer() {
     const { store } = useContext(Context);
-    // const { queue } = useContext(CardContext);
-
-    const isCurrent = store.currentCard === queue;
+    const { isCurrent, queue } = useContext(CardContext);
 
     const canvasMinifierRef = useRef<HTMLCanvasElement>();
     const canvasRef = useRef<HTMLCanvasElement>();
 
-    // TODO deprecated?
     useEffect(() => {
         async function handleCamera() {
             if (isCurrent) {
@@ -81,8 +76,8 @@ function VideoContainer({ queue }: Prop) {
             );
 
             window.requestAnimationFrame(animateCanvas);
-        } catch {
-            //
+        } catch (e: any) {
+            console.log(e.message);
         }
     }
 
@@ -108,9 +103,10 @@ function VideoContainer({ queue }: Prop) {
 
     return (
         <div
-            className={[st["video-container"], isCurrent && st["current"]].join(
-                " "
-            )}
+            className={[
+                st["video-container"],
+                isCurrent ? st["current"] : "visually-hidden",
+            ].join(" ")}
         >
             {isCurrent && (
                 // TODO decompose me
@@ -123,25 +119,26 @@ function VideoContainer({ queue }: Prop) {
                     >
                         <FontAwesomeIcon icon={faLeftRight} />
                     </button>
-                    <button onClick={() => store.setCurrentCard(-1)}>
+                    <button
+                        onClick={() => {
+                            store.setCurrentCard(-1);
+                        }}
+                    >
                         <FontAwesomeIcon icon={faXmark} />
                     </button>
                 </div>
             )}
-            {/* 
-            // ! new element
-            */}
-            {isCurrent && (
-                <div className={`${st["wrapper"]}`}>
-                    <canvas
-                        className={[st["canvas-instead"]].join(" ")}
-                        ref={canvasRef}
-                    ></canvas>
-                </div>
-            )}
+
+            <canvas
+                width={videoConstrains.width}
+                height={videoConstrains.height}
+                className={[st["canvas"]].join(" ")}
+                ref={canvasRef}
+            ></canvas>
+
             {isCurrent && <DataCollectorBtn onMouseDown={dataGatherLoop} />}
             <canvas
-                className={[st["canvas"], st["visually-hidden"]].join(" ")}
+                className={[st["canvas-mini"]].join(" ")}
                 ref={canvasMinifierRef}
             ></canvas>
         </div>

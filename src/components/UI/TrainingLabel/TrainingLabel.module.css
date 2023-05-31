@@ -108,7 +108,7 @@
 
     pointer-events: none;
 
-    z-index: 30;
+    z-index: var(--z-idx-3);
 }
 
 .cosmetic {

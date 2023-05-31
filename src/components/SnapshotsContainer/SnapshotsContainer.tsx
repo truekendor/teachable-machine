@@ -11,13 +11,9 @@ import Snapshot from "../Snapshot/Snapshot";
 import st from "./SnapshotsContainer.module.css";
 import webcamStore from "../../store/Webcam";
 
-interface Prop {
-    queue: number;
-}
-
-function SnapshotsContainer({ queue }: Prop) {
+function SnapshotsContainer() {
     const { store } = useContext(Context);
-    // const { queue } = useContext(CardContext);
+    const { queue } = useContext(CardContext);
 
     function clickHandler(index: number) {
         // calculate correct index since current one is reversed

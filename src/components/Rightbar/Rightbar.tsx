@@ -15,7 +15,6 @@ type Props = {
 
 function Rightbar({ setCamera }: Props) {
     const predictionCamRef = useRef<HTMLVideoElement>();
-    const canvasRef = useRef<HTMLCanvasElement>();
 
     useEffect(() => {
         setCamera(predictionCamRef.current);
@@ -25,25 +24,28 @@ function Rightbar({ setCamera }: Props) {
         <Column min={18} width={24} max={30}>
             <div className={[st["main"]].join(" ")}>
                 <h3>Просмотр</h3>
-                <video
-                    className={[
-                        st["video"],
-                        !neuralStore.isModelTrained && "visually-hidden",
-                    ].join(" ")}
-                    ref={predictionCamRef}
-                    autoPlay={neuralStore.isModelTrained}
-                ></video>
-
-                {/* <canvas ref={canvasRef}></canvas> */}
+                {neuralStore.isModelTrained && (
+                    <video
+                        className={[
+                            st["video"],
+                            !neuralStore.isModelTrained && "visually-hidden",
+                        ].join(" ")}
+                        ref={predictionCamRef}
+                        autoPlay={true}
+                    ></video>
+                )}
 
                 <div className={[st["info"]].join(" ")}>
                     {neuralStore.isModelTrained && <PredictionBoard />}
-                    {!neuralStore.isModelTrained && (
-                        <p>
-                            Перед началом предварительного просмотра обучите
-                            модель
-                        </p>
-                    )}
+
+                    <p
+                        className={[
+                            st["p-warn"],
+                            neuralStore.isModelTrained && "visually-hidden",
+                        ].join(" ")}
+                    >
+                        Перед началом предварительного просмотра обучите модель
+                    </p>
                 </div>
             </div>
         </Column>
