@@ -1,5 +1,6 @@
 .main-area {
-    contain: layout style;
+    grid-column: span 4;
+    contain: content;
 
     display: flex;
     flex-direction: column;
@@ -20,7 +21,7 @@
 
     height: max-content;
 
-    width: 100%;
+    /* width: 100%; */
 
     box-shadow: var(--card-shadow);
 

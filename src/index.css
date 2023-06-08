@@ -64,25 +64,31 @@ button {
 }
 
 .App {
-    display: flex;
+    /* display: flex;
     flex-direction: column;
 
     width: 100%;
     padding: 0.5rem 1.4rem;
-    padding-top: 0;
+    padding-top: 0; */
 
     position: relative;
 }
 
 .main {
-    display: flex;
+    /* display: flex; */
+
+    display: grid;
+    grid-template-columns: repeat(24, 1fr);
 
     justify-content: center;
+    margin: 0px 10vw;
 
-    flex: 1;
+    /* align-items: center; */
+
+    /* flex: 1; */
 
     height: 100%;
-    width: 100%;
+    /* width: 100%; */
 }
 
 .warn {
@@ -196,4 +202,18 @@ input[type="number"]::-webkit-outer-spin-button {
     font-weight: bolder;
 
     text-decoration: underline;
+}
+
+.loader-div {
+    contain: strict;
+    position: fixed;
+
+    inset: 0;
+    z-index: var(--z-idx-6);
+
+    background-color: rgba(0, 0, 0, 0.4);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

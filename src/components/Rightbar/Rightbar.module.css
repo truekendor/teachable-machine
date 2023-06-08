@@ -1,4 +1,5 @@
 .main {
+    grid-column: span 7;
     contain: content;
 
     display: flex;

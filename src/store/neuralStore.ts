@@ -29,6 +29,7 @@ const defaultTrainingOptions: TrainingOptions = {
 export class NeuralStore {
     private mobilenet: tf.GraphModel;
     model: tf.Sequential;
+    isNetReady = false;
 
     private trainingDataInputs: tf.Tensor1D[] = [];
     private trainingDataOutputs: number[] = [];
@@ -98,6 +99,10 @@ export class NeuralStore {
         }
     }
 
+    setIsNetReady(state: boolean) {
+        this.isNetReady = state;
+    }
+
     pushToTrainingData(input: tf.Tensor1D, output: number) {
         this.trainingDataInputs.push(input);
         this.trainingDataOutputs.push(output);
@@ -149,9 +154,17 @@ export class NeuralStore {
 
     private async loadMobilenetModel() {
         try {
+            // await new Promise(res => {
+            //     setTimeout(res, 4000)
+            // })
+
             this.mobilenet = await neuralHelper.loadMobilenetModel();
+
+            this.setIsNetReady(true);
         } catch (e: any) {
-            console.log(e.message);
+            // console.log(e.message);
+            this.setIsNetReady(false);
+            console.log("Failed to fetch mobilenet");
         }
     }
 

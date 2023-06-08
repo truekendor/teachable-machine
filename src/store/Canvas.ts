@@ -18,7 +18,9 @@ export class Canvas {
     }
 
     setupCanvas() {
-        this.c = this.canvas.getContext("2d");
+        this.c = this.canvas.getContext("2d", {
+            willReadFrequently: true,
+        });
         this.canvas.height = window.innerHeight;
     }
 

@@ -16,10 +16,10 @@ import TrainingArea from "./components/TrainingArea/TrainingArea";
 import CanvasForCurves from "./components/CanvasForCurves/CanvasForCurves";
 import Rightbar from "./components/Rightbar/Rightbar";
 import CardContainer from "./components/CardsContainer/CardContainer";
-import Column from "./components/Column/Column";
 import ProgressBar from "./components/ProgressBar/ProgressBar";
 import WarnComponent from "./components/WarnComponent/WarnComponent";
 import { Webcam } from "./components/Webcam/Webcam";
+import LoaderCanvas from "./components/UI/LoaderCanvas/LoaderCanvas";
 
 // * styles
 import "./index.css";
@@ -125,6 +125,12 @@ function App() {
                 <h2 className="header">Teachable machine</h2>
             </header>
 
+            {!neuralStore.isNetReady && (
+                <div className="loader-div">
+                    <LoaderCanvas />
+                </div>
+            )}
+
             {warn && <WarnComponent />}
 
             {neuralStore.isTraining && <ProgressBar />}
@@ -136,9 +142,9 @@ function App() {
 
                 <TrainingArea onClick={onClickHandler} />
 
-                <Column min={0.7} width={3.2} max={4.4}>
-                    <div className="line-sticky"></div>
-                </Column>
+                {/* <Column span={2} min={0.7} width={3.2} max={4.4}> */}
+                <div className="line-sticky"></div>
+                {/* </Column> */}
 
                 <Rightbar setCamera={setPredictionCamera} />
 

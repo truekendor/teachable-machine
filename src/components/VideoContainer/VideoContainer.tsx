@@ -28,6 +28,7 @@ function VideoContainer() {
 
     const canvasMinifierRef = useRef<HTMLCanvasElement>();
     const canvasRef = useRef<HTMLCanvasElement>();
+    const ctxRef = useRef<CanvasRenderingContext2D>();
 
     useEffect(() => {
         async function handleCamera() {
@@ -37,6 +38,7 @@ function VideoContainer() {
             }
         }
         handleCamera();
+        ctxRef.current = canvasRef.current.getContext("2d");
     });
 
     async function enableCamera() {
@@ -52,22 +54,22 @@ function VideoContainer() {
                 return;
             }
 
-            const c = canvasRef.current.getContext("2d");
+            // const c = canvasRef.current.getContext("2d");
 
             if (!webcamStore.isFlipped) {
-                c.translate(canvasRef.current.width, 0);
-                c.scale(-1, 1);
+                ctxRef.current.translate(canvasRef.current.width, 0);
+                ctxRef.current.scale(-1, 1);
 
                 webcamStore.setIsFlipped(true);
             }
 
-            c.clearRect(
+            ctxRef.current.clearRect(
                 0,
                 0,
                 canvasRef.current.width,
                 canvasRef.current.height
             );
-            c.drawImage(
+            ctxRef.current.drawImage(
                 webcamStore.camera,
                 0,
                 0,

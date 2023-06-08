@@ -19,6 +19,12 @@ function CanvasForCurves({ width }: Props) {
         }
 
         window.addEventListener("scroll", drawCurves);
+        window.addEventListener("resize", drawCurves);
+
+        const { width } = canvasRef.current.getBoundingClientRect();
+
+        // canvasRef.current.height = height;
+        canvasRef.current.width = width;
 
         canvas.setCanvas(canvasRef.current);
 
@@ -26,13 +32,14 @@ function CanvasForCurves({ width }: Props) {
 
         return () => {
             window.removeEventListener("scroll", drawCurves);
+            window.removeEventListener("resize", drawCurves);
         };
     });
 
     return (
         <canvas
-            width={width}
-            className={[st["canvas"]].join(" ")}
+            // width={width}
+            className={st["canvas"]}
             ref={canvasRef}
         ></canvas>
     );

@@ -107,6 +107,7 @@ export class NeuralHelper {
         const outputsAsTensor = tf.tensor1d(trainingDataOutputs, "int32");
         const oneHotOutputs = tf.oneHot(
             outputsAsTensor,
+            // TODO should be part of trainingOptions
             store.labelsArray.length
         );
         const inputsAsTensor = tf.stack(trainingDataInputs);
@@ -118,8 +119,10 @@ export class NeuralHelper {
             validationSplit: trainingOptions.validationSplit || 0,
 
             callbacks: {
-                // onEpochEnd: this.logProgress.bind(this),
-                onEpochBegin: this.epochPromise.bind(this),
+                // for whatever reason, disabling the logProgress method
+                // slows down epochPromise when train button pressed
+                onEpochEnd: this.logProgress,
+                onEpochBegin: this.epochPromise,
             },
         });
 

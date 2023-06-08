@@ -25,8 +25,6 @@ function CardContainer() {
 
         neuralStore.setNumberOfCategories(store.labelsArray.length);
         neuralStore.setupModel();
-
-        cardStore.setNewCardAdded(true);
     }
 
     return (
